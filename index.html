@@ -1,4 +1,33 @@
-const firebaseConfig = {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HostelHub – Student Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9/firestore.js"></script>
+  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js"></script>
+  <style>
+    body {font-family: system-ui; text-align:center; padding:20px; background:#f4f6ff;}
+    input, select, button {margin:8px; padding:12px; font-size:16px; width:90%; max-width:400px;}
+    #videoContainer {display:flex; flex-direction:column; align-items:center;}
+    video {width:100%; max-width:500px; border-radius:12px; margin:10px;}
+    .btn {background:#4f46e5; color:white; border:none; border-radius:8px; cursor:pointer;}
+    .btn:hover {background:#4338ca;}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ---- Firebase Config (replace with yours) ----
+  const firebaseConfig = {
   apiKey: "AIzaSyB_gNArL-vud6HhtWXnwVf6KMAXTRqfAk4",
   authDomain: "hostelhub-b11fd.firebaseapp.com",
   projectId: "hostelhub-b11fd",
@@ -7,3 +36,113 @@ const firebaseConfig = {
   appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
   measurementId: "G-KMHEWDN748"
 };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ---- Agora Config ----
+const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994";   // get from agora.io
+
+function App() {
+  const [email, setEmail] = useState('');
+  const [hostel, setHostel] = useState('');
+  const [user, setUser] = useState(null);
+  const [inQueue, setInQueue] = useState(false);
+  const [peer, setPeer] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
+
+  // ---- SIGN UP (only .ac.in) ----
+  const signUp = async () => {
+    if (!email.endsWith('.ac.in')) return alert('Only .ac.in emails allowed!');
+    const uid = Date.now().toString();
+    await db.collection('users').doc(uid).set({ email, hostel, uid, online:true });
+    setUser({email, hostel, uid});
+    alert('Verified! Welcome to HostelHub');
+  };
+
+  // ---- JOIN QUEUE ----
+  const joinQueue = async () => {
+    await db.collection('queues').doc(user.uid).set({hostel: user.hostel, uid: user.uid});
+    setInQueue(true);
+    listenForMatch();
+  };
+
+  // ---- LISTEN FOR MATCH ----
+  const listenForMatch = () => {
+    db.collection('queues').onSnapshot(snap => {
+      const others = snap.docs.filter(d => d.id !== user.uid);
+      if (others.length > 0 && !peer) {
+        const match = others[0].data();
+        setPeer(match);
+        db.collection('queues').doc(user.uid).delete();
+        startVideoCall(match.uid);
+      }
+    });
+  };
+
+  // ---- VIDEO CALL (Agora) ----
+  const startVideoCall = async (remoteUid) => {
+    const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    await client.join(AGORA_APP_ID, "hostelhub", null, user.uid);
+
+    const stream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+    setLocalStream(stream);
+    const localTrack = await AgoraRTC.createCustomVideoTrack({mediaStreamTrack: stream.getVideoTracks()[0]});
+    await client.publish([localTrack, AgoraRTC.createMicrophoneAudioTrack()]);
+
+    client.on("user-published", async (remoteUser, mediaType) => {
+      await client.subscribe(remoteUser, mediaType);
+      if (mediaType === "video") setRemoteStream(remoteUser.videoTrack.getMediaStreamTrack());
+    });
+  };
+
+  // ---- END CALL ----
+  const endCall = () => {
+    setPeer(null); setInQueue(false); setLocalStream(null); setRemoteStream(null);
+  };
+
+  if (!user) {
+    return (
+      <div>
+        <h1>HostelHub</h1>
+        <p>Only for college students (India)</p>
+        <input placeholder="you@college.ac.in" value={email} onChange={e=>setEmail(e.target.value)} />
+        <select value={hostel} onChange={e=>setHostel(e.target.value)}>
+          <option value="">Select Hostel</option>
+          <option>IIT Delhi – Ramanujan</option>
+          <option>DU – North Campus</option>
+          <option>Add your hostel...</option>
+        </select>
+        <button className="btn" onClick={signUp}>Verify & Join</button>
+      </div>
+    );
+  }
+
+  if (!inQueue && !peer) {
+    return (
+      <div>
+        <h2>Hi {email.split('@')[0]}!</h2>
+        <p>Hostel: {hostel}</p>
+        <button className="btn" onClick={joinQueue}>Find Someone in Your Hostel</button>
+      </div>
+    );
+  }
+
+  if (peer) {
+    return (
+      <div id="videoContainer">
+        <h3>Chatting with {peer.email.split('@')[0]}</h3>
+        <video autoPlay playsInline muted src={localStream ? URL.createObjectURL(new MediaStream([localStream])) : ''}></video>
+        <video autoPlay playsInline src={remoteStream ? URL.createObjectURL(new MediaStream([remoteStream])) : ''}></video>
+        <button className="btn" onClick={endCall}>Next</button>
+      </div>
+    );
+  }
+
+  return <div><p>Looking for someone in {hostel}...</p></div>;
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
