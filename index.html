@@ -1,137 +1,45 @@
-<script>
-  // ===== CONFIGS =====
-  const firebaseConfig = {
-    apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
-    authDomain: "hostelhub-b11fd.firebaseapp.com",
-    projectId: "hostelhub-b11fd",
-    storageBucket: "hostelhub-b11fd.firebasestorage.app",
-    messagingSenderId: "935653838481",
-    appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
-  };
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HostelHub Test</title>
+</head>
+<body>
+  <h1>HostelHub</h1>
+  <input id="email" placeholder="Email">
+  <select id="hostel">
+    <option>Ramanujan</option>
+  </select>
+  <button onclick="testMatch()">Find Someone</button>
+  <div id="status"></div>
 
-  // ===== DO NOT EDIT BELOW =====
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  let localUid = null;
-  let remoteUid = null;
-  let pc = null;
-  let localStream = null;
-
-  const statusEl = document.getElementById('status');
-  const findBtn = document.getElementById('findBtn');
-  const videoContainer = document.getElementById('video-container');
-  const remoteVideo = document.getElementById('remote-video');
-  const endCallBtn = document.getElementById('endCall');
-
-  findBtn.onclick = async () => {
-    const email = document.getElementById('email').value.trim();
-    const hostel = document.getElementById('hostel').value;
-
-    if (!email.endsWith('.ac.in') || !hostel) {
-      statusEl.textContent = "Enter valid .ac.in email & hostel";
-      statusEl.style.color = "#ff6b6b";
-      return;
-    }
-
-    statusEl.textContent = "Finding someone...";
-    statusEl.style.color = "#ffd43b";
-
-    localUid = email;
-    await db.collection('users').doc(localUid).set({
-      email: email,
-      hostel: hostel,
-      available: true,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    const match = await findMatch(email, hostel);
-    if (match) {
-      remoteUid = match.id;
-      statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
-      await startCall(match.id);
-    }
-  };
-
-  async function findMatch(email, hostel) {
-    const snapshot = await db.collection('users')
-      .where('hostel', '==', hostel)
-      .where('available', '==', true)
-      .get();
-
-    for (let doc of snapshot.docs) {
-      if (doc.id !== email) {
-        await doc.ref.update({ available: false });
-        await db.collection('users').doc(email).update({ available: false });
-        return doc;
-      }
-    }
-    return null;
-  }
-
-  async function startCall(remoteId) {
-    findBtn.disabled = true;
-    videoContainer.style.display = 'block';
-
-    pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-    });
-
-    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-    pc.ontrack = (event) => {
-      remoteVideo.srcObject = event.streams[0];
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
+      authDomain: "hostelhub-b11fd.firebaseapp.com",
+      projectId: "hostelhub-b11fd",
+      storageBucket: "hostelhub-b11fd.firebasestorage.app",
+      messagingSenderId: "935653838481",
+      appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
     };
 
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        db.collection('calls').doc(remoteId).collection('candidates').add(event.candidate.toJSON());
-      }
-    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    await db.collection('calls').doc(localUid).set({ offer });
+    async function testMatch() {
+      const email = document.getElementById('email').value;
+      const hostel = document.getElementById('hostel').value;
 
-    // Listen for answer
-    db.collection('calls').doc(remoteId).onSnapshot(async (snap) => {
-      const data = snap.data();
-      if (!pc.currentRemoteDescription && data?.answer) {
-        await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-      }
-    });
+      if (!email.endsWith('.ac.in')) return alert('Use .ac.in email');
 
-    // Listen for remote ICE
-    db.collection('calls').doc(remoteId).collection('candidates').onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === 'added') {
-          pc.addIceCandidate(new RTCIceCandidate(change.doc.data()));
-        }
+      await db.collection('users').doc(email).set({
+        email, hostel, available: true
       });
-    });
 
-    // If we're the callee
-    if (remoteId < localUid) {
-      const offerDoc = await db.collection('calls').doc(remoteId).get();
-      if (offerDoc.exists) {
-        await pc.setRemoteDescription(new RTCSessionDescription(offerDoc.data().offer));
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        await db.collection('calls').doc(localUid).set({ answer });
-      }
+      document.getElementById('status').innerText = 'User added. Check Firebase console.';
     }
-  }
-
-  endCallBtn.onclick = async () => {
-    if (pc) pc.close();
-    if (localStream) localStream.getTracks().forEach(t => t.stop());
-    await db.collection('users').doc(localUid).delete();
-    await db.collection('calls').doc(localUid).delete();
-    location.reload();
-  };
-
-  window.onbeforeunload = async () => {
-    if (localUid) await db.collection('users').doc(localUid).delete();
-  };
-</script>
+  </script>
+</body>
+</html>
