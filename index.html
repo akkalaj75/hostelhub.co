@@ -1,164 +1,137 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HostelHub – Video Chat for Hostels</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: #0f0f23; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-    .container { background: #1a1a2e; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
-    h1 { font-size: 28px; margin-bottom: 10px; color: #00d4ff; }
-    p { font-size: 14px; margin-bottom: 20px; color: #aaa; }
-    input, select { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 8px; background: #16213e; color: #fff; font-size: 16px; }
-    button { width: 100%; padding: 14px; background: #00d4ff; color: #0f0f23; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-    button:hover { background: #00b8e6; }
-    #status { margin-top: 15px; font-size: 14px; color: #4ade80; }
-    #video-container { margin-top: 20px; display: none; }
-    #remote-video { width: 100%; border-radius: 12px; background: #000; }
-    .hidden { display: none; }
-  </style>
-</head>
-<body>
+<script>
+  // ===== CONFIGS =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
+    authDomain: "hostelhub-b11fd.firebaseapp.com",
+    projectId: "hostelhub-b11fd",
+    storageBucket: "hostelhub-b11fd.firebasestorage.app",
+    messagingSenderId: "935653838481",
+    appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
+  };
 
-  <div class="container">
-    <h1>HostelHub</h1>
-    <p>Connect with someone in your hostel</p>
+  // ===== DO NOT EDIT BELOW =====
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    <input type="email" id="email" placeholder="Your .ac.in email" />
-    <select id="hostel">
-      <option value="">Select your hostel</option>
-      <option>Ramanujan</option>
-      <option>Zakir Hussain</option>
-      <option>North Campus</option>
-      <option>South Campus</option>
-      <option>Kumaon</option>
-      <option>Aravali</option>
-    </select>
+  let localUid = null;
+  let remoteUid = null;
+  let pc = null;
+  let localStream = null;
 
-    <button id="findBtn">Find Someone</button>
-    <div id="status"></div>
+  const statusEl = document.getElementById('status');
+  const findBtn = document.getElementById('findBtn');
+  const videoContainer = document.getElementById('video-container');
+  const remoteVideo = document.getElementById('remote-video');
+  const endCallBtn = document.getElementById('endCall');
 
-    <div id="video-container">
-      <video id="remote-video" autoplay playsinline></video>
-      <button id="endCall" style="background:#ff3b30;">End Call</button>
-    </div>
-  </div>
+  findBtn.onclick = async () => {
+    const email = document.getElementById('email').value.trim();
+    const hostel = document.getElementById('hostel').value;
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
-  <!-- Agora SDK -->
-  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.1.js"></script>
-
-  <script>
-    // ===== PASTE YOUR CONFIGS BELOW =====
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
-      authDomain: "hostelhub-b11fd.firebaseapp.com",
-      projectId: "hostelhub-b11fd",
-      storageBucket: "hostelhub-b11fd.firebasestorage.app",
-      messagingSenderId: "935653838481",
-      appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
-      measurementId: "G-KMHEWDN748"
-    };
-
-    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994"; // ← PASTE YOUR AGORA APP ID
-
-    // ===== DO NOT EDIT BELOW THIS LINE =====
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let localUid = null;
-    let remoteUid = null;
-    let client, localTrack, remoteTrack;
-    let channel = null;
-
-    const statusEl = document.getElementById('status');
-    const findBtn = document.getElementById('findBtn');
-    const videoContainer = document.getElementById('video-container');
-    const remoteVideo = document.getElementById('remote-video');
-    const endCallBtn = document.getElementById('endCall');
-
-    findBtn.onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const hostel = document.getElementById('hostel').value;
-
-      if (!email.endsWith('.ac.in') || !hostel) {
-        statusEl.textContent = "Enter valid .ac.in email & hostel";
-        statusEl.style.color = "#ff6b6b";
-        return;
-      }
-
-      statusEl.textContent = "Finding someone...";
-      statusEl.style.color = "#ffd43b";
-
-      localUid = email;
-      await db.collection('users').doc(localUid).set({
-        email: email,
-        hostel: hostel,
-        available: true,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      const match = await findMatch(email, hostel);
-      if (match) {
-        remoteUid = match.id;
-        statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
-        startVideoCall();
-      }
-    };
-
-    async function findMatch(email, hostel) {
-      const snapshot = await db.collection('users')
-        .where('hostel', '==', hostel)
-        .where('available', '==', true)
-        .get();
-
-      for (let doc of snapshot.docs) {
-        if (doc.id !== email) {
-          await doc.ref.update({ available: false });
-          await db.collection('users').doc(email).update({ available: false });
-          return doc;
-        }
-      }
-      return null;
+    if (!email.endsWith('.ac.in') || !hostel) {
+      statusEl.textContent = "Enter valid .ac.in email & hostel";
+      statusEl.style.color = "#ff6b6b";
+      return;
     }
 
-    async function startVideoCall() {
-      findBtn.disabled = true;
-      videoContainer.style.display = 'block';
+    statusEl.textContent = "Finding someone...";
+    statusEl.style.color = "#ffd43b";
 
-      client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-      await client.join(AGORA_APP_ID, "hostelhub-channel", null);
+    localUid = email;
+    await db.collection('users').doc(localUid).set({
+      email: email,
+      hostel: hostel,
+      available: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-      localTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
-      await client.publish(localTrack);
+    const match = await findMatch(email, hostel);
+    if (match) {
+      remoteUid = match.id;
+      statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
+      await startCall(match.id);
+    }
+  };
 
-      client.on("user-published", async (user, mediaType) => {
-        await client.subscribe(user, mediaType);
-        if (mediaType === "video") {
-          remoteTrack = user.videoTrack;
-          remoteTrack.play(remoteVideo);
+  async function findMatch(email, hostel) {
+    const snapshot = await db.collection('users')
+      .where('hostel', '==', hostel)
+      .where('available', '==', true)
+      .get();
+
+    for (let doc of snapshot.docs) {
+      if (doc.id !== email) {
+        await doc.ref.update({ available: false });
+        await db.collection('users').doc(email).update({ available: false });
+        return doc;
+      }
+    }
+    return null;
+  }
+
+  async function startCall(remoteId) {
+    findBtn.disabled = true;
+    videoContainer.style.display = 'block';
+
+    pc = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+    pc.ontrack = (event) => {
+      remoteVideo.srcObject = event.streams[0];
+    };
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        db.collection('calls').doc(remoteId).collection('candidates').add(event.candidate.toJSON());
+      }
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await db.collection('calls').doc(localUid).set({ offer });
+
+    // Listen for answer
+    db.collection('calls').doc(remoteId).onSnapshot(async (snap) => {
+      const data = snap.data();
+      if (!pc.currentRemoteDescription && data?.answer) {
+        await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+      }
+    });
+
+    // Listen for remote ICE
+    db.collection('calls').doc(remoteId).collection('candidates').onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          pc.addIceCandidate(new RTCIceCandidate(change.doc.data()));
         }
       });
+    });
+
+    // If we're the callee
+    if (remoteId < localUid) {
+      const offerDoc = await db.collection('calls').doc(remoteId).get();
+      if (offerDoc.exists) {
+        await pc.setRemoteDescription(new RTCSessionDescription(offerDoc.data().offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        await db.collection('calls').doc(localUid).set({ answer });
+      }
     }
+  }
 
-    endCallBtn.onclick = async () => {
-      if (localTrack) localTrack.close();
-      if (client) await client.leave();
-      await db.collection('users').doc(localUid).delete();
-      location.reload();
-    };
+  endCallBtn.onclick = async () => {
+    if (pc) pc.close();
+    if (localStream) localStream.getTracks().forEach(t => t.stop());
+    await db.collection('users').doc(localUid).delete();
+    await db.collection('calls').doc(localUid).delete();
+    location.reload();
+  };
 
-    window.onbeforeunload = async () => {
-      if (localUid) await db.collection('users').doc(localUid).delete();
-    };
-  </script>
-</body>
-</html>
+  window.onbeforeunload = async () => {
+    if (localUid) await db.collection('users').doc(localUid).delete();
+  };
+</script>
