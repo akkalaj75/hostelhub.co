@@ -1,21 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>HostelHub Test</title>
-</head>
-<body>
-  <h1>HostelHub</h1>
-  <input id="email" placeholder="Email">
-  <select id="hostel">
-    <option>Ramanujan</option>
-  </select>
-  <button onclick="testMatch()">Find Someone</button>
-  <div id="status"></div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub</title>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
+  <!-- Agora RTC SDK -->
+  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.1.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0f0f1a;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #1a1a2e;
+      border-radius: 24px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      text-align: center;
+      border: 1px solid #333;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 12px;
+      font-size: 16px;
+      border: 1px solid #333;
+      background: #16213e;
+      color: #fff;
+      outline: none;
+    }
+
+    input::placeholder { color: #666; }
+
+    select { cursor: pointer; }
+
+    button {
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 15px;
+    }
+
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    #status {
+      margin-top: 20px;
+      font-size: 15px;
+      min-height: 24px;
+      color: #ffd43b;
+    }
+
+    #video-container {
+      display: none;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    #remote-video {
+      width: 100%;
+      height: 300px;
+      background: #000;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+
+    #endCall {
+      background: #ff6b6b;
+      margin-top: 15px;
+    }
+
+    .hostel-option { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>HostelHub</h1>
+    <p>Connect with someone in your hostel</p>
+
+    <input id="email" type="email" placeholder="you@iitd.ac.in" />
+    <select id="hostel">
+      <option value="">Select your hostel</option>
+      <option value="Ramanujan">Ramanujan</option>
+      <option value="Kumaon">Kumaon</option>
+      <option value="Zanskar">Zanskar</option>
+      <option value="Aravali">Aravali</option>
+      <option value="North Campus">North Campus (DU)</option>
+      <option value="South Campus">South Campus (DU)</option>
+    </select>
+
+    <button id="findBtn" onclick="findSomeone()">Find Someone</button>
+    <div id="status"></div>
+
+    <div id="video-container">
+      <video id="remote-video" autoplay playsinline></video>
+      <button id="endCall" onclick="endCall()">End Call</button>
+    </div>
+  </div>
+
   <script>
+    // ===== CONFIGS =====
     const firebaseConfig = {
       apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
       authDomain: "hostelhub-b11fd.firebaseapp.com",
@@ -25,21 +146,118 @@
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
     };
 
+    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994"; // YOUR AGORA APP ID
+
+    // ===== DO NOT EDIT BELOW =====
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    async function testMatch() {
-      const email = document.getElementById('email').value;
+    let localUid = null;
+    let remoteUid = null;
+    let client = null;
+    let localTrack = null;
+    let remoteTrack = null;
+
+    const statusEl = document.getElementById('status');
+    const findBtn = document.getElementById('findBtn');
+    const videoContainer = document.getElementById('video-container');
+    const remoteVideo = document.getElementById('remote-video');
+    const endCallBtn = document.getElementById('endCall');
+
+    async function findSomeone() {
+      const email = document.getElementById('email').value.trim();
       const hostel = document.getElementById('hostel').value;
 
-      if (!email.endsWith('.ac.in')) return alert('Use .ac.in email');
+      if (!email.endsWith('.ac.in')) {
+        statusEl.textContent = "Use .ac.in email only";
+        statusEl.style.color = "#ff6b6b";
+        return;
+      }
+      if (!hostel) {
+        statusEl.textContent = "Select your hostel";
+        statusEl.style.color = "#ff6b6b";
+        return;
+      }
 
-      await db.collection('users').doc(email).set({
-        email, hostel, available: true
+      statusEl.textContent = "Finding someone...";
+      statusEl.style.color = "#ffd43b";
+      findBtn.disabled = true;
+
+      localUid = email;
+      await db.collection('users').doc(localUid).set({
+        email, hostel, available: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      document.getElementById('status').innerText = 'User added. Check Firebase console.';
+      const match = await waitForMatch(email, hostel);
+      if (match) {
+        remoteUid = match.id;
+        statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
+        statusEl.style.color = "#4ade80";
+        await startVideoCall();
+      }
     }
+
+    async function waitForMatch(email, hostel) {
+      return new Promise((resolve) => {
+        const unsub = db.collection('users')
+          .where('hostel', '==', hostel)
+          .where('available', '==', true)
+          .onSnapshot(async (snapshot) => {
+            for (let doc of snapshot.docs) {
+              if (doc.id !== email) {
+                await doc.ref.update({ available: false });
+                await db.collection('users').doc(email).update({ available: false });
+                unsub();
+                resolve(doc);
+                return;
+              }
+            }
+          });
+      });
+    }
+
+    async function startVideoCall() {
+      videoContainer.style.display = 'block';
+      client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+
+      await client.join(AGORA_APP_ID, "hostelhub", null, localUid);
+
+      localTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
+      await client.publish(localTrack);
+
+      client.on("user-published", async (user, mediaType) => {
+        await client.subscribe(user, mediaType);
+        if (mediaType === "video") {
+          remoteTrack = user.videoTrack;
+          remoteTrack.play(remoteVideo);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+
+      // Cleanup on leave
+      window.addEventListener('beforeunload', cleanup);
+    }
+
+    async function endCall() {
+      if (localTrack) {
+        localTrack.close();
+      }
+      if (client) {
+        await client.leave();
+      }
+      await cleanup();
+      location.reload();
+    }
+
+    async function cleanup() {
+      if (localUid) {
+        await db.collection('users').doc(localUid).delete();
+      }
+    }
+
+    window.endCall = endCall;
   </script>
 </body>
 </html>
