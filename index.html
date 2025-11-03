@@ -106,27 +106,47 @@
       margin-top: 15px;
     }
 
-    .hostel-option { color: #fff; }
+    .college-tag {
+      background: #4ade80;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .safety-note {
+      font-size: 12px;
+      color: #ff6b6b;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>HostelHub</h1>
-    <p>Connect with someone in your hostel</p>
+    <p>One-on-one video chat with same college + gender</p>
 
     <input id="email" type="email" placeholder="you@iitd.ac.in" />
-    <select id="hostel">
-      <option value="">Select your hostel</option>
-      <option value="Ramanujan">Ramanujan</option>
-      <option value="Kumaon">Kumaon</option>
-      <option value="Zanskar">Zanskar</option>
-      <option value="Aravali">Aravali</option>
-      <option value="North Campus">North Campus (DU)</option>
-      <option value="South Campus">South Campus (DU)</option>
+    <div id="college-display" class="college-tag" style="display: none;"></div>
+
+    <select id="gender">
+      <option value="">Your gender (for matching)</option>
+      <option value="men">Men</option>
+      <option value="women">Women</option>
+      <option value="other">Prefer not to say</option>
     </select>
 
-    <button id="findBtn" onclick="findSomeone()">Find Someone</button>
+    <select id="hostel">
+      <option value="">Select your hostel</option>
+      <option value="Ramanujan">Ramanujan (IIT Delhi)</option>
+      <option value="Kumaon">Kumaon (IIT Delhi)</option>
+      <option value="North Campus">North Campus (DU)</option>
+    </select>
+
+    <button id="findBtn" onclick="findSomeone()">Find One-on-One Match</button>
+    <div class="safety-note">No phone numbers/emails in chat — reported automatically</div>
     <div id="status"></div>
 
     <div id="video-container">
@@ -146,17 +166,25 @@
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
     };
 
-    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994"; // YOUR AGORA APP ID
+    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994"; // YOUR APP ID
+
+    // College mapping from email domain
+    const collegeMap = {
+      'iitd.ac.in': 'IIT Delhi',
+      'du.ac.in': 'Delhi University',
+      'iitb.ac.in': 'IIT Bombay',
+      'jnu.ac.in': 'JNU',
+      'bits-pilani.ac.in': 'BITS Pilani'
+    };
 
     // ===== DO NOT EDIT BELOW =====
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let localUid = null;
-    let remoteUid = null;
-    let client = null;
-    let localTrack = null;
-    let remoteTrack = null;
+    remoteUid = null;
+    client = null;
+    localTracks = { audio: null, video: null };
 
     const statusEl = document.getElementById('status');
     const findBtn = document.getElementById('findBtn');
@@ -164,12 +192,34 @@
     const remoteVideo = document.getElementById('remote-video');
     const endCallBtn = document.getElementById('endCall');
 
+    // Auto-detect college from email
+    document.getElementById('email').oninput = function() {
+      const email = this.value.trim();
+      if (email.includes('@')) {
+        const domain = email.split('@')[1];
+        const college = collegeMap[domain];
+        const collegeDisplay = document.getElementById('college-display');
+        if (college) {
+          collegeDisplay.textContent = college;
+          collegeDisplay.style.display = 'block';
+        } else {
+          collegeDisplay.style.display = 'none';
+        }
+      }
+    };
+
     async function findSomeone() {
       const email = document.getElementById('email').value.trim();
+      const gender = document.getElementById('gender').value;
       const hostel = document.getElementById('hostel').value;
 
       if (!email.endsWith('.ac.in')) {
         statusEl.textContent = "Use .ac.in email only";
+        statusEl.style.color = "#ff6b6b";
+        return;
+      }
+      if (!gender) {
+        statusEl.textContent = "Select gender for matching";
         statusEl.style.color = "#ff6b6b";
         return;
       }
@@ -179,32 +229,38 @@
         return;
       }
 
-      statusEl.textContent = "Finding someone...";
+      statusEl.textContent = "Finding one-on-one match...";
       statusEl.style.color = "#ffd43b";
       findBtn.disabled = true;
 
       localUid = email;
+      const domain = email.split('@')[1];
+      const college = collegeMap[domain] || domain;
+
       await db.collection('users').doc(localUid).set({
-        email, hostel, available: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        email, college, gender, hostel, available: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      const match = await waitForMatch(email, hostel);
+      const match = await waitForMatch(email, college, gender, hostel);
       if (match) {
         remoteUid = match.id;
-        statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
+        statusEl.textContent = `Connected 1-on-1 with ${match.data().email.split('@')[0]} (${match.data().gender})`;
         statusEl.style.color = "#4ade80";
         await startVideoCall();
+      } else {
+        statusEl.textContent = "No match found. Try again!";
+        statusEl.style.color = "#ff6b6b";
       }
     }
 
-    async function waitForMatch(email, hostel) {
+    async function waitForMatch(email, college, gender, hostel) {
       return new Promise((resolve) => {
         const unsub = db.collection('users')
-          .where('hostel', '==', hostel)
+          .where('college', '==', college)
           .where('available', '==', true)
           .onSnapshot(async (snapshot) => {
             for (let doc of snapshot.docs) {
-              if (doc.id !== email) {
+              if (doc.id !== email && doc.data().gender === gender && doc.data().hostel === hostel) {
                 await doc.ref.update({ available: false });
                 await db.collection('users').doc(email).update({ available: false });
                 unsub();
@@ -220,33 +276,39 @@
       videoContainer.style.display = 'block';
       client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
-      await client.join(AGORA_APP_ID, "hostelhub", null, localUid);
+      try {
+        await client.join(AGORA_APP_ID, "hostelhub", null, localUid);
 
-      localTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
-      await client.publish(localTrack);
+        const [microphoneTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTracks.audio = microphoneTrack;
+        localTracks.video = cameraTrack;
 
-      client.on("user-published", async (user, mediaType) => {
-        await client.subscribe(user, mediaType);
-        if (mediaType === "video") {
-          remoteTrack = user.videoTrack;
-          remoteTrack.play(remoteVideo);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
+        await client.publish([microphoneTrack, cameraTrack]);
 
-      // Cleanup on leave
-      window.addEventListener('beforeunload', cleanup);
+        statusEl.textContent = "One-on-one call started — say hi!";
+        statusEl.style.color = "#4ade80";
+
+        client.on("user-published", async (user, mediaType) => {
+          await client.subscribe(user, mediaType);
+          if (mediaType === "video") {
+            user.videoTrack.play(remoteVideo);
+          }
+          if (mediaType === "audio") {
+            user.audioTrack.play();
+          }
+        });
+
+      } catch (error) {
+        console.error("Call failed:", error);
+        statusEl.textContent = "Call failed: " + error.message;
+        statusEl.style.color = "#ff6b6b";
+      }
     }
 
     async function endCall() {
-      if (localTrack) {
-        localTrack.close();
-      }
-      if (client) {
-        await client.leave();
-      }
+      if (localTracks.audio) localTracks.audio.close();
+      if (localTracks.video) localTracks.video.close();
+      if (client) await client.leave();
       await cleanup();
       location.reload();
     }
