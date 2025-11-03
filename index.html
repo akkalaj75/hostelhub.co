@@ -12,6 +12,9 @@
   <!-- Agora RTC SDK -->
   <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.1.js"></script>
 
+  <!-- Agora Token Generator (Client-side) -->
+  <script src="https://unpkg.com/agora-rtc-token@2.0.2/dist/agora-rtc-token.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
@@ -113,6 +116,7 @@
       border-radius: 8px;
       font-size: 14px;
       margin-top: 10px;
+      display: none;
     }
 
     .safety-note {
@@ -129,7 +133,7 @@
     <p>One-on-one video chat with same college + gender</p>
 
     <input id="email" type="email" placeholder="you@iitd.ac.in" />
-    <div id="college-display" class="college-tag" style="display: none;"></div>
+    <div id="college-display" class="college-tag"></div>
 
     <select id="gender">
       <option value="">Your gender (for matching)</option>
@@ -166,9 +170,10 @@
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
     };
 
-    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994"; // YOUR APP ID
+    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994";
+    const AGORA_APP_CERTIFICATE = "PASTE_YOUR_CERTIFICATE_HERE"; // ← PASTE FROM AGORA CONSOLE
 
-    // College mapping from email domain
+    // College mapping
     const collegeMap = {
       'iitd.ac.in': 'IIT Delhi',
       'du.ac.in': 'Delhi University',
@@ -181,29 +186,25 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let localUid = null;
-    remoteUid = null;
-    client = null;
-    localTracks = { audio: null, video: null };
+    let localUid = null, remoteUid = null, client = null, localTracks = {};
 
     const statusEl = document.getElementById('status');
     const findBtn = document.getElementById('findBtn');
     const videoContainer = document.getElementById('video-container');
     const remoteVideo = document.getElementById('remote-video');
-    const endCallBtn = document.getElementById('endCall');
 
-    // Auto-detect college from email
+    // Auto-detect college
     document.getElementById('email').oninput = function() {
       const email = this.value.trim();
       if (email.includes('@')) {
         const domain = email.split('@')[1];
         const college = collegeMap[domain];
-        const collegeDisplay = document.getElementById('college-display');
+        const display = document.getElementById('college-display');
         if (college) {
-          collegeDisplay.textContent = college;
-          collegeDisplay.style.display = 'block';
+          display.textContent = college;
+          display.style.display = 'block';
         } else {
-          collegeDisplay.style.display = 'none';
+          display.style.display = 'none';
         }
       }
     };
@@ -213,24 +214,13 @@
       const gender = document.getElementById('gender').value;
       const hostel = document.getElementById('hostel').value;
 
-      if (!email.endsWith('.ac.in')) {
-        statusEl.textContent = "Use .ac.in email only";
-        statusEl.style.color = "#ff6b6b";
-        return;
-      }
-      if (!gender) {
-        statusEl.textContent = "Select gender for matching";
-        statusEl.style.color = "#ff6b6b";
-        return;
-      }
-      if (!hostel) {
-        statusEl.textContent = "Select your hostel";
+      if (!email.endsWith('.ac.in') || !gender || !hostel) {
+        statusEl.textContent = "Fill all fields";
         statusEl.style.color = "#ff6b6b";
         return;
       }
 
-      statusEl.textContent = "Finding one-on-one match...";
-      statusEl.style.color = "#ffd43b";
+      statusEl.textContent = "Finding match...";
       findBtn.disabled = true;
 
       localUid = email;
@@ -238,7 +228,8 @@
       const college = collegeMap[domain] || domain;
 
       await db.collection('users').doc(localUid).set({
-        email, college, gender, hostel, available: true, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        email, college, gender, hostel, available: true,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
 
       const match = await waitForMatch(email, college, gender, hostel);
@@ -250,16 +241,17 @@
       } else {
         statusEl.textContent = "No match found. Try again!";
         statusEl.style.color = "#ff6b6b";
+        findBtn.disabled = false;
       }
     }
 
     async function waitForMatch(email, college, gender, hostel) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const unsub = db.collection('users')
           .where('college', '==', college)
           .where('available', '==', true)
-          .onSnapshot(async (snapshot) => {
-            for (let doc of snapshot.docs) {
+          .onSnapshot(async snap => {
+            for (let doc of snap.docs) {
               if (doc.id !== email && doc.data().gender === gender && doc.data().hostel === hostel) {
                 await doc.ref.update({ available: false });
                 await db.collection('users').doc(email).update({ available: false });
@@ -272,30 +264,41 @@
       });
     }
 
+    // ===== CLIENT-SIDE TOKEN GENERATOR =====
+    function generateToken(channelName, uid) {
+      const role = 1; // Publisher
+      const expiration = Math.floor(Date.now() / 1000) + 3600;
+      return AgoraRTC.generateToken(
+        AGORA_APP_ID,
+        AGORA_APP_CERTIFICATE,
+        channelName,
+        uid,
+        role,
+        expiration
+      );
+    }
+
+    // ===== VIDEO CALL WITH TOKEN =====
     async function startVideoCall() {
       videoContainer.style.display = 'block';
       client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
+      const token = generateToken("hostelhub", localUid);
+
       try {
-        await client.join(AGORA_APP_ID, "hostelhub", null, localUid);
+        await client.join(AGORA_APP_ID, "hostelhub", token, localUid);
 
-        const [microphoneTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-        localTracks.audio = microphoneTrack;
-        localTracks.video = cameraTrack;
+        const [mic, cam] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTracks = { mic, cam };
+        await client.publish([mic, cam]);
 
-        await client.publish([microphoneTrack, cameraTrack]);
-
-        statusEl.textContent = "One-on-one call started — say hi!";
+        statusEl.textContent = "Call started — allow camera!";
         statusEl.style.color = "#4ade80";
 
         client.on("user-published", async (user, mediaType) => {
           await client.subscribe(user, mediaType);
-          if (mediaType === "video") {
-            user.videoTrack.play(remoteVideo);
-          }
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-          }
+          if (mediaType === "video") user.videoTrack.play(remoteVideo);
+          if (mediaType === "audio") user.audioTrack.play();
         });
 
       } catch (error) {
@@ -306,17 +309,11 @@
     }
 
     async function endCall() {
-      if (localTracks.audio) localTracks.audio.close();
-      if (localTracks.video) localTracks.video.close();
+      if (localTracks.mic) localTracks.mic.close();
+      if (localTracks.cam) localTracks.cam.close();
       if (client) await client.leave();
-      await cleanup();
+      if (localUid) await db.collection('users').doc(localUid).delete();
       location.reload();
-    }
-
-    async function cleanup() {
-      if (localUid) {
-        await db.collection('users').doc(localUid).delete();
-      }
     }
 
     window.endCall = endCall;
