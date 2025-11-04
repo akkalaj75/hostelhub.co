@@ -82,7 +82,6 @@
   </div>
 
   <script>
-    // ===== CONFIGS =====
     const firebaseConfig = {
       apiKey: "AIzaSyB_gNArL-vud6HhtWXNwVf6KMAXTRqfAK4",
       authDomain: "hostelhub-b11fd.firebaseapp.com",
@@ -94,12 +93,12 @@
 
     const collegeMap = { 'iitd.ac.in': 'IIT Delhi', 'du.ac.in': 'Delhi University' };
 
-    // ===== INIT =====
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let localUid = null, remoteUid = null;
     let pc = null, localStream = null;
+    let callId = null;
 
     const statusEl = document.getElementById('status');
     const findBtn = document.getElementById('findBtn');
@@ -107,7 +106,6 @@
     const localVideo = document.getElementById('local-video');
     const remoteVideo = document.getElementById('remote-video');
 
-    // Auto-detect college
     document.getElementById('email').oninput = () => {
       const email = document.getElementById('email').value.trim();
       const domain = email.split('@')[1];
@@ -117,7 +115,6 @@
       display.style.display = college ? 'block' : 'none';
     };
 
-    // ===== FIND MATCH =====
     findBtn.onclick = async () => {
       const email = document.getElementById('email').value.trim();
       const gender = document.getElementById('gender').value;
@@ -130,29 +127,23 @@
       }
 
       statusEl.textContent = "Finding match...";
-      statusEl.style.color = "#ffd43b";
       findBtn.disabled = true;
 
       localUid = email;
       const domain = email.split('@')[1];
       const college = collegeMap[domain] || domain;
 
-      try {
-        await db.collection('users').doc(localUid).set({
-          email, college, gender, hostel, available: true
-        });
+      await db.collection('users').doc(localUid).set({
+        email, college, gender, hostel, available: true
+      });
 
-        const match = await waitForMatch(email, college, gender, hostel);
-        if (match) {
-          remoteUid = match.id;
-          statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
-          statusEl.style.color = "#4ade80";
-          await startCall();
-        }
-      } catch (err) {
-        statusEl.textContent = "Error: " + err.message;
-        statusEl.style.color = "#ff6b6b";
-        findBtn.disabled = false;
+      const match = await waitForMatch(email, college, gender, hostel);
+      if (match) {
+        remoteUid = match.id;
+        callId = [localUid, remoteUid].sort().join('_');
+        statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
+        statusEl.style.color = "#4ade80";
+        await startCall();
       }
     };
 
@@ -174,59 +165,71 @@
       });
     }
 
-    // ===== WEBRTC CALL =====
     async function startCall() {
       videoContainer.style.display = 'block';
-      pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+
+      pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+      });
 
       // Get camera & mic
       localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-      localVideo.srcObject = localStream;  // SHOW YOUR FACE
+      localVideo.srcObject = localStream;
 
-      // Remote video
+      // Remote stream
       pc.ontrack = (event) => {
-        remoteVideo.srcObject = event.streams[0];
+        if (remoteVideo.srcObject !== event.streams[0]) {
+          remoteVideo.srcObject = event.streams[0];
+          console.log('Remote stream received');
+        }
       };
 
       // ICE candidates
       pc.onicecandidate = (event) => {
         if (event.candidate) {
-          db.collection('calls').doc(localUid).collection('candidates').add(event.candidate.toJSON());
+          db.collection('calls').doc(callId).collection('candidates').add({
+            ...event.candidate.toJSON(),
+            from: localUid
+          });
         }
       };
 
-      // Create offer
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      await db.collection('calls').doc(localUid).set({ offer });
+      // Create offer if initiator
+      const isInitiator = localUid < remoteUid;
+      if (isInitiator) {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await db.collection('calls').doc(callId).set({ offer });
+      }
 
-      // Listen for answer
-      db.collection('calls').doc(remoteUid).onSnapshot(async (snap) => {
+      // Listen for offer
+      db.collection('calls').doc(callId).onSnapshot(async (snap) => {
         const data = snap.data();
-        if (data?.answer && !pc.currentRemoteDescription) {
+        if (!pc.currentRemoteDescription && data?.offer) {
+          await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          await db.collection('calls').doc(callId).update({ answer });
+        }
+        if (!pc.currentRemoteDescription && data?.answer) {
           await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
         }
       });
 
       // Listen for ICE
-      db.collection('calls').doc(remoteUid).collection('candidates').onSnapshot(snapshot => {
+      db.collection('calls').doc(callId).collection('candidates').onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
           if (change.type === 'added') {
-            pc.addIceCandidate(new RTCIceCandidate(change.doc.data()));
+            const data = change.doc.data();
+            if (data.from !== localUid) {
+              pc.addIceCandidate(new RTCIceCandidate(data));
+            }
           }
         });
-      });
-
-      // If answerer
-      db.collection('calls').doc(localUid).onSnapshot(async (snap) => {
-        const data = snap.data();
-        if (data?.offer && !pc.currentRemoteDescription) {
-          await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
-          await db.collection('calls').doc(remoteUid).set({ answer });
-        }
       });
     }
 
@@ -234,7 +237,7 @@
       if (pc) pc.close();
       if (localStream) localStream.getTracks().forEach(t => t.stop());
       if (localUid) await db.collection('users').doc(localUid).delete();
-      if (localUid) await db.collection('calls').doc(localUid).delete();
+      if (callId) await db.collection('calls').doc(callId).delete();
       location.reload();
     };
   </script>
