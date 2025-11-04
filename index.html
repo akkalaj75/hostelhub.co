@@ -9,12 +9,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  <!-- Agora RTC SDK -->
-  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.1.js"></script>
-
-  <!-- Client-side Token Generator -->
-  <script src="https://unpkg.com/agora-rtc-token@2.0.2/dist/agora-rtc-token.js"></script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
@@ -49,81 +43,35 @@
       -webkit-text-fill-color: transparent;
     }
 
-    p {
-      color: #aaa;
-      font-size: 14px;
-      margin-bottom: 30px;
-    }
+    p { color: #aaa; font-size: 14px; margin-bottom: 30px; }
 
     input, select, button {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 12px;
-      font-size: 16px;
-      border: 1px solid #333;
-      background: #16213e;
-      color: #fff;
-      outline: none;
+      width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
+      font-size: 16px; border: 1px solid #333; background: #16213e; color: #fff;
     }
 
-    input::placeholder { color: #666; }
-
     select { cursor: pointer; }
-
     button {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 15px;
+      border: none; font-weight: 600; cursor: pointer; transition: 0.3s;
     }
 
     button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
     button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    #status {
-      margin-top: 20px;
-      font-size: 15px;
-      min-height: 24px;
-      color: #ffd43b;
-    }
+    #status { margin-top: 20px; font-size: 15px; min-height: 24px; color: #ffd43b; }
 
-    #video-container {
-      display: none;
-      margin-top: 20px;
-      position: relative;
-    }
+    #video-container { display: none; margin-top: 20px; }
+    #remote-video { width: 100%; height: 300px; background: #000; border-radius: 16px; object-fit: cover; }
 
-    #remote-video {
-      width: 100%;
-      height: 300px;
-      background: #000;
-      border-radius: 16px;
-      object-fit: cover;
-    }
-
-    #endCall {
-      background: #ff6b6b;
-      margin-top: 15px;
-    }
+    #endCall { background: #ff6b6b; margin-top: 15px; }
 
     .college-tag {
-      background: #4ade80;
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
+      background: #4ade80; color: #000; padding: 4px 8px; border-radius: 8px;
+      font-size: 14px; margin-top: 10px; display: none;
     }
 
-    .safety-note {
-      font-size: 12px;
-      color: #ff6b6b;
-      margin-top: 5px;
-    }
+    .safety-note { font-size: 12px; color: #ff6b6b; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -136,7 +84,7 @@
     <div id="college-display" class="college-tag"></div>
 
     <select id="gender">
-      <option value="">Your gender (for matching)</option>
+      <option value="">Your gender</option>
       <option value="men">Men</option>
       <option value="women">Women</option>
       <option value="other">Prefer not to say</option>
@@ -170,10 +118,6 @@
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
     };
 
-    const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994";
-    const AGORA_APP_CERTIFICATE = "a6bcff688f78458393b57f3731ef59d6"; // ← PASTE HERE
-
-    // College mapping
     const collegeMap = {
       'iitd.ac.in': 'IIT Delhi',
       'du.ac.in': 'Delhi University',
@@ -182,11 +126,12 @@
       'bits-pilani.ac.in': 'BITS Pilani'
     };
 
-    // ===== DO NOT EDIT BELOW =====
+    // ===== INIT =====
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let localUid = null, remoteUid = null, client = null, localTracks = {};
+    let localUid = null, remoteUid = null;
+    let pc = null, localStream = null;
 
     const statusEl = document.getElementById('status');
     const findBtn = document.getElementById('findBtn');
@@ -200,12 +145,8 @@
         const domain = email.split('@')[1];
         const college = collegeMap[domain];
         const display = document.getElementById('college-display');
-        if (college) {
-          display.textContent = college;
-          display.style.display = 'block';
-        } else {
-          display.style.display = 'none';
-        }
+        display.textContent = college || '';
+        display.style.display = college ? 'block' : 'none';
       }
     };
 
@@ -235,13 +176,9 @@
       const match = await waitForMatch(email, college, gender, hostel);
       if (match) {
         remoteUid = match.id;
-        statusEl.textContent = `Connected 1-on-1 with ${match.data().email.split('@')[0]} (${match.data().gender})`;
+        statusEl.textContent = `Connected with ${match.data().email.split('@')[0]}`;
         statusEl.style.color = "#4ade80";
-        await startVideoCall();
-      } else {
-        statusEl.textContent = "No match found. Try again!";
-        statusEl.style.color = "#ff6b6b";
-        findBtn.disabled = false;
+        await startCall();
       }
     }
 
@@ -264,62 +201,33 @@
       });
     }
 
-    // ===== TOKEN GENERATOR =====
-    function generateToken(channelName, uid) {
-      const role = 1; // Publisher
-      const expiration = Math.floor(Date.now() / 1000) + 3600;
-      return AgoraRTC.generateToken(
-        AGORA_APP_ID,
-        AGORA_APP_CERTIFICATE,
-        channelName,
-        uid,
-        role,
-        expiration
-      );
-    }
-
-    // ===== VIDEO CALL WITH TOKEN + PERMISSION =====
-    async function startVideoCall() {
+    // ===== WEBRTC CALL =====
+    async function startCall() {
       videoContainer.style.display = 'block';
-      client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+      pc = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      });
 
-      const token = generateToken("hostelhub", localUid);
+      // Get camera/mic
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-      try {
-        // Force permission popup
-        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      // Remote video
+      pc.ontrack = (event) => {
+        remoteVideo.srcObject = event.streams[0];
+      };
 
-        await client.join(AGORA_APP_ID, "hostelhub", token, localUid);
+      // ICE candidates
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          db.collection('calls').doc(localUid).collection('candidates').add(event.candidate.toJSON());
+        }
+      };
 
-        const [mic, cam] = await AgoraRTC.createMicrophoneAndCameraTracks();
-        localTracks = { mic, cam };
-        await client.publish([mic, cam]);
+      // Create offer
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      await db.collection('calls').doc(localUid).set({ offer: offer });
 
-        statusEl.textContent = "Call started — you should see video!";
-        statusEl.style.color = "#4ade80";
-
-        client.on("user-published", async (user, mediaType) => {
-          await client.subscribe(user, mediaType);
-          if (mediaType === "video") user.videoTrack.play(remoteVideo);
-          if (mediaType === "audio") user.audioTrack.play();
-        });
-
-      } catch (error) {
-        console.error("Call failed:", error);
-        statusEl.textContent = "Call failed: " + error.message;
-        statusEl.style.color = "#ff6b6b";
-      }
-    }
-
-    async function endCall() {
-      if (localTracks.mic) localTracks.mic.close();
-      if (localTracks.cam) localTracks.cam.close();
-      if (client) await client.leave();
-      if (localUid) await db.collection('users').doc(localUid).delete();
-      location.reload();
-    }
-
-    window.endCall = endCall;
-  </script>
-</body>
-</html>
+      // Listen for answer
+      db.collection('calls').doc(remoteUid).onSnapshot
