@@ -12,7 +12,7 @@
   <!-- Agora RTC SDK -->
   <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.19.1.js"></script>
 
-  <!-- Agora Token Generator (Client-side) -->
+  <!-- Client-side Token Generator -->
   <script src="https://unpkg.com/agora-rtc-token@2.0.2/dist/agora-rtc-token.js"></script>
 
   <style>
@@ -171,7 +171,7 @@
     };
 
     const AGORA_APP_ID = "eb8afd84772e423991ca8ac0a2413994";
-    const AGORA_APP_CERTIFICATE = "PASTE_YOUR_CERTIFICATE_HERE"; // ← PASTE FROM AGORA CONSOLE
+    const AGORA_APP_CERTIFICATE = "a6bcff688f78458393b57f3731ef59d6"; // ← PASTE HERE
 
     // College mapping
     const collegeMap = {
@@ -264,7 +264,7 @@
       });
     }
 
-    // ===== CLIENT-SIDE TOKEN GENERATOR =====
+    // ===== TOKEN GENERATOR =====
     function generateToken(channelName, uid) {
       const role = 1; // Publisher
       const expiration = Math.floor(Date.now() / 1000) + 3600;
@@ -278,7 +278,7 @@
       );
     }
 
-    // ===== VIDEO CALL WITH TOKEN =====
+    // ===== VIDEO CALL WITH TOKEN + PERMISSION =====
     async function startVideoCall() {
       videoContainer.style.display = 'block';
       client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -286,13 +286,16 @@
       const token = generateToken("hostelhub", localUid);
 
       try {
+        // Force permission popup
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
         await client.join(AGORA_APP_ID, "hostelhub", token, localUid);
 
         const [mic, cam] = await AgoraRTC.createMicrophoneAndCameraTracks();
         localTracks = { mic, cam };
         await client.publish([mic, cam]);
 
-        statusEl.textContent = "Call started — allow camera!";
+        statusEl.textContent = "Call started — you should see video!";
         statusEl.style.color = "#4ade80";
 
         client.on("user-published", async (user, mediaType) => {
