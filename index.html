@@ -3,12 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HostelHub - Secure</title>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <title>HostelHub</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -20,14 +15,17 @@
     }
     .container {
       background: #1a1a2e; border-radius: 24px; padding: 40px 30px;
-      width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      width: 100%; max-width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       text-align: center; border: 1px solid #333;
     }
     h1 { font-size: 28px; margin-bottom: 8px; background: linear-gradient(135deg, #00d2ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .subtitle { color: #aaa; font-size: 14px; margin-bottom: 30px; }
-    input, select, button {
+    input, select, button, textarea {
       width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
       font-size: 16px; border: 1px solid #333; background: #16213e; color: #fff;
+    }
+    textarea {
+      resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif;
     }
     select { cursor: pointer; }
     button {
@@ -35,17 +33,42 @@
       border: none; font-weight: 600; cursor: pointer; transition: 0.3s;
     }
     button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-secondary {
-      background: #444; margin-top: 10px;
-    }
-    .btn-danger {
-      background: #ff6b6b;
-    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: #444; }
+    .btn-danger { background: #ff6b6b; }
+    .btn-warning { background: #ffa500; }
     #status { margin-top: 20px; font-size: 15px; min-height: 24px; color: #ffd43b; }
     .college-tag { background: #4ade80; color: #000; padding: 4px 8px; border-radius: 8px; font-size: 14px; margin-top: 10px; display: none; }
     .safety-note { font-size: 12px; color: #aaa; margin-top: 10px; line-height: 1.5; }
     .warning { color: #ff6b6b; }
+    
+    /* Communication Type Selection */
+    .comm-types {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;
+    }
+    .comm-type {
+      padding: 15px 10px; border-radius: 12px; border: 2px solid #333;
+      background: #16213e; cursor: pointer; transition: 0.3s;
+    }
+    .comm-type:hover { border-color: #00d2ff; }
+    .comm-type.active { border-color: #00d2ff; background: #1e3a5f; }
+    .comm-type-icon { font-size: 24px; margin-bottom: 5px; }
+    .comm-type-label { font-size: 13px; }
+    
+    /* Interest Tags */
+    .interests-section { margin: 20px 0; text-align: left; }
+    .interests-label { font-size: 14px; color: #aaa; margin-bottom: 10px; }
+    .interests-input { display: flex; gap: 10px; margin-bottom: 10px; }
+    .interests-input input { flex: 1; margin: 0; }
+    .interests-input button { width: auto; padding: 14px 20px; margin: 0; }
+    .interest-tags {
+      display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px;
+    }
+    .interest-tag {
+      background: #00d2ff; color: #000; padding: 6px 12px; border-radius: 20px;
+      font-size: 13px; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .interest-tag .remove { cursor: pointer; font-weight: bold; }
     
     /* Video Section */
     #video-container { display: none; margin-top: 20px; }
@@ -59,12 +82,29 @@
       position: absolute; bottom: 10px; right: 10px;
       width: 140px; z-index: 10;
     }
-    .video-controls {
+    
+    /* Chat Section */
+    #chat-container { display: none; margin-top: 20px; }
+    #chat-messages {
+      height: 350px; overflow-y: auto; background: #16213e; border-radius: 12px;
+      padding: 15px; margin-bottom: 10px; text-align: left;
+    }
+    .message {
+      margin-bottom: 12px; padding: 8px 12px; border-radius: 8px; max-width: 80%;
+      word-wrap: break-word;
+    }
+    .message.local { background: #00d2ff; color: #000; margin-left: auto; text-align: right; }
+    .message.remote { background: #2a2a3e; color: #fff; }
+    .message.system { background: transparent; color: #aaa; font-size: 12px; text-align: center; max-width: 100%; }
+    #chat-input-area { display: flex; gap: 10px; }
+    #chat-input { flex: 1; margin: 0; }
+    #send-btn { width: auto; padding: 14px 24px; margin: 0; }
+    
+    .video-controls, .chat-controls {
       display: flex; gap: 10px; margin-top: 15px;
     }
-    .video-controls button { flex: 1; }
+    .video-controls button, .chat-controls button { flex: 1; }
     
-    /* Connection Quality */
     .connection-status {
       font-size: 12px; padding: 8px; border-radius: 8px; margin-top: 10px;
       background: #2a2a3e;
@@ -73,7 +113,6 @@
     .quality-fair { color: #ffd43b; }
     .quality-poor { color: #ff6b6b; }
     
-    /* Screen States */
     .screen { display: none; }
     .screen.active { display: block; }
     
@@ -89,13 +128,25 @@
       vertical-align: middle; margin-left: 10px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .stranger-info {
+      background: #2a2a3e; padding: 12px; border-radius: 12px;
+      margin-bottom: 15px; font-size: 14px;
+    }
+    .stranger-interests {
+      margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .stranger-interests .tag {
+      background: #4ade80; color: #000; padding: 3px 8px;
+      border-radius: 12px; font-size: 12px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>HostelHub</h1>
-    <p class="subtitle">Secure video chat for college students</p>
+    <p class="subtitle">Connect with college students anonymously</p>
 
     <!-- Login Screen -->
     <div id="login-screen" class="screen active">
@@ -120,6 +171,23 @@
     <div id="setup-screen" class="screen">
       <p class="subtitle">Logged in as: <span id="user-email"></span></p>
       
+      <!-- Communication Type -->
+      <div class="interests-label">Choose Communication Type:</div>
+      <div class="comm-types">
+        <div class="comm-type active" data-type="video">
+          <div class="comm-type-icon">📹</div>
+          <div class="comm-type-label">Video</div>
+        </div>
+        <div class="comm-type" data-type="voice">
+          <div class="comm-type-icon">🎤</div>
+          <div class="comm-type-label">Voice</div>
+        </div>
+        <div class="comm-type" data-type="chat">
+          <div class="comm-type-icon">💬</div>
+          <div class="comm-type-label">Chat</div>
+        </div>
+      </div>
+      
       <select id="gender">
         <option value="">Select your gender</option>
         <option value="men">Men</option>
@@ -133,8 +201,18 @@
         <option value="Satpura">Satpura (IIT Delhi)</option>
         <option value="Karakoram">Karakoram (IIT Delhi)</option>
       </select>
+      
+      <!-- Interests -->
+      <div class="interests-section">
+        <div class="interests-label">Add interests (optional - helps find similar people):</div>
+        <div class="interests-input">
+          <input id="interest-input" type="text" placeholder="e.g., cricket, coding, music" maxlength="20" />
+          <button id="add-interest-btn">Add</button>
+        </div>
+        <div class="interest-tags" id="interest-tags"></div>
+      </div>
 
-      <button id="findBtn">Find Anonymous Match</button>
+      <button id="findBtn">Find Match</button>
       <button id="logoutBtn" class="btn-secondary">Logout</button>
       
       <div class="safety-note">
@@ -145,8 +223,10 @@
 
     <div id="status"></div>
 
-    <!-- Video Screen -->
+    <!-- Video/Voice Screen -->
     <div id="video-container">
+      <div class="stranger-info" id="stranger-info"></div>
+      
       <div class="connection-status" id="connection-status">
         Connection: <span id="quality">Connecting...</span>
       </div>
@@ -158,15 +238,42 @@
       
       <div class="video-controls">
         <button id="muteBtn">🔇 Mute</button>
-        <button id="videoBtn">📹 Video Off</button>
-        <button id="endCall" class="btn-danger">End Call</button>
+        <button id="videoBtn">📹 Off</button>
+        <button id="skipBtn" class="btn-warning">⏭️ Skip</button>
+        <button id="endCall" class="btn-danger">End</button>
       </div>
       
       <div class="safety-note">
-        <span class="warning">⚠️ Report abuse:</span> If someone shares contact info or behaves inappropriately, end the call immediately.
+        <span class="warning">⚠️ Report abuse:</span> If someone shares contact info or behaves inappropriately, skip or end the call.
+      </div>
+    </div>
+    
+    <!-- Chat Screen -->
+    <div id="chat-container">
+      <div class="stranger-info" id="stranger-info-chat"></div>
+      
+      <div id="chat-messages"></div>
+      
+      <div id="chat-input-area">
+        <input id="chat-input" type="text" placeholder="Type a message..." />
+        <button id="send-btn">Send</button>
+      </div>
+      
+      <div class="chat-controls">
+        <button id="skipBtnChat" class="btn-warning">⏭️ Skip</button>
+        <button id="endChat" class="btn-danger">End Chat</button>
+      </div>
+      
+      <div class="safety-note">
+        <span class="warning">⚠️</span> Never share phone numbers, email, social media, or personal info.
       </div>
     </div>
   </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -196,17 +303,62 @@
     let matchListener = null;
     let callListener = null;
     let candidateListener = null;
+    let chatListener = null;
     let isAudioMuted = false;
     let isVideoOff = false;
     let connectionCheckInterval = null;
+    let commType = 'video';
+    let userInterests = [];
 
     // Elements
     const loginScreen = document.getElementById('login-screen');
     const setupScreen = document.getElementById('setup-screen');
     const videoContainer = document.getElementById('video-container');
+    const chatContainer = document.getElementById('chat-container');
     const statusEl = document.getElementById('status');
     const localVideo = document.getElementById('local-video');
     const remoteVideo = document.getElementById('remote-video');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+
+    // Communication type selection
+    document.querySelectorAll('.comm-type').forEach(el => {
+      el.onclick = () => {
+        document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        commType = el.dataset.type;
+      };
+    });
+
+    // Interest management
+    document.getElementById('add-interest-btn').onclick = () => {
+      const input = document.getElementById('interest-input');
+      const interest = input.value.trim().toLowerCase();
+      
+      if (interest && userInterests.length < 5 && !userInterests.includes(interest)) {
+        userInterests.push(interest);
+        updateInterestTags();
+        input.value = '';
+      }
+    };
+
+    document.getElementById('interest-input').onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('add-interest-btn').click();
+      }
+    };
+
+    function updateInterestTags() {
+      const container = document.getElementById('interest-tags');
+      container.innerHTML = userInterests.map(interest => 
+        `<div class="interest-tag">${interest} <span class="remove" onclick="removeInterest('${interest}')">×</span></div>`
+      ).join('');
+    }
+
+    window.removeInterest = (interest) => {
+      userInterests = userInterests.filter(i => i !== interest);
+      updateInterestTags();
+    };
 
     // Email domain detection
     document.getElementById('email').oninput = () => {
@@ -304,17 +456,17 @@
         const college = collegeMap[domain];
         const userId = currentUser.uid;
 
-        // Add user to waiting pool
         await db.collection('waiting').doc(userId).set({
           userId,
           email,
           college,
           gender,
           hostel,
+          commType,
+          interests: userInterests,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // Try to find a match
         await findMatch(userId, college, gender, hostel);
       } catch (error) {
         showStatus('Error: ' + error.message, 'error');
@@ -327,6 +479,7 @@
         .where('college', '==', college)
         .where('gender', '==', gender)
         .where('hostel', '==', hostel)
+        .where('commType', '==', commType)
         .orderBy('timestamp')
         .limit(2);
 
@@ -336,34 +489,134 @@
         if (users.length > 0) {
           const matchDoc = users[0];
           remoteUid = matchDoc.id;
+          const matchData = matchDoc.data();
           
-          // Create deterministic call ID
           callId = [userId, remoteUid].sort().join('_');
           
-          // Remove both users from waiting pool
           try {
             await db.collection('waiting').doc(userId).delete();
             await db.collection('waiting').doc(remoteUid).delete();
             
+            showStrangerInfo(matchData.interests || []);
             showStatus('Match found! Connecting...', 'success');
-            await startCall(userId < remoteUid);
+            
+            if (commType === 'chat') {
+              await startChat();
+            } else {
+              await startCall(userId < remoteUid);
+            }
           } catch (error) {
-            console.error('Error removing from waiting:', error);
+            console.error('Error in match:', error);
           }
         }
       });
     }
 
+    function showStrangerInfo(interests) {
+      const commonInterests = interests.filter(i => userInterests.includes(i));
+      let infoHTML = `<div>🎭 Connected with stranger from your hostel</div>`;
+      
+      if (commonInterests.length > 0) {
+        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i => 
+          `<span class="tag">${i}</span>`
+        ).join('')}</div>`;
+      } else if (interests.length > 0) {
+        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i => 
+          `<span class="tag">${i}</span>`
+        ).join('')}</div>`;
+      }
+      
+      document.getElementById('stranger-info').innerHTML = infoHTML;
+      document.getElementById('stranger-info-chat').innerHTML = infoHTML;
+    }
+
+    async function startChat() {
+      chatContainer.style.display = 'block';
+      setupScreen.style.display = 'none';
+      
+      addSystemMessage('Connected! Say hello 👋');
+      
+      // Listen for messages
+      chatListener = db.collection('calls').doc(callId).collection('messages')
+        .orderBy('timestamp')
+        .onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(change => {
+            if (change.type === 'added') {
+              const msg = change.doc.data();
+              if (msg.from !== currentUser.uid) {
+                addMessage(msg.text, 'remote');
+              }
+            }
+          });
+        });
+    }
+
+    // Send message
+    document.getElementById('send-btn').onclick = sendMessage;
+    chatInput.onkeypress = (e) => {
+      if (e.key === 'Enter') sendMessage();
+    };
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      // Check for contact info
+      if (containsContactInfo(text)) {
+        addSystemMessage('⚠️ Sharing contact info is against the rules');
+        return;
+      }
+      
+      addMessage(text, 'local');
+      chatInput.value = '';
+      
+      await db.collection('calls').doc(callId).collection('messages').add({
+        text,
+        from: currentUser.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    function containsContactInfo(text) {
+      const patterns = [
+        /\d{10}/, // Phone numbers
+        /@\w+\.\w+/, // Emails
+        /instagram|facebook|whatsapp|snapchat|telegram/i,
+        /insta|fb|wa|snap/i
+      ];
+      return patterns.some(pattern => pattern.test(text));
+    }
+
+    function addMessage(text, type) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${type}`;
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addSystemMessage(text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message system';
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
     async function startCall(isInitiator) {
       try {
-        // Get media
-        localStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: 640, height: 480 }, 
-          audio: true 
-        });
+        const constraints = commType === 'video' 
+          ? { video: { width: 640, height: 480 }, audio: true }
+          : { video: false, audio: true };
+        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
         localVideo.srcObject = localStream;
+        
+        if (commType === 'voice') {
+          localVideo.style.display = 'none';
+          remoteVideo.style.display = 'none';
+        }
 
-        // Create peer connection with STUN servers
         pc = new RTCPeerConnection({
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
@@ -372,17 +625,14 @@
           ]
         });
 
-        // Add tracks
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-        // Handle remote stream
         pc.ontrack = (event) => {
           if (remoteVideo.srcObject !== event.streams[0]) {
             remoteVideo.srcObject = event.streams[0];
           }
         };
 
-        // Handle ICE candidates
         pc.onicecandidate = (event) => {
           if (event.candidate) {
             db.collection('calls').doc(callId).collection('candidates').add({
@@ -392,12 +642,10 @@
           }
         };
 
-        // Monitor connection state
         pc.onconnectionstatechange = () => {
           updateConnectionQuality(pc.connectionState);
         };
 
-        // Signaling
         if (isInitiator) {
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
@@ -408,7 +656,6 @@
           });
         }
 
-        // Listen for call updates
         callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
           const data = snap.data();
           if (!data) return;
@@ -427,7 +674,6 @@
           }
         });
 
-        // Listen for ICE candidates
         candidateListener = db.collection('calls').doc(callId).collection('candidates')
           .onSnapshot(snapshot => {
             snapshot.docChanges().forEach(async change => {
@@ -462,11 +708,26 @@
     document.getElementById('videoBtn').onclick = () => {
       isVideoOff = !isVideoOff;
       localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
-      document.getElementById('videoBtn').textContent = isVideoOff ? '📹 Video On' : '📹 Video Off';
+      document.getElementById('videoBtn').textContent = isVideoOff ? '📹 On' : '📹 Off';
     };
 
-    // End call
+    // Skip button
+    document.getElementById('skipBtn').onclick = skipMatch;
+    document.getElementById('skipBtnChat').onclick = skipMatch;
+
+    async function skipMatch() {
+      showStatus('Finding new match...', 'info');
+      await cleanup();
+      document.getElementById('findBtn').click();
+    }
+
+    // End call/chat
     document.getElementById('endCall').onclick = async () => {
+      await cleanup();
+      showSetupScreen();
+    };
+    
+    document.getElementById('endChat').onclick = async () => {
       await cleanup();
       showSetupScreen();
     };
@@ -475,6 +736,7 @@
       if (matchListener) matchListener();
       if (callListener) callListener();
       if (candidateListener) candidateListener();
+      if (chatListener) chatListener();
       if (connectionCheckInterval) clearInterval(connectionCheckInterval);
       
       if (pc) {
@@ -502,12 +764,12 @@
       remoteUid = null;
       isAudioMuted = false;
       isVideoOff = false;
+      chatMessages.innerHTML = '';
       document.getElementById('findBtn').disabled = false;
     }
 
     function updateConnectionQuality(state) {
       const qualityEl = document.getElementById('quality');
-      const statusEl = document.getElementById('connection-status');
       
       switch(state) {
         case 'connected':
@@ -522,6 +784,7 @@
         case 'failed':
           qualityEl.textContent = 'Connection lost';
           qualityEl.className = 'quality-poor';
+          showStatus('Connection lost. Please skip or end call.', 'error');
           break;
       }
     }
@@ -535,6 +798,7 @@
       loginScreen.classList.add('active');
       setupScreen.classList.remove('active');
       videoContainer.style.display = 'none';
+      chatContainer.style.display = 'none';
       statusEl.textContent = '';
     }
 
@@ -542,6 +806,7 @@
       loginScreen.classList.remove('active');
       setupScreen.classList.add('active');
       videoContainer.style.display = 'none';
+      chatContainer.style.display = 'none';
       document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
       statusEl.textContent = '';
     }
@@ -549,6 +814,7 @@
     function showVideoScreen() {
       setupScreen.classList.remove('active');
       videoContainer.style.display = 'block';
+      chatContainer.style.display = 'none';
       statusEl.textContent = '';
     }
 
