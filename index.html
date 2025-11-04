@@ -610,7 +610,8 @@
           : { video: false, audio: true };
         
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
-        localVideo.srcObject = localStream;
+localVideo.srcObject = localStream;
+localVideo.play().catch(e => console.log("Local play error:", e));
         
         if (commType === 'voice') {
           localVideo.style.display = 'none';
@@ -627,11 +628,14 @@
 
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-        pc.ontrack = (event) => {
-          if (remoteVideo.srcObject !== event.streams[0]) {
-            remoteVideo.srcObject = event.streams[0];
-          }
-        };
+     pc.ontrack = (event) => {
+  console.log('Remote track received:', event.track.kind);
+  const stream = event.streams[0];
+  if (remoteVideo.srcObject !== stream) {
+    remoteVideo.srcObject = stream;
+    remoteVideo.play().catch(e => console.log("Play interrupted:", e));
+  }
+};
 
         pc.onicecandidate = (event) => {
           if (event.candidate) {
