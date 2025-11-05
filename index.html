@@ -132,9 +132,14 @@
       
       <button id="signupBtn">Sign Up</button>
       <button id="loginBtn" class="btn-secondary">Login</button>
+      <button id="forgotPasswordBtn" class="btn-secondary" style="font-size: 13px; padding: 10px;">Forgot Password?</button>
       
       <div class="verify-notice" style="display: none;" id="verify-notice">
         ✉️ Verification email sent! Check your inbox and click the link, then return here to login.
+      </div>
+      
+      <div class="verify-notice" style="display: none;" id="reset-notice">
+        📧 Password reset email sent! Check your inbox.
       </div>
       
       <div class="safety-note">
@@ -437,6 +442,7 @@
     async function findMatch(userId, college, gender) {
       let matchCheckCount = 0;
       const maxChecks = 60;
+      let attemptedMatch = false;
       
       let query;
       if (college === 'ANY') {
@@ -448,54 +454,44 @@
           .where('commType', '==', commType);
       }
 
+      console.log('🔍 Starting match search for:', userId, college, gender, commType);
+
       matchListener = query.onSnapshot(async (snapshot) => {
         matchCheckCount++;
         
         const users = snapshot.docs.filter(doc => doc.id !== userId);
         
         showStatus(`Finding match... (${users.length} others waiting)`, 'info');
+        console.log('👥 Users in waiting pool:', users.length, users.map(u => u.id));
         
-        if (users.length > 0) {
+        if (users.length > 0 && !attemptedMatch) {
+          attemptedMatch = true;
           const matchDoc = users[0];
           remoteUid = matchDoc.id;
           const matchData = matchDoc.data();
           
           callId = [userId, remoteUid].sort().join('_');
+          console.log('🎯 Attempting to match with:', remoteUid, 'callId:', callId);
 
           try {
-            const userRef = db.collection('waiting').doc(userId);
-            const remoteRef = db.collection('waiting').doc(remoteUid);
-            const matchRef = db.collection('matches').doc(callId);
+            // Simple approach: just delete both waiting docs and start call
+            console.log('🗑️ Deleting waiting docs...');
+            await Promise.all([
+              db.collection('waiting').doc(userId).delete(),
+              db.collection('waiting').doc(remoteUid).delete()
+            ]);
 
-            await db.runTransaction(async (t) => {
-              const [uSnap, rSnap, mSnap] = await Promise.all([
-                t.get(userRef),
-                t.get(remoteRef),
-                t.get(matchRef)
-              ]);
+            if (matchListener) {
+              matchListener();
+              matchListener = null;
+            }
 
-              if (!uSnap.exists || !rSnap.exists) {
-                throw new Error('Waiting entry disappeared');
-              }
-              if (mSnap.exists) {
-                throw new Error('Match already claimed');
-              }
-
-              t.set(matchRef, {
-                participants: [userId, remoteUid],
-                college,
-                commType,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-              });
-              t.delete(userRef);
-              t.delete(remoteRef);
-            });
-
-            if (matchListener) matchListener();
-            matchListener = null;
-
+            console.log('✅ Match successful! Starting connection...');
             showStrangerInfo(matchData.interests || []);
             showStatus('Match found! Connecting...', 'success');
+            
+            // Small delay to ensure both sides process the match
+            await new Promise(resolve => setTimeout(resolve, 500));
             
             if (commType === 'chat') {
               await startChat();
@@ -504,7 +500,9 @@
             }
 
           } catch (error) {
-            console.warn('Match claim failed, continuing search:', error);
+            console.error('❌ Match failed:', error);
+            attemptedMatch = false;
+            showStatus('Match failed, retrying...', 'warning');
             return;
           }
         } else if (matchCheckCount >= maxChecks) {
