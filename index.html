@@ -442,13 +442,20 @@
     };
 
     async function findMatch(userId, college, gender) {
+      let matchCheckCount = 0;
+      const maxChecks = 60; // 60 seconds timeout
+      
       const query = db.collection('waiting')
         .where('college', '==', college)
         .where('gender', '==', gender)
         .where('commType', '==', commType);
 
       matchListener = query.onSnapshot(async (snapshot) => {
+        matchCheckCount++;
+        
         const users = snapshot.docs.filter(doc => doc.id !== userId);
+        
+        showStatus(`Finding match... (${users.length} others waiting)`, 'info');
         
         if (users.length > 0) {
           const matchDoc = users[0];
@@ -458,8 +465,11 @@
           callId = [userId, remoteUid].sort().join('_');
           
           try {
+            // Remove both from waiting pool
             await db.collection('waiting').doc(userId).delete();
             await db.collection('waiting').doc(remoteUid).delete();
+            
+            if (matchListener) matchListener();
             
             showStrangerInfo(matchData.interests || []);
             showStatus('Match found! Connecting...', 'success');
@@ -471,7 +481,14 @@
             }
           } catch (error) {
             console.error('Error in match:', error);
+            showStatus('Error connecting. Please try again.', 'error');
+            document.getElementById('findBtn').disabled = false;
           }
+        } else if (matchCheckCount >= maxChecks) {
+          if (matchListener) matchListener();
+          await db.collection('waiting').doc(userId).delete();
+          showStatus('No match found. Please try again.', 'error');
+          document.getElementById('findBtn').disabled = false;
         }
       });
     }
