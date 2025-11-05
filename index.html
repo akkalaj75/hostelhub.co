@@ -273,7 +273,8 @@
       projectId: "hostelhub-b11fd",
       storageBucket: "hostelhub-b11fd.appspot.com",
       messagingSenderId: "935653838481",
-      appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930"
+      appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
+      measurementId: "G-KMHEWDN748"
     };
 
     // === INDIAN COLLEGE + REGULAR EMAIL DOMAINS ===
@@ -484,8 +485,505 @@
       statusEl.textContent = '';
     }
 
-    // Add your findMatch, startCall, cleanup, etc. here...
-    // (Copy from your original code — they are 100% compatible)
+// Communication type selection
+    document.querySelectorAll('.comm-type').forEach(el => {
+      el.onclick = () => {
+        document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        commType = el.dataset.type;
+      };
+    });
+
+    // Interest management
+    document.getElementById('add-interest-btn').onclick = () => {
+      const input = document.getElementById('interest-input');
+      const interest = input.value.trim().toLowerCase();
+      
+      if (interest && userInterests.length < 5 && !userInterests.includes(interest)) {
+        userInterests.push(interest);
+        updateInterestTags();
+        input.value = '';
+      }
+    };
+
+    document.getElementById('interest-input').onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('add-interest-btn').click();
+      }
+    };
+
+    function updateInterestTags() {
+      const container = document.getElementById('interest-tags');
+      container.innerHTML = userInterests.map(interest => 
+        `<div class="interest-tag">${interest} <span class="remove" onclick="removeInterest('${interest}')">×</span></div>`
+      ).join('');
+    }
+
+    window.removeInterest = (interest) => {
+      userInterests = userInterests.filter(i => i !== interest);
+      updateInterestTags();
+    };
+
+    // Email domain detection
+    document.getElementById('email').oninput = () => {
+      const email = document.getElementById('email').value.trim();
+      const domain = email.split('@')[1];
+      const college = collegeMap[domain];
+      const display = document.getElementById('college-display');
+      display.textContent = college || '';
+      display.style.display = college ? 'inline-block' : 'none';
+    };
+
+    // Auth state listener
+    auth.onAuthStateChanged(async (user) => {
+      if (user && user.emailVerified) {
+        currentUser = user;
+        showSetupScreen();
+      } else if (user && !user.emailVerified) {
+        showStatus('Please verify your email first', 'warning');
+        await auth.signOut();
+      } else {
+        showLoginScreen();
+      }
+    });
+
+    // Sign Up
+    document.getElementById('signupBtn').onclick = async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email.endsWith('.ac.in')) {
+        showStatus('Must use a .ac.in email address', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        showStatus('Password must be at least 6 characters', 'error');
+        return;
+      }
+
+      const domain = email.split('@')[1];
+      if (!collegeMap[domain]) {
+        showStatus('College not supported yet', 'error');
+        return;
+      }
+
+      try {
+        showStatus('Creating account...', 'info');
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+        await result.user.sendEmailVerification();
+        
+        document.getElementById('verify-notice').style.display = 'block';
+        showStatus('Verification email sent! Check your inbox.', 'success');
+        
+        setTimeout(() => auth.signOut(), 2000);
+      } catch (error) {
+        showStatus('Error: ' + error.message, 'error');
+      }
+    };
+
+    // Login
+    document.getElementById('loginBtn').onclick = async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        showStatus('Logging in...', 'info');
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        showStatus('Error: ' + error.message, 'error');
+      }
+    };
+
+    // Logout
+    document.getElementById('logoutBtn').onclick = async () => {
+      await cleanup();
+      await auth.signOut();
+    };
+
+    // Find Match
+    document.getElementById('findBtn').onclick = async () => {
+      const gender = document.getElementById('gender').value;
+      const hostel = document.getElementById('hostel').value;
+
+      if (!gender || !hostel) {
+        showStatus('Please select gender and hostel', 'error');
+        return;
+      }
+
+      try {
+        showStatus('Finding match...', 'info');
+        document.getElementById('findBtn').disabled = true;
+
+        const email = currentUser.email;
+        const domain = email.split('@')[1];
+        const college = collegeMap[domain];
+        const userId = currentUser.uid;
+
+        await db.collection('waiting').doc(userId).set({
+          userId,
+          email,
+          college,
+          gender,
+          hostel,
+          commType,
+          interests: userInterests,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await findMatch(userId, college, gender, hostel);
+      } catch (error) {
+        showStatus('Error: ' + error.message, 'error');
+        document.getElementById('findBtn').disabled = false;
+      }
+    };
+
+    async function findMatch(userId, college, gender, hostel) {
+      const query = db.collection('waiting')
+        .where('college', '==', college)
+        .where('gender', '==', gender)
+        .where('hostel', '==', hostel)
+        .where('commType', '==', commType)
+        .orderBy('timestamp')
+        .limit(2);
+
+      matchListener = query.onSnapshot(async (snapshot) => {
+        const users = snapshot.docs.filter(doc => doc.id !== userId);
+        
+        if (users.length > 0) {
+          const matchDoc = users[0];
+          remoteUid = matchDoc.id;
+          const matchData = matchDoc.data();
+          
+          callId = [userId, remoteUid].sort().join('_');
+          
+          try {
+            await db.collection('waiting').doc(userId).delete();
+            await db.collection('waiting').doc(remoteUid).delete();
+            
+            showStrangerInfo(matchData.interests || []);
+            showStatus('Match found! Connecting...', 'success');
+            
+            if (commType === 'chat') {
+              await startChat();
+            } else {
+              await startCall(userId < remoteUid);
+            }
+          } catch (error) {
+            console.error('Error in match:', error);
+          }
+        }
+      });
+    }
+
+    function showStrangerInfo(interests) {
+      const commonInterests = interests.filter(i => userInterests.includes(i));
+      let infoHTML = `<div>🎭 Connected with stranger from your hostel</div>`;
+      
+      if (commonInterests.length > 0) {
+        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i => 
+          `<span class="tag">${i}</span>`
+        ).join('')}</div>`;
+      } else if (interests.length > 0) {
+        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i => 
+          `<span class="tag">${i}</span>`
+        ).join('')}</div>`;
+      }
+      
+      document.getElementById('stranger-info').innerHTML = infoHTML;
+      document.getElementById('stranger-info-chat').innerHTML = infoHTML;
+    }
+
+    async function startChat() {
+      chatContainer.style.display = 'block';
+      setupScreen.style.display = 'none';
+      
+      addSystemMessage('Connected! Say hello 👋');
+      
+      // Listen for messages
+      chatListener = db.collection('calls').doc(callId).collection('messages')
+        .orderBy('timestamp')
+        .onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(change => {
+            if (change.type === 'added') {
+              const msg = change.doc.data();
+              if (msg.from !== currentUser.uid) {
+                addMessage(msg.text, 'remote');
+              }
+            }
+          });
+        });
+    }
+
+    // Send message
+    document.getElementById('send-btn').onclick = sendMessage;
+    chatInput.onkeypress = (e) => {
+      if (e.key === 'Enter') sendMessage();
+    };
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      // Check for contact info
+      if (containsContactInfo(text)) {
+        addSystemMessage('⚠️ Sharing contact info is against the rules');
+        return;
+      }
+      
+      addMessage(text, 'local');
+      chatInput.value = '';
+      
+      await db.collection('calls').doc(callId).collection('messages').add({
+        text,
+        from: currentUser.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    function containsContactInfo(text) {
+      const patterns = [
+        /\d{10}/, // Phone numbers
+        /@\w+\.\w+/, // Emails
+        /instagram|facebook|whatsapp|snapchat|telegram/i,
+        /insta|fb|wa|snap/i
+      ];
+      return patterns.some(pattern => pattern.test(text));
+    }
+
+    function addMessage(text, type) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${type}`;
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addSystemMessage(text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message system';
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function startCall(isInitiator) {
+      try {
+        const constraints = commType === 'video' 
+          ? { video: { width: 640, height: 480 }, audio: true }
+          : { video: false, audio: true };
+        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        localVideo.srcObject = localStream;
+        
+        if (commType === 'voice') {
+          localVideo.style.display = 'none';
+          remoteVideo.style.display = 'none';
+        }
+
+        pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' }
+          ]
+        });
+
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+        pc.ontrack = (event) => {
+          if (remoteVideo.srcObject !== event.streams[0]) {
+            remoteVideo.srcObject = event.streams[0];
+          }
+        };
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            db.collection('calls').doc(callId).collection('candidates').add({
+              candidate: event.candidate.toJSON(),
+              from: currentUser.uid
+            });
+          }
+        };
+
+        pc.onconnectionstatechange = () => {
+          updateConnectionQuality(pc.connectionState);
+        };
+
+        if (isInitiator) {
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          await db.collection('calls').doc(callId).set({
+            offer: { type: offer.type, sdp: offer.sdp },
+            initiator: currentUser.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
+          const data = snap.data();
+          if (!data) return;
+
+          if (!pc.currentRemoteDescription && data.offer && data.initiator !== currentUser.uid) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await db.collection('calls').doc(callId).update({
+              answer: { type: answer.type, sdp: answer.sdp }
+            });
+          }
+
+          if (!pc.currentRemoteDescription && data.answer && data.initiator === currentUser.uid) {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+          }
+        });
+
+        candidateListener = db.collection('calls').doc(callId).collection('candidates')
+          .onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(async change => {
+              if (change.type === 'added') {
+                const data = change.doc.data();
+                if (data.from !== currentUser.uid) {
+                  try {
+                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                  } catch (error) {
+                    console.error('Error adding ICE candidate:', error);
+                  }
+                }
+              }
+            });
+          });
+
+        showVideoScreen();
+      } catch (error) {
+        showStatus('Error accessing camera/mic: ' + error.message, 'error');
+        await cleanup();
+      }
+    }
+
+    // Mute audio
+    document.getElementById('muteBtn').onclick = () => {
+      isAudioMuted = !isAudioMuted;
+      localStream.getAudioTracks().forEach(track => track.enabled = !isAudioMuted);
+      document.getElementById('muteBtn').textContent = isAudioMuted ? '🔊 Unmute' : '🔇 Mute';
+    };
+
+    // Toggle video
+    document.getElementById('videoBtn').onclick = () => {
+      isVideoOff = !isVideoOff;
+      localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
+      document.getElementById('videoBtn').textContent = isVideoOff ? '📹 On' : '📹 Off';
+    };
+
+    // Skip button
+    document.getElementById('skipBtn').onclick = skipMatch;
+    document.getElementById('skipBtnChat').onclick = skipMatch;
+
+    async function skipMatch() {
+      showStatus('Finding new match...', 'info');
+      await cleanup();
+      document.getElementById('findBtn').click();
+    }
+
+    // End call/chat
+    document.getElementById('endCall').onclick = async () => {
+      await cleanup();
+      showSetupScreen();
+    };
+    
+    document.getElementById('endChat').onclick = async () => {
+      await cleanup();
+      showSetupScreen();
+    };
+
+    async function cleanup() {
+      if (matchListener) matchListener();
+      if (callListener) callListener();
+      if (candidateListener) candidateListener();
+      if (chatListener) chatListener();
+      if (connectionCheckInterval) clearInterval(connectionCheckInterval);
+      
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
+      
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      
+      if (currentUser) {
+        try {
+          await db.collection('waiting').doc(currentUser.uid).delete();
+          if (callId) {
+            await db.collection('calls').doc(callId).delete();
+          }
+        } catch (error) {
+          console.error('Cleanup error:', error);
+        }
+      }
+      
+      callId = null;
+      remoteUid = null;
+      isAudioMuted = false;
+      isVideoOff = false;
+      chatMessages.innerHTML = '';
+      document.getElementById('findBtn').disabled = false;
+    }
+
+    function updateConnectionQuality(state) {
+      const qualityEl = document.getElementById('quality');
+      
+      switch(state) {
+        case 'connected':
+          qualityEl.textContent = 'Connected ✓';
+          qualityEl.className = 'quality-good';
+          break;
+        case 'connecting':
+          qualityEl.textContent = 'Connecting...';
+          qualityEl.className = 'quality-fair';
+          break;
+        case 'disconnected':
+        case 'failed':
+          qualityEl.textContent = 'Connection lost';
+          qualityEl.className = 'quality-poor';
+          showStatus('Connection lost. Please skip or end call.', 'error');
+          break;
+      }
+    }
+
+    function showStatus(message, type) {
+      statusEl.textContent = message;
+      statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
+    }
+
+    function showLoginScreen() {
+      loginScreen.classList.add('active');
+      setupScreen.classList.remove('active');
+      videoContainer.style.display = 'none';
+      chatContainer.style.display = 'none';
+      statusEl.textContent = '';
+    }
+
+    function showSetupScreen() {
+      loginScreen.classList.remove('active');
+      setupScreen.classList.add('active');
+      videoContainer.style.display = 'none';
+      chatContainer.style.display = 'none';
+      document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
+      statusEl.textContent = '';
+    }
+
+    function showVideoScreen() {
+      setupScreen.classList.remove('active');
+      videoContainer.style.display = 'block';
+      chatContainer.style.display = 'none';
+      statusEl.textContent = '';
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', cleanup);
   </script>
 </body>
 </html>
