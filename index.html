@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HostelHub</title>
+  <title>HostelHub - Connect Anonymously</title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -24,9 +24,7 @@
       width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
       font-size: 16px; border: 1px solid #333; background: #16213e; color: #fff;
     }
-    textarea {
-      resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif;
-    }
+    textarea { resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif; }
     select { cursor: pointer; }
     button {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -42,10 +40,7 @@
     .safety-note { font-size: 12px; color: #aaa; margin-top: 10px; line-height: 1.5; }
     .warning { color: #ff6b6b; }
 
-    /* Communication Type Selection */
-    .comm-types {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;
-    }
+    .comm-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
     .comm-type {
       padding: 15px 10px; border-radius: 12px; border: 2px solid #333;
       background: #16213e; cursor: pointer; transition: 0.3s;
@@ -55,27 +50,22 @@
     .comm-type-icon { font-size: 24px; margin-bottom: 5px; }
     .comm-type-label { font-size: 13px; }
 
-    /* Interest Tags */
     .interests-section { margin: 20px 0; text-align: left; }
     .interests-label { font-size: 14px; color: #aaa; margin-bottom: 10px; }
     .interests-input { display: flex; gap: 10px; margin-bottom: 10px; }
     .interests-input input { flex: 1; margin: 0; }
     .interests-input button { width: auto; padding: 14px 20px; margin: 0; }
-    .interest-tags {
-      display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px;
-    }
+    .interest-tags { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
     .interest-tag {
       background: #00d2ff; color: #000; padding: 6px 12px; border-radius: 20px;
       font-size: 13px; display: inline-flex; align-items: center; gap: 8px;
     }
     .interest-tag .remove { cursor: pointer; font-weight: bold; }
 
-    /* Video Section */
     #video-container { display: none; margin-top: 20px; }
     #videos { display: flex; flex-direction: column; gap: 10px; position: relative; }
     #local-video, #remote-video {
-      width: 100%; background: #000; |
-      border-radius: 16px; object-fit: cover;
+      width: 100%; background: #000; border-radius: 16px; object-fit: cover;
     }
     #remote-video { height: 300px; }
     #local-video { 
@@ -84,7 +74,6 @@
       width: 140px; z-index: 10;
     }
 
-    /* Chat Section */
     #chat-container { display: none; margin-top: 20px; }
     #chat-messages {
       height: 350px; overflow-y: auto; background: #16213e; border-radius: 12px;
@@ -101,9 +90,7 @@
     #chat-input { flex: 1; margin: 0; }
     #send-btn { width: auto; padding: 14px 24px; margin: 0; }
 
-    .video-controls, .chat-controls {
-      display: flex; gap: 10px; margin-top: 15px;
-    }
+    .video-controls, .chat-controls { display: flex; gap: 10px; margin-top: 15px; }
     .video-controls button, .chat-controls button { flex: 1; }
 
     .connection-status {
@@ -122,21 +109,11 @@
       margin: 15px 0; font-size: 13px; line-height: 1.6;
     }
 
-    .loading {
-      display: inline-block; width: 20px; height: 20px;
-      border: 3px solid #333; border-top-color: #00d2ff;
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-      vertical-align: middle; margin-left: 10px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     .stranger-info {
       background: #2a2a3e; padding: 12px; border-radius: 12px;
       margin-bottom: 15px; font-size: 14px;
     }
-    .stranger-interests {
-      margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;
-    }
+    .stranger-interests { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
     .stranger-interests .tag {
       background: #4ade80; color: #000; padding: 3px 8px;
       border-radius: 12px; font-size: 12px;
@@ -147,80 +124,77 @@
 
   <div class="container">
     <h1>HostelHub</h1>
-    <p class="subtitle">Connect with college students anonymously</p>
+    <p class="subtitle">Connect with students anonymously</p>
 
     <!-- Login Screen -->
     <div id="login-screen" class="screen active">
-      <input id="email" type="email" placeholder="your.name@gmail.com or jntuk.edu.in" />
-      <div id="college-display" class="college-tag"></div>
-
-      <input id="password" type="password" placeholder="Create a password (6+ chars)" />
-
-      <button id="signupBtn">Sign Up & Verify</button>
-      <button id="loginBtn" class="btn-secondary">Already verified? Login</button>
-
-      <!-- reCAPTCHA (invisible) -->
-      <div id="recaptcha-container" style="display:none;"></div>
-
+      <input id="email" type="email" placeholder="your.email@gmail.com" />
+      <input id="password" type="password" placeholder="Password (6+ characters)" />
+      
+      <button id="signupBtn">Sign Up</button>
+      <button id="loginBtn" class="btn-secondary">Login</button>
+      
       <div class="verify-notice" style="display: none;" id="verify-notice">
-        Verification email sent! Check your inbox and click the link, then return here to login.
+        ✉️ Verification email sent! Check your inbox and click the link, then return here to login.
       </div>
-
+      
       <div class="safety-note">
-        Email verification required • Anonymous matching • No personal info shared
+        🔒 Works with any email • Anonymous matching • No personal info shared
       </div>
     </div>
 
     <!-- Setup Screen -->
     <div id="setup-screen" class="screen">
       <p class="subtitle">Logged in as: <span id="user-email"></span></p>
-
-      <!-- Communication Type -->
+      
       <div class="interests-label">Choose Communication Type:</div>
       <div class="comm-types">
         <div class="comm-type active" data-type="video">
-          <div class="comm-type-icon">Video</div>
+          <div class="comm-type-icon">📹</div>
           <div class="comm-type-label">Video</div>
         </div>
         <div class="comm-type" data-type="voice">
-          <div class="comm-type-icon">Voice</div>
+          <div class="comm-type-icon">🎤</div>
           <div class="comm-type-label">Voice</div>
         </div>
         <div class="comm-type" data-type="chat">
-          <div class="comm-type-icon">Chat</div>
+          <div class="comm-type-icon">💬</div>
           <div class="comm-type-label">Chat</div>
         </div>
       </div>
-
+      
       <select id="gender">
         <option value="">Select your gender</option>
         <option value="men">Men</option>
         <option value="women">Women</option>
+        <option value="other">Other</option>
       </select>
 
-      <select id="hostel">
-        <option value="">Select your hostel</option>
-        <option value="Ramanujan">Ramanujan (IIT Delhi)</option>
-        <option value="Kumaon">Kumaon (IIT Delhi)</option>
-        <option value="Satpura">Satpura (IIT Delhi)</option>
-        <option value="Karakoram">Karakoram (IIT Delhi)</option>
+      <select id="college">
+        <option value="">Select your college</option>
+        <option value="IIT Delhi">IIT Delhi</option>
+        <option value="IIT Bombay">IIT Bombay</option>
+        <option value="JNTUK">JNTUK</option>
+        <option value="KL University">KL University</option>
+        <option value="VIT AP">VIT AP</option>
+        <option value="Delhi University">Delhi University</option>
+        <option value="Other">Other</option>
       </select>
-
-      <!-- Interests -->
+      
       <div class="interests-section">
-        <div class="interests-label">Add interests (optional):</div>
+        <div class="interests-label">Add interests (optional - max 5):</div>
         <div class="interests-input">
-          <input id="interest-input" type="text" placeholder="e.g., cricket, coding" maxlength="20" />
+          <input id="interest-input" type="text" placeholder="e.g., cricket, coding, music" maxlength="20" />
           <button id="add-interest-btn">Add</button>
         </div>
         <div class="interest-tags" id="interest-tags"></div>
       </div>
 
-      <button id="findBtn">Find Match</button>
+      <button id="findBtn">🔍 Find Match</button>
       <button id="logoutBtn" class="btn-secondary">Logout</button>
-
+      
       <div class="safety-note">
-        You'll be matched with someone from the same college, gender, and hostel.
+        You'll be matched anonymously with someone from the same college and gender.
         <span class="warning">Never share personal contact info.</span>
       </div>
     </div>
@@ -230,41 +204,54 @@
     <!-- Video/Voice Screen -->
     <div id="video-container">
       <div class="stranger-info" id="stranger-info"></div>
+      
       <div class="connection-status" id="connection-status">
         Connection: <span id="quality">Connecting...</span>
       </div>
+      
       <div id="videos">
         <video id="remote-video" autoplay playsinline></video>
         <video id="local-video" autoplay playsinline muted></video>
       </div>
+      
       <div class="video-controls">
-        <button id="muteBtn">Mute</button>
-        <button id="videoBtn">Off</button>
-        <button id="skipBtn" class="btn-warning">Skip</button>
-        <button id="endCall" class="btn-danger">End</button>
+        <button id="muteBtn">🔇 Mute</button>
+        <button id="videoBtn">📹 Off</button>
+        <button id="skipBtn" class="btn-warning">⏭️ Skip</button>
+        <button id="endCall" class="btn-danger">❌ End</button>
+      </div>
+      
+      <div class="safety-note">
+        <span class="warning">⚠️</span> If someone shares contact info or behaves inappropriately, skip or end the call.
       </div>
     </div>
-
+    
     <!-- Chat Screen -->
     <div id="chat-container">
       <div class="stranger-info" id="stranger-info-chat"></div>
+      
       <div id="chat-messages"></div>
+      
       <div id="chat-input-area">
-        <input id="chat-input" type="text" placeholder="Type a message..." />
+        <input id="chat-input" type="text" placeholder="Type a message..." maxlength="500" />
         <button id="send-btn">Send</button>
       </div>
+      
       <div class="chat-controls">
-        <button id="skipBtnChat" class="btn-warning">Skip</button>
-        <button id="endChat" class="btn-danger">End Chat</button>
+        <button id="skipBtnChat" class="btn-warning">⏭️ Skip</button>
+        <button id="endChat" class="btn-danger">❌ End</button>
+      </div>
+      
+      <div class="safety-note">
+        <span class="warning">⚠️</span> Never share phone numbers, email, social media, or personal info.
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Firebase SDKs - Using v9 compat mode -->
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -275,28 +262,6 @@
       messagingSenderId: "935653838481",
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
       measurementId: "G-KMHEWDN748"
-    };
-
-    // === INDIAN COLLEGE + REGULAR EMAIL DOMAINS ===
-    const allowedDomains = [
-      // Indian Colleges
-      'jntuk.edu.in','jntuh.ac.in','jntua.ac.in','jntucev.ac.in',
-      'kluniversity.edu.in','klh.edu.in',
-      'iitd.ac.in','iitb.ac.in','iitkgp.ac.in','iitm.ac.in','iitkanpur.ac.in','nitk.ac.in',
-      'du.ac.in','jnu.ac.in','iisc.ac.in',
-      'amity.edu.in','manipal.edu.in','srmist.edu.in','vitu.ac.in','srm.edu',
-      'christuniversity.in','pes.edu','jadavpuruniversity.in','aligarh.ac.in',
-      'tezu.ernet.in','pondiuni.edu.in','bits-pilani.ac.in','sacredheart.edu',
-      
-      // Regular Emails (for testing / fallback)
-      'gmail.com','yahoo.com','hotmail.com','outlook.com','icloud.com'
-    ];
-
-    const collegeMap = {
-      'iitd.ac.in': 'IIT Delhi',
-      'du.ac.in': 'Delhi University',
-      'jntuk.edu.in': 'JNTUK',
-      'kluniversity.edu.in': 'KL University'
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -314,7 +279,6 @@
     let chatListener = null;
     let isAudioMuted = false;
     let isVideoOff = false;
-    let connectionCheckInterval = null;
     let commType = 'video';
     let userInterests = [];
 
@@ -328,154 +292,7 @@
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
 
-    // === COLLEGE / EMAIL PREVIEW ===
-    document.getElementById('email').oninput = () => {
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      const domain = email.split('@')[1];
-      const disp = document.getElementById('college-display');
-      if (domain && allowedDomains.includes(domain)) {
-        const name = collegeMap[domain] || domain.split('.').slice(0,-1).join('.').toUpperCase();
-        disp.textContent = name;
-        disp.style.display = 'inline-block';
-      } else {
-        disp.style.display = 'none';
-      }
-    };
-
-    // === EMAIL VALIDATION (ANY ALLOWED DOMAIN) ===
-    async function checkStudentEmail(email) {
-      const domain = email.split('@')[1]?.toLowerCase();
-      if (!domain) return {valid: false, message: 'Enter a valid email'};
-      if (allowedDomains.includes(domain)) {
-        const college = collegeMap[domain] || 'Other College';
-        return {valid: true, college};
-      }
-      return {valid: false, message: 'Use college email or Gmail/Yahoo for testing.'};
-    }
-
-    // === PHONE OTP (FALLBACK) ===
-    async function verifyPhone() {
-      const phone = prompt('Enter 10-digit phone number (e.g. 9876543210):');
-      if (!phone || phone.length !== 10) { alert('Invalid phone'); return false; }
-      try {
-        const recaptcha = new firebase.auth.RecaptchaVerifier('recaptcha-container', {size: 'invisible'});
-        const confirmation = await firebase.auth().signInWithPhoneNumber('+91' + phone, recaptcha);
-        const otp = prompt('Enter OTP:');
-        await confirmation.confirm(otp);
-        return true;
-      } catch (e) { console.error(e); alert('OTP failed: ' + e.message); return false; }
-    }
-
-    // === AUTH STATE ===
-    auth.onAuthStateChanged(async (user) => {
-      if (user && user.emailVerified) {
-        currentUser = user;
-        showSetupScreen();
-      } else if (user && !user.emailVerified) {
-        showStatus('Please verify your email first', 'warning');
-        await auth.signOut();
-      } else {
-        showLoginScreen();
-      }
-    });
-// Signup
-signupBtn.onclick = async () => {
-  const emailInput = document.getElementById("email").value.trim();
-  const passwordInput = document.getElementById("password").value.trim();
-
-  if (!emailInput.endsWith("@vitap.ac.in")) {
-    alert("Use VIT-AP email only.");
-    return;
-  }
-  if (passwordInput.length < 6) {
-    alert("Password must be at least 6 characters.");
-    return;
-  }
-
-  try {
-    await auth.createUserWithEmailAndPassword(emailInput, passwordInput);
-    await auth.currentUser.sendEmailVerification();
-    alert("Verification email sent. Verify before login.");
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
-// Login
-loginBtn.onclick = () => {
-  const emailInput = document.getElementById("email").value.trim();
-  const passwordInput = document.getElementById("password").value.trim();
-  auth.signInWithEmailAndPassword(emailInput, passwordInput)
-    .catch(e => alert(e.message));
-};
-
-    // === FIND MATCH ===
-    document.getElementById('findBtn').onclick = async () => {
-      const email = currentUser.email.toLowerCase();
-      const gender = document.getElementById('gender').value;
-      const hostel = document.getElementById('hostel').value;
-
-      if (!gender || !hostel) {
-        showStatus('Select gender & hostel', 'error');
-        return;
-      }
-
-      const emailRes = await checkStudentEmail(email);
-      let college = null;
-
-      if (emailRes.valid) {
-        college = emailRes.college;
-      } else {
-        if (confirm(emailRes.message + '\n\nUse phone OTP instead?')) {
-          const ok = await verifyPhone();
-          if (!ok) return;
-          const typed = prompt('Enter your college name (e.g. JNTUK):');
-          if (!typed) return;
-          college = typed.trim().toUpperCase();
-        } else {
-          return;
-        }
-      }
-
-      showStatus('Finding match...', 'info');
-      document.getElementById('findBtn').disabled = true;
-
-      const userId = currentUser.uid;
-      await db.collection('waiting').doc(userId).set({
-        userId, email, college, gender, hostel, commType, interests: userInterests,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      await findMatch(userId, college, gender, hostel);
-    };
-
-    // === REST OF YOUR ORIGINAL CODE (findMatch, startCall, etc.) ===
-    // Paste all your existing functions here (unchanged)
-    // They work perfectly with the new email system
-
-    function showStatus(message, type = 'info') {
-      statusEl.textContent = message;
-      statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
-    }
-
-    function showLoginScreen() {
-      loginScreen.classList.add('active');
-      setupScreen.classList.remove('active');
-      videoContainer.style.display = 'none';
-      chatContainer.style.display = 'none';
-      statusEl.textContent = '';
-    }
-
-    function showSetupScreen() {
-      loginScreen.classList.remove('active');
-      setupScreen.classList.add('active');
-      videoContainer.style.display = 'none';
-      chatContainer.style.display = 'none';
-      document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
-      statusEl.textContent = '';
-    }
-
-// Communication type selection
+    // Communication type selection
     document.querySelectorAll('.comm-type').forEach(el => {
       el.onclick = () => {
         document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
@@ -498,6 +315,7 @@ loginBtn.onclick = () => {
 
     document.getElementById('interest-input').onkeypress = (e) => {
       if (e.key === 'Enter') {
+        e.preventDefault();
         document.getElementById('add-interest-btn').click();
       }
     };
@@ -514,16 +332,6 @@ loginBtn.onclick = () => {
       updateInterestTags();
     };
 
-    // Email domain detection
-    document.getElementById('email').oninput = () => {
-      const email = document.getElementById('email').value.trim();
-      const domain = email.split('@')[1];
-      const college = collegeMap[domain];
-      const display = document.getElementById('college-display');
-      display.textContent = college || '';
-      display.style.display = college ? 'inline-block' : 'none';
-    };
-
     // Auth state listener
     auth.onAuthStateChanged(async (user) => {
       if (user && user.emailVerified) {
@@ -531,7 +339,7 @@ loginBtn.onclick = () => {
         showSetupScreen();
       } else if (user && !user.emailVerified) {
         showStatus('Please verify your email first', 'warning');
-        await auth.signOut();
+        setTimeout(() => auth.signOut(), 3000);
       } else {
         showLoginScreen();
       }
@@ -542,19 +350,13 @@ loginBtn.onclick = () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
-      if (!email.endsWith('.ac.in')) {
-        showStatus('Must use a .ac.in email address', 'error');
+      if (!email || !email.includes('@')) {
+        showStatus('Please enter a valid email', 'error');
         return;
       }
 
       if (password.length < 6) {
         showStatus('Password must be at least 6 characters', 'error');
-        return;
-      }
-
-      const domain = email.split('@')[1];
-      if (!collegeMap[domain]) {
-        showStatus('College not supported yet', 'error');
         return;
       }
 
@@ -566,9 +368,13 @@ loginBtn.onclick = () => {
         document.getElementById('verify-notice').style.display = 'block';
         showStatus('Verification email sent! Check your inbox.', 'success');
         
-        setTimeout(() => auth.signOut(), 2000);
+        setTimeout(() => auth.signOut(), 3000);
       } catch (error) {
-        showStatus('Error: ' + error.message, 'error');
+        if (error.code === 'auth/email-already-in-use') {
+          showStatus('Email already registered. Try logging in.', 'error');
+        } else {
+          showStatus('Error: ' + error.message, 'error');
+        }
       }
     };
 
@@ -577,11 +383,22 @@ loginBtn.onclick = () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
+      if (!email || !password) {
+        showStatus('Please enter email and password', 'error');
+        return;
+      }
+
       try {
         showStatus('Logging in...', 'info');
         await auth.signInWithEmailAndPassword(email, password);
       } catch (error) {
-        showStatus('Error: ' + error.message, 'error');
+        if (error.code === 'auth/user-not-found') {
+          showStatus('No account found. Please sign up first.', 'error');
+        } else if (error.code === 'auth/wrong-password') {
+          showStatus('Incorrect password.', 'error');
+        } else {
+          showStatus('Error: ' + error.message, 'error');
+        }
       }
     };
 
@@ -594,10 +411,10 @@ loginBtn.onclick = () => {
     // Find Match
     document.getElementById('findBtn').onclick = async () => {
       const gender = document.getElementById('gender').value;
-      const hostel = document.getElementById('hostel').value;
+      const college = document.getElementById('college').value;
 
-      if (!gender || !hostel) {
-        showStatus('Please select gender and hostel', 'error');
+      if (!gender || !college) {
+        showStatus('Please select gender and college', 'error');
         return;
       }
 
@@ -605,37 +422,30 @@ loginBtn.onclick = () => {
         showStatus('Finding match...', 'info');
         document.getElementById('findBtn').disabled = true;
 
-        const email = currentUser.email;
-        const domain = email.split('@')[1];
-        const college = collegeMap[domain];
         const userId = currentUser.uid;
 
         await db.collection('waiting').doc(userId).set({
           userId,
-          email,
+          email: currentUser.email,
           college,
           gender,
-          hostel,
           commType,
           interests: userInterests,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        await findMatch(userId, college, gender, hostel);
+        await findMatch(userId, college, gender);
       } catch (error) {
         showStatus('Error: ' + error.message, 'error');
         document.getElementById('findBtn').disabled = false;
       }
     };
 
-    async function findMatch(userId, college, gender, hostel) {
+    async function findMatch(userId, college, gender) {
       const query = db.collection('waiting')
         .where('college', '==', college)
         .where('gender', '==', gender)
-        .where('hostel', '==', hostel)
-        .where('commType', '==', commType)
-        .orderBy('timestamp')
-        .limit(2);
+        .where('commType', '==', commType);
 
       matchListener = query.onSnapshot(async (snapshot) => {
         const users = snapshot.docs.filter(doc => doc.id !== userId);
@@ -668,7 +478,7 @@ loginBtn.onclick = () => {
 
     function showStrangerInfo(interests) {
       const commonInterests = interests.filter(i => userInterests.includes(i));
-      let infoHTML = `<div>🎭 Connected with stranger from your hostel</div>`;
+      let infoHTML = `<div>🎭 Connected with a stranger from ${document.getElementById('college').value}</div>`;
       
       if (commonInterests.length > 0) {
         infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i => 
@@ -690,7 +500,6 @@ loginBtn.onclick = () => {
       
       addSystemMessage('Connected! Say hello 👋');
       
-      // Listen for messages
       chatListener = db.collection('calls').doc(callId).collection('messages')
         .orderBy('timestamp')
         .onSnapshot(snapshot => {
@@ -705,17 +514,18 @@ loginBtn.onclick = () => {
         });
     }
 
-    // Send message
     document.getElementById('send-btn').onclick = sendMessage;
     chatInput.onkeypress = (e) => {
-      if (e.key === 'Enter') sendMessage();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
     };
 
     async function sendMessage() {
       const text = chatInput.value.trim();
       if (!text) return;
       
-      // Check for contact info
       if (containsContactInfo(text)) {
         addSystemMessage('⚠️ Sharing contact info is against the rules');
         return;
@@ -733,10 +543,10 @@ loginBtn.onclick = () => {
 
     function containsContactInfo(text) {
       const patterns = [
-        /\d{10}/, // Phone numbers
-        /@\w+\.\w+/, // Emails
-        /instagram|facebook|whatsapp|snapchat|telegram/i,
-        /insta|fb|wa|snap/i
+        /\d{10}/, /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/,
+        /@\w+\.\w+/,
+        /instagram|facebook|whatsapp|snapchat|telegram|twitter/i,
+        /insta|fb|wa|snap|dm/i
       ];
       return patterns.some(pattern => pattern.test(text));
     }
@@ -851,21 +661,20 @@ loginBtn.onclick = () => {
       }
     }
 
-    // Mute audio
     document.getElementById('muteBtn').onclick = () => {
+      if (!localStream) return;
       isAudioMuted = !isAudioMuted;
       localStream.getAudioTracks().forEach(track => track.enabled = !isAudioMuted);
       document.getElementById('muteBtn').textContent = isAudioMuted ? '🔊 Unmute' : '🔇 Mute';
     };
 
-    // Toggle video
     document.getElementById('videoBtn').onclick = () => {
+      if (!localStream) return;
       isVideoOff = !isVideoOff;
       localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
       document.getElementById('videoBtn').textContent = isVideoOff ? '📹 On' : '📹 Off';
     };
 
-    // Skip button
     document.getElementById('skipBtn').onclick = skipMatch;
     document.getElementById('skipBtnChat').onclick = skipMatch;
 
@@ -875,7 +684,6 @@ loginBtn.onclick = () => {
       document.getElementById('findBtn').click();
     }
 
-    // End call/chat
     document.getElementById('endCall').onclick = async () => {
       await cleanup();
       showSetupScreen();
@@ -891,7 +699,6 @@ loginBtn.onclick = () => {
       if (callListener) callListener();
       if (candidateListener) candidateListener();
       if (chatListener) chatListener();
-      if (connectionCheckInterval) clearInterval(connectionCheckInterval);
       
       if (pc) {
         pc.close();
@@ -907,7 +714,10 @@ loginBtn.onclick = () => {
         try {
           await db.collection('waiting').doc(currentUser.uid).delete();
           if (callId) {
-            await db.collection('calls').doc(callId).delete();
+            const callRef = db.collection('calls').doc(callId);
+            const candidates = await callRef.collection('candidates').get();
+            candidates.forEach(doc => doc.ref.delete());
+            await callRef.delete();
           }
         } catch (error) {
           console.error('Cleanup error:', error);
@@ -972,7 +782,6 @@ loginBtn.onclick = () => {
       statusEl.textContent = '';
     }
 
-    // Cleanup on page unload
     window.addEventListener('beforeunload', cleanup);
   </script>
 </body>
