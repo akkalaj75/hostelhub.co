@@ -378,46 +378,36 @@
         showLoginScreen();
       }
     });
+// Signup
+signupBtn.onclick = async () => {
+  const emailInput = document.getElementById("email").value.trim();
+  const passwordInput = document.getElementById("password").value.trim();
 
-    // === SIGN UP ===
-    document.getElementById('signupBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+  if (!emailInput.endsWith("@vitap.ac.in")) {
+    alert("Use VIT-AP email only.");
+    return;
+  }
+  if (passwordInput.length < 6) {
+    alert("Password must be at least 6 characters.");
+    return;
+  }
 
-      if (password.length < 6) {
-        showStatus('Password must be 6+ chars', 'error');
-        return;
-      }
+  try {
+    await auth.createUserWithEmailAndPassword(emailInput, passwordInput);
+    await auth.currentUser.sendEmailVerification();
+    alert("Verification email sent. Verify before login.");
+  } catch (error) {
+    alert(error.message);
+  }
+};
 
-      const emailRes = await checkStudentEmail(email);
-      if (!emailRes.valid) {
-        showStatus(emailRes.message, 'error');
-        return;
-      }
-
-      try {
-        showStatus('Creating account...', 'info');
-        const result = await auth.createUserWithEmailAndPassword(email, password);
-        await result.user.sendEmailVerification();
-        document.getElementById('verify-notice').style.display = 'block';
-        showStatus('Verification email sent!', 'success');
-        setTimeout(() => auth.signOut(), 2000);
-      } catch (error) {
-        showStatus('Error: ' + error.message, 'error');
-      }
-    };
-
-    // === LOGIN ===
-    document.getElementById('loginBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      try {
-        showStatus('Logging in...', 'info');
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        showStatus('Error: ' + error.message, 'error');
-      }
-    };
+// Login
+loginBtn.onclick = () => {
+  const emailInput = document.getElementById("email").value.trim();
+  const passwordInput = document.getElementById("password").value.trim();
+  auth.signInWithEmailAndPassword(emailInput, passwordInput)
+    .catch(e => alert(e.message));
+};
 
     // === FIND MATCH ===
     document.getElementById('findBtn').onclick = async () => {
