@@ -255,6 +255,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
 
   <script>
+    /* Updated: fix/matching-transaction, add diagnostics + TURN example
+       Author: assistant (patch for matching race condition + logging) */
+
     const firebaseConfig = {
       apiKey: "AIzaSyB_gNArL-vud6HhtWXnwVf6KMAXTRqfAk4",
       authDomain: "hostelhub-b11fd.firebaseapp.com",
@@ -299,6 +302,7 @@
         document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
         commType = el.dataset.type;
+        console.log('commType set to', commType);
       };
     });
 
@@ -451,12 +455,15 @@
         .where('gender', '==', gender)
         .where('commType', '==', commType);
 
+      console.log('Starting match listener for', userId, college, gender, commType);
+
       matchListener = query.onSnapshot(async (snapshot) => {
         matchCheckCount++;
         
         const users = snapshot.docs.filter(doc => doc.id !== userId);
         
         showStatus(`Finding match... (${users.length} others waiting)`, 'info');
+        console.log('Waiting pool size (excluding me):', users.length);
         
         if (users.length > 0) {
           const matchDoc = users[0];
@@ -464,30 +471,67 @@
           const matchData = matchDoc.data();
           
           callId = [userId, remoteUid].sort().join('_');
-          
+
+          // Use a transaction to atomically claim the partner and remove both waiting docs.
           try {
-            // Remove both from waiting pool
-            await db.collection('waiting').doc(userId).delete();
-            await db.collection('waiting').doc(remoteUid).delete();
-            
-            if (matchListener) matchListener();
-            
+            console.log('Attempting to claim match', callId, 'with', remoteUid);
+            const userRef = db.collection('waiting').doc(userId);
+            const remoteRef = db.collection('waiting').doc(remoteUid);
+            const matchRef = db.collection('matches').doc(callId); // helper doc to mark match
+
+            await db.runTransaction(async (t) => {
+              const [uSnap, rSnap, mSnap] = await Promise.all([
+                t.get(userRef),
+                t.get(remoteRef),
+                t.get(matchRef)
+              ]);
+
+              // If already matched (match doc exists) or one waiting doc missing, abort
+              if (!uSnap.exists || !rSnap.exists) {
+                throw new Error('Waiting entry disappeared or already matched');
+              }
+              if (mSnap.exists) {
+                throw new Error('This match is already claimed');
+              }
+
+              // create match marker and remove waiting docs atomically
+              t.set(matchRef, {
+                participants: [userId, remoteUid],
+                college,
+                commType,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+              });
+              t.delete(userRef);
+              t.delete(remoteRef);
+            });
+
+            // We successfully claimed the match. Unsubscribe from the waiting listener.
+            if (matchListener) {
+              try { matchListener(); } catch(e){}
+              matchListener = null;
+            }
+
+            console.log('Match claimed successfully', callId);
             showStrangerInfo(matchData.interests || []);
             showStatus('Match found! Connecting...', 'success');
             
             if (commType === 'chat') {
               await startChat();
             } else {
-              await startCall(userId < remoteUid);
+              // Decide initiator deterministically (lower UID initiates)
+              const isInitiator = userId < remoteUid;
+              console.log('Starting call; isInitiator=', isInitiator, 'callId=', callId);
+              await startCall(isInitiator);
             }
+
           } catch (error) {
-            console.error('Error in match:', error);
-            showStatus('Error connecting. Please try again.', 'error');
-            document.getElementById('findBtn').disabled = false;
+            // Another client may have claimed the partner first. Just continue waiting.
+            console.warn('Match claim failed / race condition, will continue searching:', error);
+            return;
           }
         } else if (matchCheckCount >= maxChecks) {
           if (matchListener) matchListener();
-          await db.collection('waiting').doc(userId).delete();
+          await db.collection('waiting').doc(userId).delete().catch(()=>{});
           showStatus('No match found. Please try again.', 'error');
           document.getElementById('findBtn').disabled = false;
         }
@@ -597,19 +641,26 @@
         if (commType === 'voice') {
           localVideo.style.display = 'none';
           remoteVideo.style.display = 'none';
+        } else {
+          localVideo.style.display = '';
+          remoteVideo.style.display = '';
         }
 
         pc = new RTCPeerConnection({
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' }
+            // Optional TURN server - replace with your own TURN credentials for production
+            // { urls: 'turn:YOUR_TURN_URL:3478', username: 'TURN_USER', credential: 'TURN_PASS' }
           ]
         });
 
+        console.log('RTCPeerConnection created, isInitiator=', isInitiator);
+
+        // Add tracks
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
         pc.ontrack = (event) => {
+          console.log('ontrack event, streams:', event.streams);
           if (remoteVideo.srcObject !== event.streams[0]) {
             remoteVideo.srcObject = event.streams[0];
           }
@@ -617,6 +668,7 @@
 
         pc.onicecandidate = (event) => {
           if (event.candidate) {
+            console.log('Local ICE candidate generated', event.candidate);
             db.collection('calls').doc(callId).collection('candidates').add({
               candidate: event.candidate.toJSON(),
               from: currentUser.uid
@@ -625,37 +677,15 @@
         };
 
         pc.onconnectionstatechange = () => {
+          console.log('PeerConnection state change:', pc.connectionState);
           updateConnectionQuality(pc.connectionState);
         };
 
-        if (isInitiator) {
-          const offer = await pc.createOffer();
-          await pc.setLocalDescription(offer);
-          await db.collection('calls').doc(callId).set({
-            offer: { type: offer.type, sdp: offer.sdp },
-            initiator: currentUser.uid,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }
+        pc.oniceconnectionstatechange = () => {
+          console.log('ICE connection state:', pc.iceConnectionState);
+        };
 
-        callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
-          const data = snap.data();
-          if (!data) return;
-
-          if (!pc.currentRemoteDescription && data.offer && data.initiator !== currentUser.uid) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            await db.collection('calls').doc(callId).update({
-              answer: { type: answer.type, sdp: answer.sdp }
-            });
-          }
-
-          if (!pc.currentRemoteDescription && data.answer && data.initiator === currentUser.uid) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-          }
-        });
-
+        // Candidate listener
         candidateListener = db.collection('calls').doc(callId).collection('candidates')
           .onSnapshot(snapshot => {
             snapshot.docChanges().forEach(async change => {
@@ -663,6 +693,7 @@
                 const data = change.doc.data();
                 if (data.from !== currentUser.uid) {
                   try {
+                    console.log('Adding remote ICE candidate', data.candidate);
                     await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
                   } catch (error) {
                     console.error('Error adding ICE candidate:', error);
@@ -672,9 +703,54 @@
             });
           });
 
+        // Listen for offer/answer changes
+        callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
+          const data = snap.data();
+          if (!data) return;
+
+          // If I am not the initiator and an offer exists, set it and respond with answer
+          if (!pc.currentRemoteDescription && data.offer && data.initiator !== currentUser.uid) {
+            try {
+              console.log('Remote offer found, setting remote description');
+              await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+              const answer = await pc.createAnswer();
+              await pc.setLocalDescription(answer);
+              await db.collection('calls').doc(callId).update({
+                answer: { type: answer.type, sdp: answer.sdp }
+              });
+              console.log('Answer created and uploaded');
+            } catch (err) {
+              console.error('Error handling offer -> answer', err);
+            }
+          }
+
+          // If I created the offer, wait for the answer and set it as remote description
+          if (!pc.currentRemoteDescription && data.answer && data.initiator === currentUser.uid) {
+            try {
+              console.log('Remote answer found, setting remote description');
+              await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+            } catch (err) {
+              console.error('Error setting remote answer:', err);
+            }
+          }
+        });
+
+        // If I am the initiator, create and store the offer
+        if (isInitiator) {
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          await db.collection('calls').doc(callId).set({
+            offer: { type: offer.type, sdp: offer.sdp },
+            initiator: currentUser.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          console.log('Offer created and uploaded');
+        }
+
         showVideoScreen();
       } catch (error) {
         showStatus('Error accessing camera/mic: ' + error.message, 'error');
+        console.error('startCall error:', error);
         await cleanup();
       }
     }
@@ -713,13 +789,13 @@
     };
 
     async function cleanup() {
-      if (matchListener) matchListener();
-      if (callListener) callListener();
-      if (candidateListener) candidateListener();
-      if (chatListener) chatListener();
+      if (matchListener) { try { matchListener(); } catch(e){} matchListener = null; }
+      if (callListener) { try { callListener(); } catch(e){} callListener = null; }
+      if (candidateListener) { try { candidateListener(); } catch(e){} candidateListener = null; }
+      if (chatListener) { try { chatListener(); } catch(e){} chatListener = null; }
       
       if (pc) {
-        pc.close();
+        try { pc.close(); } catch(e){}
         pc = null;
       }
       
@@ -730,12 +806,39 @@
       
       if (currentUser) {
         try {
-          await db.collection('waiting').doc(currentUser.uid).delete();
+          await db.collection('waiting').doc(currentUser.uid).delete().catch(()=>{});
+          
           if (callId) {
             const callRef = db.collection('calls').doc(callId);
-            const candidates = await callRef.collection('candidates').get();
-            candidates.forEach(doc => doc.ref.delete());
-            await callRef.delete();
+
+            // delete candidates reliably
+            try {
+              const candidatesSnap = await callRef.collection('candidates').get();
+              await Promise.all(candidatesSnap.docs.map(d => d.ref.delete()));
+            } catch (e) {
+              // ignore if subcollection doesn't exist or permission denied
+              console.warn('Error deleting candidates:', e);
+            }
+
+            // delete messages subcollection (chat) if any
+            try {
+              const messagesSnap = await callRef.collection('messages').get();
+              await Promise.all(messagesSnap.docs.map(d => d.ref.delete()));
+            } catch (e) {
+              // ignore
+            }
+
+            // finally delete call doc and any match marker
+            try {
+              await callRef.delete().catch(()=>{});
+            } catch (e) {
+              console.warn('Error deleting call doc:', e);
+            }
+
+            // remove match marker as well (if created)
+            try {
+              await db.collection('matches').doc(callId).delete().catch(()=>{});
+            } catch (e) {}
           }
         } catch (error) {
           console.error('Cleanup error:', error);
@@ -755,9 +858,11 @@
       
       switch(state) {
         case 'connected':
+        case 'completed':
           qualityEl.textContent = 'Connected ✓';
           qualityEl.className = 'quality-good';
           break;
+        case 'checking':
         case 'connecting':
           qualityEl.textContent = 'Connecting...';
           qualityEl.className = 'quality-fair';
@@ -768,12 +873,16 @@
           qualityEl.className = 'quality-poor';
           showStatus('Connection lost. Please skip or end call.', 'error');
           break;
+        default:
+          qualityEl.textContent = state || 'Unknown';
+          qualityEl.className = '';
       }
     }
 
     function showStatus(message, type) {
       statusEl.textContent = message;
       statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
+      console.log('STATUS:', message);
     }
 
     function showLoginScreen() {
