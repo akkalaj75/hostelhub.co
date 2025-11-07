@@ -1375,30 +1375,32 @@
   </script>
 </body>
 </html>
+   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
 
   <script>
-    // -------------------------------------------------
-    //  PROFILE PICTURE UPLOAD (optional – you can keep it)
-    // -------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_gNArL-vud6HhtWXnwVf6KMAXTRqfAk4",
+      authDomain: "hostelhub-b11fd.firebaseapp.com",
+      projectId: "hostelhub-b11fd",
+      storageBucket: "hostelhub-b11fd.appspot.com",
+      messagingSenderId: "935653838481",
+      appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
+      measurementId: "G-KMHEWDN748"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Helper: show a toast-style status (already defined above)
-    function showStatus(msg, type) {
-      const el = document.getElementById('status');
-      el.textContent = msg;
-      el.style.color = type === 'error' ? '#ff6b6b'
-                     : type === 'success' ? '#4ade80' : '#ffd43b';
-    }
+    // === ALL YOUR EXISTING JS CODE FROM BEFORE (findMatch, startCall, etc.) ===
+    // ... (Paste the full script you already have here — from `let currentUser = null;` onward)
 
-    // -------------------------------------------------
-    //  ADD PROFILE PICTURE (optional UI – add a file input
-    //  in the setup screen if you want it)
-    // -------------------------------------------------
-    // Example markup you can paste inside #setup-screen:
+    // === PROFILE PICTURE UPLOAD (Optional UI) ===
+    // Add this inside #setup-screen if you want avatars:
     /*
     <div style="margin:20px 0;">
       <input type="file" id="profilePicInput" accept="image/*" />
@@ -1407,32 +1409,23 @@
     <img id="profilePicPreview" style="width:80px;height:80px;border-radius:50%;margin-top:10px;display:none;" />
     */
 
-    // Uncomment & adapt if you add the UI
+    // Uncomment to enable:
     /*
     document.getElementById('uploadPicBtn')?.addEventListener('click', async () => {
       const file = document.getElementById('profilePicInput').files[0];
-      if (!file) return showStatus('Select an image first', 'error');
-
-      const uid = currentUser.uid;
-      const ref = storage.ref(`profilePics/${uid}`);
+      if (!file) return showStatus('Select an image', 'error');
+      const ref = storage.ref(`profilePics/${currentUser.uid}`);
       try {
         showStatus('Uploading...', 'info');
         await ref.put(file);
         const url = await ref.getDownloadURL();
-        await db.collection('users').doc(uid).set({profilePic: url}, {merge:true});
-        document.getElementById('profilePicPreview').src = url;
-        document.getElementById('profilePicPreview').style.display = 'block';
+        await db.collection('users').doc(currentUser.uid).set({profilePic: url}, {merge: true});
+        const preview = document.getElementById('profilePicPreview');
+        preview.src = url; preview.style.display = 'block';
         showStatus('Picture uploaded!', 'success');
-      } catch (e) {
-        showStatus('Upload failed', 'error');
-        console.error(e);
-      }
+      } catch (e) { showStatus('Upload failed', 'error'); }
     });
     */
-
-    // -------------------------------------------------
-    //  END OF SCRIPT – everything else is already in the file
-    // -------------------------------------------------
   </script>
 </body>
 </html>
