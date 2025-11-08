@@ -578,18 +578,25 @@
           <option value="women">Women</option>
           <option value="other">Other</option>
         </select>
+        
+            <!-- College Input (Replace your old <select id="college">) -->
+<div class="college-input-wrapper">
+  <select id="college-select">
+    <option value="">College</option>
+    <option value="IIT Delhi">IIT Delhi</option>
+    <option value="IIT Bombay">IIT Bombay</option>
+    <option value="JNTUK">JNTUK</option>
+    <option value="KL University">KL University</option>
+    <option value="VIT AP">VIT AP</option>
+    <option value="Delhi University">Delhi University</option>
+    <option value="ANY">Match with Anyone</option>
+    <option value="OTHER">Other (type below)</option>
+  </select>
 
-        <select id="college">
-          <option value="">Select your college</option>
-          <option value="IIT Delhi">IIT Delhi</option>
-          <option value="IIT Bombay">IIT Bombay</option>
-          <option value="JNTUK">JNTUK</option>
-          <option value="KL University">KL University</option>
-          <option value="VIT AP">VIT AP</option>
-          <option value="Delhi University">Delhi University</option>
-          <option value="Other">Other</option>
-          <option value="ANY">🌍 Match with Anyone (Testing)</option>
-        </select>
+  <!-- Input box shown only when "Other" is selected -->
+  <input type="text" id="college-other-input" placeholder="Enter your college name"
+         style="display:none; margin-top:8px;" maxlength="50"/>
+</div>
         
         <div class="interests-section">
           <div class="interests-label">Add interests (optional - max 5):</div>
