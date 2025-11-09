@@ -1529,6 +1529,47 @@ function showLiveUsersCounter() {
     }
 
     window.addEventListener('beforeunload', cleanup);
+    <script>
+  // PWA Install Banner
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBanner();
+  });
+
+  function showInstallBanner() {
+    if (document.getElementById('pwa-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'pwa-banner';
+    banner.style.cssText = `
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:#1a1f3a; color=white; padding:15px 25px; border-radius:50px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; font-size:14px;
+      display:flex; align-items:center; gap:15px; animation:slideUp 0.5s;
+    `;
+    banner.innerHTML = `
+      Add HostelHub to Home Screen
+      <button onclick="installPWA()" style="background:#00d2ff; border:none; color:white; padding:8px 16px; border-radius:25px; font-weight:600; cursor:pointer;">
+        Install
+      </button>
+      <button onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#aaa; cursor:pointer;">X</button>
+    `;
+    document.body.appendChild(banner);
+  }
+
+  window.installPWA = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('pwa-banner')?.remove();
+  };
+
+  // Animation
+  const style = document.createElement('style');
+  style.textContent = `@keyframes slideUp { from { transform:translate(-50%,100%); opacity:0; } to { transform:translateX(-50%); opacity:1; } }`;
+  document.head.appendChild(style);
   </script>
 </body>
 </html>
