@@ -1543,10 +1543,11 @@ function showLiveUsersCounter() {
     const banner = document.createElement('div');
     banner.id = 'pwa-banner';
     banner.style.cssText = `
-      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      position:fixed; bottom:20px; left:50%; transform:translate(-50%,0);
       background:#1a1f3a; color=white; padding:15px 25px; border-radius:50px;
       box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; font-size:14px;
-      display:flex; align-items:center; gap:15px; animation:slideUp 0.5s;
+      display:flex; align-items:center; gap:15px; animation:slideUp 0.5s ease-out;
+      max-width:90%;text-align:center;
     `;
     banner.innerHTML = `
       Add HostelHub to Home Screen
