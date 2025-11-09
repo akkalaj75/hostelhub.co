@@ -708,6 +708,68 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const db = firebase.firestore();
+
+// === LIVE USERS TRACKING & COUNTER (PASTE BELOW) ===
+let statusRef = null;
+
+function trackOnline() {
+  if (!currentUser) return;
+  const uid = currentUser.uid;
+  statusRef = db.collection('status').doc(uid);
+  statusRef.set({
+    online: true,
+    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+    email: currentUser.email.split('@')[0] // Anonymous name
+  }, { merge: true });
+}
+
+function trackOffline() {
+  if (statusRef) {
+    statusRef.update({ 
+      online: false,
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+}
+
+// Start tracking when user logs in
+auth.onAuthStateChanged(user => {
+  if (user && user.emailVerified) {
+    currentUser = user;
+    trackOnline();
+    showLiveUsersCounter(); // Show counter
+  } else {
+    trackOffline();
+  }
+});
+
+// Stop tracking when tab closes
+window.addEventListener('beforeunload', trackOffline);
+window.addEventListener('unload', trackOffline);
+
+// === SHOW LIVE USERS COUNTER ===
+function showLiveUsersCounter() {
+  db.collection('status')
+    .where('online', '==', true)
+    .onSnapshot(snap => {
+      const count = snap.size;
+      let counter = document.getElementById('live-users-counter');
+      if (!counter) {
+        counter = document.createElement('div');
+        counter.id = 'live-users-counter';
+        counter.style.cssText = `
+          position:fixed; top:20px; right:20px; 
+          background:#00d2ff; color:white; 
+          padding:8px 16px; border-radius:25px; 
+          font-size:13px; font-weight:600;
+          z-index:9999; box-shadow:0 4px 15px rgba(0,210,255,0.3);
+        `;
+        document.body.appendChild(counter);
+      }
+      counter.innerHTML = `Live: ${count} online`;
+    });
+}
 
     let currentUser = null;
     let localStream = null;
