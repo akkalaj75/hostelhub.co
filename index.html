@@ -9,18 +9,7 @@
   <meta name="theme-color" content="#0a0e27">
   
   <!-- Favicon -->
-      <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
-
-  <!-- PWA Manifest (for "Add to Home Screen") -->
-<link rel="manifest" href="data:application/manifest+json,{
-  %22name%22:%22HostelHub%22,
-  %22short_name%22:%22HostelHub%22,
-  %22start_url%22:%22.%22,
-  %22display%22:%22standalone%22,
-  %22background_color%22:%22#0a0e27%22,
-  %22theme_color%22:%22#00d2ff%22,
-  %22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg%22}]
-}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
   
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
@@ -38,6 +27,30 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HostelHub">
+  
+  <!-- FIX: Make all buttons clickable (z-index priority) -->
+  <style>
+    button, select, input, [onclick], .btn, .nav-cta, .cta-btn, .feature-card {
+      position: relative !important;
+      z-index: 1000 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+    
+    #pwa-banner, #live-users-counter, #force-pwa {
+      z-index: 100 !important;
+      pointer-events: none;
+    }
+    
+    #pwa-banner button, #live-users-counter button, #force-pwa button {
+      pointer-events: auto !important;
+    }
+    
+    .app-container, #login-screen, #setup-screen {
+      z-index: 500 !important;
+      position: relative !important;
+    }
+  </style>
   
   <title>HostelHub - Connect with College Students Anonymously</title>
 
@@ -578,7 +591,8 @@
           <option value="women">Women</option>
           <option value="other">Other</option>
         </select>
-          <select id="college">
+
+        <select id="college">
           <option value="">Select your college</option>
           <option value="IIT Delhi">IIT Delhi</option>
           <option value="IIT Bombay">IIT Bombay</option>
@@ -588,7 +602,7 @@
           <option value="Delhi University">Delhi University</option>
           <option value="Other">Other</option>
           <option value="ANY">🌍 Match with Anyone (Testing)</option>
-   </select>
+        </select>
         
         <div class="interests-section">
           <div class="interests-label">Add interests (optional - max 5):</div>
@@ -692,7 +706,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -708,66 +721,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-// === LIVE USERS TRACKING & COUNTER (PASTE BELOW) ===
-let statusRef = null;
-
-function trackOnline() {
-  if (!currentUser) return;
-  const uid = currentUser.uid;
-  statusRef = db.collection('status').doc(uid);
-  statusRef.set({
-    online: true,
-    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-    email: currentUser.email.split('@')[0] // Anonymous name
-  }, { merge: true });
-}
-
-function trackOffline() {
-  if (statusRef) {
-    statusRef.update({ 
-      online: false,
-      lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-}
-
-// Start tracking when user logs in
-auth.onAuthStateChanged(user => {
-  if (user && user.emailVerified) {
-    currentUser = user;
-    trackOnline();
-    showLiveUsersCounter(); // Show counter
-  } else {
-    trackOffline();
-  }
-});
-
-// Stop tracking when tab closes
-window.addEventListener('beforeunload', trackOffline);
-window.addEventListener('unload', trackOffline);
-
-// === SHOW LIVE USERS COUNTER ===
-function showLiveUsersCounter() {
-  db.collection('status')
-    .where('online', '==', true)
-    .onSnapshot(snap => {
-      const count = snap.size;
-      let counter = document.getElementById('live-users-counter');
-      if (!counter) {
-        counter = document.createElement('div');
-        counter.id = 'live-users-counter';
-        counter.style.cssText = `
-          position:fixed; top:20px; right:20px; 
-          background:#00d2ff; color:white; 
-          padding:8px 16px; border-radius:25px; 
-          font-size:13px; font-weight:600;
-          z-index:9999; box-shadow:0 4px 15px rgba(0,210,255,0.3);
-        `;
-        document.body.appendChild(counter);
-      }
-      counter.innerHTML = `Live: ${count} online`;
-    });
-}
 
     let currentUser = null;
     let localStream = null;
@@ -1529,99 +1482,141 @@ function showLiveUsersCounter() {
     }
 
     window.addEventListener('beforeunload', cleanup);
- <script>
-  // PWA Install Banner
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    showInstallBanner();
-  });
 
-  function showInstallBanner() {
-    if (document.getElementById('pwa-banner')) return;
-    const banner = document.createElement('div');
-    banner.id = 'pwa-banner';
-    banner.style.cssText = `
-      position:fixed; bottom:20px; left:50%; transform:translate(-50%,0);
-      background:#1a1f3a; color=white; padding:15px 25px; border-radius:50px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; font-size:14px;
-      display:flex; align-items:center; gap:15px; animation:slideUp 0.5s ease-out;
-      max-width:90%;text-align:center;
-    `;
-    banner.innerHTML = `
-      Add HostelHub to Home Screen
-      <button onclick="installPWA()" style="background:#00d2ff; border:none; color:white; padding:8px 16px; border-radius:25px; font-weight:600; cursor:pointer;">
-        Install
-      </button>
-      <button onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#aaa; cursor:pointer;">X</button>
-    `;
-    document.body.appendChild(banner);
-  }
+    // === LIVE USERS COUNTER ===
+    let statusRef = null;
 
-  window.installPWA = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById('pwa-banner')?.remove();
-  };
-
-  // Animation
-  const style = document.createElement('style');
-  style.textContent = `@keyframes slideUp { from { transform:translate(-50%,100%); opacity:0; } to { transform:translateX(-50%); opacity:1; } }`;
-  document.head.appendChild(style);
-  </script>
-  <script>
-// === FORCE PWA BANNER AFTER LOGIN ===
-let deferredPrompt;
-
-// Capture the install prompt (even if missed)
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-// Show banner 5 seconds after login
-auth.onAuthStateChanged(user => {
-  if (user && user.emailVerified) {
-    setTimeout(() => {
-      if (deferredPrompt) {
-        showInstallBanner(); // Your existing function
-      } else {
-        // Fallback button if prompt missed
-        showFallbackInstallButton();
-      }
-    }, 5000);
-  }
-});
-
-// Fallback button (always visible after login)
-function showFallbackInstallButton() {
-  if (document.getElementById('force-pwa')) return;
-  const btn = document.createElement('div');
-  btn.id = 'force-pwa';
-  btn.style.cssText = `
-    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    background:#00d2ff; color:white; padding:12px 24px; border-radius:50px;
-    font-size:14px; font-weight:600; z-index:100; cursor:pointer;
-    box-shadow:0 8px 20px rgba(0,210,255,0.4); text-align:center;
-  `;
-  btn.innerHTML = 'Add to Home Screen';
-  btn.onclick = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        deferredPrompt = null;
-        btn.remove();
-      });
-    } else {
-      alert('Open in Chrome (Android) or Safari (iPhone) to install');
+    function trackOnline() {
+      if (!currentUser) return;
+      const uid = currentUser.uid;
+      statusRef = db.collection('status').doc(uid);
+      statusRef.set({
+        online: true,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        email: currentUser.email.split('@')[0]
+      }, { merge: true });
     }
-  };
-  document.body.appendChild(btn);
-}
-  </script>
+
+    function trackOffline() {
+      if (statusRef) {
+        statusRef.update({ 
+          online: false,
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(() => {});
+      }
+    }
+
+    // Update auth listener to include tracking
+    const originalAuthHandler = auth.onAuthStateChanged;
+    auth.onAuthStateChanged(async (user) => {
+      if (user && user.emailVerified) {
+        currentUser = user;
+        trackOnline();
+        showLiveUsersCounter();
+        await loadUserProfile();
+        showSetupScreen();
+      } else if (user && !user.emailVerified) {
+        trackOffline();
+        showStatus('Please verify your email first', 'warning');
+        setTimeout(() => auth.signOut(), 3000);
+      } else {
+        trackOffline();
+        showLoginScreen();
+      }
+    });
+
+    window.addEventListener('beforeunload', trackOffline);
+    window.addEventListener('unload', trackOffline);
+
+    function showLiveUsersCounter() {
+      db.collection('status')
+        .where('online', '==', true)
+        .onSnapshot(snap => {
+          const count = snap.size;
+          let counter = document.getElementById('live-users-counter');
+          if (!counter) {
+            counter = document.createElement('div');
+            counter.id = 'live-users-counter';
+            counter.style.cssText = `
+              position: fixed; top: 80px; right: 20px; 
+              background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: white; 
+              padding: 10px 18px; border-radius: 25px; 
+              font-size: 13px; font-weight: 600;
+              z-index: 100; box-shadow: 0 4px 15px rgba(0,210,255,0.3);
+              backdrop-filter: blur(10px);
+              animation: fadeIn 0.5s ease;
+              pointer-events: none;
+            `;
+            document.body.appendChild(counter);
+          }
+          counter.innerHTML = `🟢 ${count} online`;
+        });
+    }
+
+    // === PWA INSTALL PROMPT ===
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    // Show PWA banner 5 seconds after login
+    const showPWAPrompt = () => {
+      setTimeout(() => {
+        if (deferredPrompt && !document.getElementById('pwa-banner')) {
+          showInstallBanner();
+        }
+      }, 5000);
+    };
+
+    function showInstallBanner() {
+      const banner = document.createElement('div');
+      banner.id = 'pwa-banner';
+      banner.style.cssText = `
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(26, 31, 58, 0.95); backdrop-filter: blur(20px);
+        color: white; padding: 15px 25px; border-radius: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;
+        font-size: 14px; display: flex; align-items: center; gap: 15px;
+        animation: slideUp 0.5s ease-out; max-width: 90%; border: 1px solid rgba(255,255,255,0.1);
+      `;
+      banner.innerHTML = `
+        <span>📱 Add HostelHub to Home Screen</span>
+        <button onclick="installPWA()" style="background: linear-gradient(135deg, #00d2ff, #3a7bd5); border: none; color: white; padding: 10px 20px; border-radius: 25px; font-weight: 600; cursor: pointer; pointer-events: auto;">
+          Install
+        </button>
+        <button onclick="this.parentElement.remove()" style="background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 20px; pointer-events: auto;">×</button>
+      `;
+      document.body.appendChild(banner);
+    }
+
+    window.installPWA = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('pwa-banner')?.remove();
+    };
+
+    // Trigger PWA prompt when user logs in
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      setTimeout(showPWAPrompt, 1000);
+    });
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes slideUp {
+        from { transform: translate(-50%, 100%); opacity: 0; }
+        to { transform: translateX(-50%); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
