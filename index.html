@@ -1529,7 +1529,7 @@ function showLiveUsersCounter() {
     }
 
     window.addEventListener('beforeunload', cleanup);
- 
+ <script>
   // PWA Install Banner
   let deferredPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -1571,7 +1571,8 @@ function showLiveUsersCounter() {
   const style = document.createElement('style');
   style.textContent = `@keyframes slideUp { from { transform:translate(-50%,100%); opacity:0; } to { transform:translateX(-50%); opacity:1; } }`;
   document.head.appendChild(style);
-
+  </script>
+  <script>
 // === FORCE PWA BANNER AFTER LOGIN ===
 let deferredPrompt;
 
@@ -1603,7 +1604,7 @@ function showFallbackInstallButton() {
   btn.style.cssText = `
     position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
     background:#00d2ff; color:white; padding:12px 24px; border-radius:50px;
-    font-size:14px; font-weight:600; z-index:9999; cursor:pointer;
+    font-size:14px; font-weight:600; z-index:100; cursor:pointer;
     box-shadow:0 8px 20px rgba(0,210,255,0.4); text-align:center;
   `;
   btn.innerHTML = 'Add to Home Screen';
@@ -1620,7 +1621,7 @@ function showFallbackInstallButton() {
   };
   document.body.appendChild(btn);
 }
-
+  </script>
   </script>
 </body>
 </html>
