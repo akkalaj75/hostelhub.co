@@ -64,12 +64,12 @@
     body {
       background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
       color: #fff; font-family: 'Inter', sans-serif;
-      min-height: 100vh; overflow-x: hidden;
+      min-block-size: 100vh; overflow-x: hidden;
     }
 
     /* Animated Background */
     .bg-animated {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      position: fixed; inset-block-start: 0; inset-inline-start: 0; inline-size: 100%; block-size: 100%;
       background: radial-gradient(circle at 20% 50%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
                   radial-gradient(circle at 80% 80%, rgba(58, 123, 213, 0.15) 0%, transparent 50%);
       z-index: 0; animation: pulse 8s ease-in-out infinite;
@@ -83,9 +83,9 @@
 
     /* Navigation */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; inset-block-start: 0; inset-inline-start: 0; inset-inline-end: 0; z-index: 100;
       padding: 20px 5%; backdrop-filter: blur(20px);
-      background: rgba(10, 14, 39, 0.8); border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(10, 14, 39, 0.8); border-block-end: 1px solid rgba(255,255,255,0.1);
       display: flex; justify-content: space-between; align-items: center;
     }
     
@@ -125,12 +125,12 @@
     /* Hero Section */
     .hero {
       position: relative; z-index: 1; padding: 150px 5% 80px;
-      text-align: center; max-width: 1200px; margin: 0 auto;
+      text-align: center; max-inline-size: 1200px; margin: 0 auto;
     }
     
     .hero h1 {
       font-size: clamp(32px, 6vw, 72px); font-weight: 800;
-      line-height: 1.1; margin-bottom: 20px;
+      line-height: 1.1; margin-block-end: 20px;
       background: linear-gradient(135deg, #ffffff, #00d2ff);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       animation: fadeInUp 1s ease;
@@ -138,7 +138,7 @@
     
     .hero p {
       font-size: clamp(16px, 2vw, 24px); color: #aaa;
-      max-width: 700px; margin: 0 auto 40px;
+      max-inline-size: 700px; margin: 0 auto 40px;
       animation: fadeInUp 1s ease 0.2s both;
       line-height: 1.6;
     }
@@ -151,7 +151,7 @@
     /* Features */
     .features {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px; padding: 60px 5%; max-width: 1200px; margin: 0 auto;
+      gap: 30px; padding: 60px 5%; max-inline-size: 1200px; margin: 0 auto;
       position: relative; z-index: 1;
     }
     
@@ -169,12 +169,12 @@
     }
     
     .feature-icon {
-      font-size: 48px; margin-bottom: 20px;
+      font-size: 48px; margin-block-end: 20px;
       filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.5));
     }
     
     .feature-card h3 {
-      font-size: 22px; margin-bottom: 15px; color: #fff;
+      font-size: 22px; margin-block-end: 15px; color: #fff;
     }
     
     .feature-card p {
@@ -202,7 +202,7 @@
 
     /* Modal/Container for App */
     .app-modal {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      display: none; position: fixed; inset-block-start: 0; inset-inline-start: 0; inset-inline-end: 0; inset-block-end: 0;
       background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
       z-index: 1000; align-items: center; justify-content: center;
       padding: 20px; overflow-y: auto;
@@ -213,7 +213,7 @@
     .app-container {
       background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(20px);
       border-radius: 30px; padding: 50px 40px;
-      width: 100%; max-width: 500px;
+      inline-size: 100%; max-inline-size: 500px;
       border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
       position: relative; animation: slideUp 0.5s ease;
@@ -226,17 +226,17 @@
     }
     
     .close-btn {
-      position: absolute; top: 20px; right: 20px;
+      position: absolute; inset-block-start: 20px; inset-inline-end: 20px;
       font-size: 30px; cursor: pointer; color: #888;
       transition: color 0.3s; background: none; border: none;
-      line-height: 1; padding: 0; width: 30px; height: 30px;
+      line-height: 1; padding: 0; inline-size: 30px; block-size: 30px;
     }
     
     .close-btn:hover { color: #ff6b6b; }
 
     /* Form Styling */
     input, select, button, textarea {
-      width: 100%; padding: 16px 20px; margin: 12px 0;
+      inline-size: 100%; padding: 16px 20px; margin: 12px 0;
       border-radius: 15px; font-size: 16px; font-family: 'Inter', sans-serif;
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(22, 33, 62, 0.5); color: #fff;
@@ -269,9 +269,9 @@
     .btn-warning { background: linear-gradient(135deg, #ffa500, #ff8c00); }
     .btn-report { background: linear-gradient(135deg, #ff4444, #cc0000); font-size: 14px; }
 
-    .subtitle { color: #888; font-size: 15px; margin-bottom: 30px; }
-    #status { margin-top: 20px; font-size: 15px; min-height: 24px; color: #ffd43b; font-weight: 500; }
-    .safety-note { font-size: 13px; color: #666; margin-top: 15px; line-height: 1.6; }
+    .subtitle { color: #888; font-size: 15px; margin-block-end: 30px; }
+    #status { margin-block-start: 20px; font-size: 15px; min-block-size: 24px; color: #ffd43b; font-weight: 500; }
+    .safety-note { font-size: 13px; color: #666; margin-block-start: 15px; line-height: 1.6; }
     .warning { color: #ff6b6b; }
 
     .comm-types {
@@ -293,16 +293,16 @@
       box-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
     }
     
-    .comm-type-icon { font-size: 32px; margin-bottom: 8px; }
+    .comm-type-icon { font-size: 32px; margin-block-end: 8px; }
     .comm-type-label { font-size: 14px; font-weight: 600; }
 
-    .interests-section { margin: 25px 0; text-align: left; }
-    .interests-label { font-size: 14px; color: #888; margin-bottom: 12px; font-weight: 500; }
-    .interests-input { display: flex; gap: 10px; margin-bottom: 12px; }
+    .interests-section { margin: 25px 0; text-align: start; }
+    .interests-label { font-size: 14px; color: #888; margin-block-end: 12px; font-weight: 500; }
+    .interests-input { display: flex; gap: 10px; margin-block-end: 12px; }
     .interests-input input { flex: 1; margin: 0; }
-    .interests-input button { width: auto; padding: 16px 24px; margin: 0; }
+    .interests-input button { inline-size: auto; padding: 16px 24px; margin: 0; }
     
-    .interest-tags { display: flex; flex-wrap: wrap; gap: 10px; min-height: 40px; }
+    .interest-tags { display: flex; flex-wrap: wrap; gap: 10px; min-block-size: 40px; }
     .interest-tag {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       color: #fff; padding: 8px 16px; border-radius: 25px;
@@ -311,7 +311,7 @@
     }
     .interest-tag .remove { cursor: pointer; font-size: 18px; font-weight: bold; }
 
-    #video-container, #chat-container { display: none; margin-top: 20px; }
+    #video-container, #chat-container { display: none; margin-block-start: 20px; }
     
     #videos {
       display: flex; flex-direction: column; gap: 15px;
@@ -319,26 +319,26 @@
     }
     
     #local-video, #remote-video {
-      width: 100%; background: #000; border-radius: 20px; object-fit: cover;
+      inline-size: 100%; background: #000; border-radius: 20px; object-fit: cover;
     }
     
-    #remote-video { height: 350px; }
+    #remote-video { block-size: 350px; }
     
     #local-video {
-      height: 140px; border: 3px solid #00d2ff;
-      position: absolute; bottom: 15px; right: 15px;
-      width: 160px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      block-size: 140px; border: 3px solid #00d2ff;
+      position: absolute; inset-block-end: 15px; inset-inline-end: 15px;
+      inline-size: 160px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     #chat-messages {
-      height: 400px; overflow-y: auto;
+      block-size: 400px; overflow-y: auto;
       background: rgba(22, 33, 62, 0.3); border-radius: 20px;
-      padding: 20px; margin-bottom: 15px; text-align: left;
+      padding: 20px; margin-block-end: 15px; text-align: start;
     }
     
     .message {
-      margin-bottom: 15px; padding: 12px 16px; border-radius: 15px;
-      max-width: 80%; word-wrap: break-word; animation: messageIn 0.3s ease;
+      margin-block-end: 15px; padding: 12px 16px; border-radius: 15px;
+      max-inline-size: 80%; word-wrap: break-word; animation: messageIn 0.3s ease;
     }
     
     @keyframes messageIn {
@@ -348,24 +348,24 @@
     
     .message.local {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      color: #fff; margin-left: auto; text-align: right;
+      color: #fff; margin-inline-start: auto; text-align: end;
     }
     
     .message.remote { background: rgba(42, 42, 62, 0.8); color: #fff; }
-    .message.system { background: transparent; color: #666; font-size: 13px; text-align: center; max-width: 100%; }
+    .message.system { background: transparent; color: #666; font-size: 13px; text-align: center; max-inline-size: 100%; }
     
     #chat-input-area { display: flex; gap: 12px; }
     #chat-input { flex: 1; margin: 0; }
-    #send-btn { width: auto; padding: 16px 30px; margin: 0; }
+    #send-btn { inline-size: auto; padding: 16px 30px; margin: 0; }
 
     .video-controls, .chat-controls {
-      display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
+      display: flex; gap: 12px; margin-block-start: 20px; flex-wrap: wrap;
     }
-    .video-controls button, .chat-controls button { flex: 1; min-width: 90px; font-size: 14px; }
+    .video-controls button, .chat-controls button { flex: 1; min-inline-size: 90px; font-size: 14px; }
 
     .connection-status {
       font-size: 13px; padding: 12px; border-radius: 12px;
-      margin-top: 15px; background: rgba(42, 42, 62, 0.5);
+      margin-block-start: 15px; background: rgba(42, 42, 62, 0.5);
       backdrop-filter: blur(10px); font-weight: 500;
     }
     
@@ -384,17 +384,17 @@
 
     .stranger-info {
       background: rgba(42, 42, 62, 0.5); backdrop-filter: blur(10px);
-      padding: 15px; border-radius: 15px; margin-bottom: 18px;
+      padding: 15px; border-radius: 15px; margin-block-end: 18px;
       font-size: 14px; border: 1px solid rgba(255,255,255,0.1);
     }
     
-    .stranger-interests { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .stranger-interests { margin-block-start: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
     .stranger-interests .tag {
       background: rgba(74, 222, 128, 0.2); color: #4ade80;
       padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;
     }
 
-    .blocked-section { margin: 18px 0; text-align: left; }
+    .blocked-section { margin: 18px 0; text-align: start; }
     .blocked-user {
       background: rgba(42, 42, 62, 0.5); padding: 12px; border-radius: 12px;
       margin: 8px 0; display: flex; justify-content: space-between; align-items: center;
@@ -408,7 +408,7 @@
 
     /* Report Modal */
     .modal {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      display: none; position: fixed; inset-block-start: 0; inset-inline-start: 0; inset-inline-end: 0; inset-block-end: 0;
       background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
       z-index: 2000; align-items: center; justify-content: center; padding: 20px;
     }
@@ -416,49 +416,49 @@
     
     .modal-content {
       background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(20px);
-      padding: 40px; border-radius: 25px; max-width: 450px; width: 100%;
+      padding: 40px; border-radius: 25px; max-inline-size: 450px; inline-size: 100%;
       border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
     }
     
     .modal-content h3 {
-      margin-bottom: 25px; color: #00d2ff; font-size: 24px;
+      margin-block-end: 25px; color: #00d2ff; font-size: 24px;
     }
     
-    .modal-content textarea { min-height: 120px; margin: 18px 0; }
+    .modal-content textarea { min-block-size: 120px; margin: 18px 0; }
     
-    .modal-buttons { display: flex; gap: 12px; margin-top: 25px; }
+    .modal-buttons { display: flex; gap: 12px; margin-block-start: 25px; }
     .modal-buttons button { flex: 1; margin: 0; }
 
     /* Footer */
     footer {
       text-align: center; padding: 40px 5%; background: rgba(10, 14, 39, 0.8);
-      border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;
+      border-block-start: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;
     }
     
     footer p { color: #666; font-size: 14px; }
 
     /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-inline-size: 768px) {
       nav { padding: 15px 5%; }
       .nav-links { display: none; }
       .menu-toggle { display: block; }
       .nav-links.active {
         display: flex; flex-direction: column; position: absolute;
-        top: 70px; left: 0; right: 0; background: rgba(10, 14, 39, 0.98);
+        inset-block-start: 70px; inset-inline-start: 0; inset-inline-end: 0; background: rgba(10, 14, 39, 0.98);
         padding: 20px; gap: 20px;
       }
       .hero { padding: 120px 5% 60px; }
       .hero h1 { font-size: 32px; }
       .features { grid-template-columns: 1fr; }
       .app-container { padding: 30px 25px; }
-      #remote-video { height: 250px; }
-      #local-video { width: 120px; height: 100px; }
+      #remote-video { block-size: 250px; }
+      #local-video { inline-size: 120px; block-size: 100px; }
       .cta-btn { font-size: 18px; padding: 16px 40px; }
       .video-controls button, .chat-controls button { font-size: 13px; padding: 12px; }
     }
 
-    @media (max-width: 480px) {
+    @media (max-inline-size: 480px) {
       .app-container { padding: 25px 20px; }
       .comm-types { grid-template-columns: 1fr; }
       .comm-type { padding: 15px; }
@@ -471,7 +471,7 @@
 
   <!-- Navigation -->
   <nav>
-    <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">HostelHub</div>
+    <div class="logo" onclick="window.scrollTo({inset-block-start: 0, behavior: 'smooth'})">HostelHub</div>
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     <div class="nav-links" id="navLinks">
       <a onclick="scrollToFeatures(event)">Features</a>
@@ -523,8 +523,8 @@
 
   <!-- CTA -->
   <section class="cta-section" id="cta-section">
-    <h2 style="font-size: clamp(32px, 5vw, 42px); margin-bottom: 20px;">Ready to make new friends?</h2>
-    <p style="color: #888; margin-bottom: 40px; font-size: clamp(16px, 2vw, 18px);">Join thousands of students connecting daily</p>
+    <h2 style="font-size: clamp(32px, 5vw, 42px); margin-block-end: 20px;">Ready to make new friends?</h2>
+    <p style="color: #888; margin-block-end: 40px; font-size: clamp(16px, 2vw, 18px);">Join thousands of students connecting daily</p>
     <button class="cta-btn" onclick="openApp()">Launch HostelHub →</button>
   </section>
 
@@ -538,8 +538,8 @@
     <div class="app-container">
       <button class="close-btn" onclick="closeApp()">×</button>
       
-      <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 32px; margin-bottom: 10px;">HostelHub</h1>
+      <div style="text-align: center; margin-block-end: 30px;">
+        <h1 style="font-size: 32px; margin-block-end: 10px;">HostelHub</h1>
         <p class="subtitle">Connect with students anonymously</p>
       </div>
 
@@ -1238,7 +1238,7 @@
     async function startCall(isInitiator) {
       try {
         const constraints = commType === 'video' 
-          ? { video: { width: 640, height: 480 }, audio: true }
+          ? { video: { inline-size: 640, block-size: 480 }, audio: true }
           : { video: false, audio: true };
         
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1538,7 +1538,7 @@
             counter = document.createElement('div');
             counter.id = 'live-users-counter';
             counter.style.cssText = `
-              position: fixed; top: 80px; right: 20px; 
+              position: fixed; inset-block-start: 80px; inset-inline-end: 20px; 
               background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: white; 
               padding: 10px 18px; border-radius: 25px; 
               font-size: 13px; font-weight: 600;
@@ -1574,12 +1574,12 @@
       const banner = document.createElement('div');
       banner.id = 'pwa-banner';
       banner.style.cssText = `
-        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        position: fixed; inset-block-end: 20px; inset-inline-start: 50%; transform: translateX(-50%);
         background: rgba(26, 31, 58, 0.95); backdrop-filter: blur(20px);
         color: white; padding: 15px 25px; border-radius: 50px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100;
         font-size: 14px; display: flex; align-items: center; gap: 15px;
-        animation: slideUp 0.5s ease-out; max-width: 90%; border: 1px solid rgba(255,255,255,0.1);
+        animation: slideUp 0.5s ease-out; max-inline-size: 90%; border: 1px solid rgba(255,255,255,0.1);
       `;
       banner.innerHTML = `
         <span>📱 Add HostelHub to Home Screen</span>
