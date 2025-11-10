@@ -287,6 +287,39 @@
       input, select, button { font-size: 14px; padding: 14px 16px; }
     }
   </style>
+      @media (max-width: 480px) {
+      .app-container { padding: 25px 20px; }
+      .comm-types { grid-template-columns: 1fr; }
+      .comm-type { padding: 15px; }
+      input, select, button { font-size: 14px; padding: 14px 16px; }
+    }
+  </style>
+
+  <!-- CLICKABLE FIX: All buttons work, banners don't block -->
+  <style>
+    /* === CLICKABLE FIX — DO NOT DELETE === */
+    button, select, input, [onclick], .btn, .nav-cta, .cta-btn, .feature-card, .comm-type, .close-btn, .modal, .modal *, #live-users-counter, #pwa-banner {
+      position: relative !important;
+      z-index: 1000 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+
+    #pwa-banner, #live-users-counter {
+      pointer-events: none;
+      z-index: 100 !important;
+    }
+
+    #pwa-banner button, #live-users-counter button {
+      pointer-events: auto !important;
+      z-index: 1001 !important;
+    }
+
+    .app-container, #login-screen, #setup-screen, #video-container, #chat-container {
+      z-index: 500 !important;
+      position: relative !important;
+    }
+  </style>
 </head>
 <body>
   <div class="bg-animated"></div>
