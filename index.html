@@ -1109,11 +1109,6 @@ auth.onAuthStateChanged(async (user) => {
       // Log out after a delay to prevent unauthorized access
       setTimeout(() => auth.signOut(), 5000);
     }
-  } else {
-    trackOffline();
-    showLoginScreen();
-  }
-});
       } else {
         trackOffline();
         showLoginScreen();
@@ -1261,14 +1256,14 @@ window.resendVerification = async function() {
 
       matchListener = query.onSnapshot(async (snapshot) => {
         matchCheckCount++;
-      /*  
+        
         const users = snapshot.docs.filter(doc => {
           const uid = doc.id;
           const data = doc.data();
           return uid !== userId && !blockedUsers.includes(uid) &&
           data.gender === gender;
         });
-        */
+        
         showStatus(`Finding match... (${users.length} others waiting)`, 'info');
         
         if (users.length > 0 && !attemptedMatch) {
