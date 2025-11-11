@@ -37,8 +37,10 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at 20% 50%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
                   radial-gradient(circle at 80% 80%, rgba(58, 123, 213, 0.15) 0%, transparent 50%);
-      z-index: 0; animation: pulse 8s ease-in-out infinite;
+      z-index: 0; 
+      animation: pulse 8s ease-in-out infinite;
       pointer-events: none;
+      pointer-events: none !important;
     }
     
     @keyframes pulse {
@@ -624,7 +626,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     <div class="nav-links" id="navLinks">
       <a onclick="scrollToFeatures(event)">Features</a>
       <a onclick="scrollToSection(event, 'cta-section')">About</a>
-      <a class="nav-cta" onclick="event.preventDefault(); openApp();">Get Started</a>
+      <a class="nav-cta" onclick="openApp()">Get Started</a>
     </div>
   </nav>
 
