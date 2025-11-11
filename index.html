@@ -614,6 +614,22 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
   }
 });
+    // === GLOBAL SCOPE FIX ===
+window.openApp = openApp;
+window.closeApp = closeApp;
+window.toggleMenu = toggleMenu;
+window.scrollToFeatures = scrollToFeatures;
+window.scrollToSection = scrollToSection;
+window.removeInterest = removeInterest;
+window.unblockUser = unblockUser;
+window.copyReferralLink = copyReferralLink;
+window.shareReferralLink = shareReferralLink;
+window.closeReferralPopup = closeReferralPopup;
+window.showReferralPopup = showReferralPopup;
+window.resendVerification = resendVerification;
+
+console.log('✅ All functions exposed to global scope');
+console.log('openApp test:', typeof window.openApp); // Should log "function"
 </script>
 </head>
 <body>
