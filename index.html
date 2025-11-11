@@ -570,7 +570,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
       <button class="pwa-install-btn" onclick="installPWA()">Install</button>
       <button class="pwa-close-btn" onclick="dismissBanner()">×</button>
     </div>
-  
+  `; 
   document.body.appendChild(banner);
 });
 
@@ -626,7 +626,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
     <div class="nav-links" id="navLinks">
       <a onclick="scrollToFeatures(event)">Features</a>
       <a onclick="scrollToSection(event, 'cta-section')">About</a>
-      <a class="nav-cta" onclick="openApp()">Get Started</a>
+     <a class="nav-cta" onclick="openApp(); return false;">Get Started</a>
+
     </div>
   </nav>
 
@@ -783,7 +784,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
         </div>
         
         <div id="videos">
-          <video id="remote-video" autoplay playsinline controls></video>
+          <video id="remote-video" autoplay playsinline></video>
           <video id="local-video" autoplay playsinline muted></video>
         </div>
         
