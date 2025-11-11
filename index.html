@@ -8,19 +8,57 @@
   <meta name="author" content="HostelHub">
   <meta name="theme-color" content="#0a0e27">
   
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
   
+  <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="HostelHub - Connect with College Students">
   <meta property="og:description" content="Video chat, voice call, or text with verified college students anonymously. Safe and fun!">
+  <meta property="og:url" content="https://hostelhub.co">
   
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HostelHub - Connect Anonymously">
+  <meta name="twitter:description" content="Video chat with college students safely and anonymously">
+  
+  <!-- PWA / Mobile -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HostelHub">
-  
-  <title>HostelHub - Connect with College Students Anonymously</title>
 
+  <!-- CLICKABLE FIX: All buttons work, banners don't block -->
+  <style>
+    /* === CLICKABLE FIX — DO NOT DELETE === */
+    button, select, input, [onclick], .btn, .nav-cta, .cta-btn, .feature-card, .comm-type, .close-btn, .modal, .modal *, #live-users-counter, #pwa-banner {
+      position: relative !important;
+      z-index: 1000 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+
+    #pwa-banner, #live-users-counter, .bg-animated {
+      pointer-events: none;
+      z-index: 100 !important;
+    }
+
+    #pwa-banner button, #live-users-counter button {
+      pointer-events: auto !important;
+      z-index: 1001 !important;
+    }
+
+    .app-container, #login-screen, #setup-screen, #video-container, #chat-container {
+      z-index: 500 !important;
+      position: relative !important;
+    }
+
+    body, .app-modal {
+      overflow: visible !important;
+    }
+  </style>
+
+  <title>HostelHub - Connect with College Students Anonymously</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
@@ -32,43 +70,39 @@
       color: #fff; font-family: 'Inter', sans-serif;
       min-height: 100vh; overflow-x: hidden;
     }
-
     .bg-animated {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at 20% 50%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
                   radial-gradient(circle at 80% 80%, rgba(58, 123, 213, 0.15) 0%, transparent 50%);
-      z-index: 0; 
-      animation: pulse 8s ease-in-out infinite;
+      z-index: 0; animation: pulse 8s ease-in-out infinite;
       pointer-events: none;
-      pointer-events: none !important;
     }
-    
+   
     @keyframes pulse {
       0%, 100% { opacity: 0.5; }
       50% { opacity: 0.8; }
     }
-
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 20px 5%; backdrop-filter: blur(20px);
       background: rgba(10, 14, 39, 0.8); border-bottom: 1px solid rgba(255,255,255,0.1);
       display: flex; justify-content: space-between; align-items: center;
     }
-    
+   
     .logo {
       font-size: 24px; font-weight: 800;
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       cursor: pointer;
     }
-    
+   
     .nav-links { display: flex; gap: 30px; align-items: center; }
     .nav-links a {
       color: #aaa; text-decoration: none; font-weight: 500;
       transition: color 0.3s; cursor: pointer;
     }
     .nav-links a:hover { color: #00d2ff; }
-    
+   
     .nav-cta {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       padding: 12px 30px; border-radius: 30px; color: #fff !important;
@@ -78,14 +112,12 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4);
     }
-
     .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: #fff; }
-
     .hero {
       position: relative; z-index: 1; padding: 150px 5% 80px;
       text-align: center; max-width: 1200px; margin: 0 auto;
     }
-    
+   
     .hero h1 {
       font-size: clamp(32px, 6vw, 72px); font-weight: 800;
       line-height: 1.1; margin-bottom: 20px;
@@ -93,48 +125,46 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       animation: fadeInUp 1s ease;
     }
-    
+   
     .hero p {
       font-size: clamp(16px, 2vw, 24px); color: #aaa;
       max-width: 700px; margin: 0 auto 40px;
       animation: fadeInUp 1s ease 0.2s both; line-height: 1.6;
     }
-    
+   
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .features {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 30px; padding: 60px 5%; max-width: 1200px; margin: 0 auto;
       position: relative; z-index: 1;
     }
-    
+   
     .feature-card {
       background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
       padding: 40px 30px; text-align: center; transition: all 0.4s; cursor: pointer;
     }
-    
+   
     .feature-card:hover {
       transform: translateY(-10px);
       border-color: rgba(0, 210, 255, 0.5);
       box-shadow: 0 20px 60px rgba(0, 210, 255, 0.2);
     }
-    
+   
     .feature-icon {
       font-size: 48px; margin-bottom: 20px;
       filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.5));
     }
-    
+   
     .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: #fff; }
     .feature-card p { color: #888; font-size: 15px; line-height: 1.6; }
-
     .cta-section {
       text-align: center; padding: 80px 5%; position: relative; z-index: 1;
     }
-    
+   
     .cta-btn {
       display: inline-block;
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -143,12 +173,11 @@
       transition: all 0.3s; border: none; cursor: pointer;
       box-shadow: 0 10px 40px rgba(0, 210, 255, 0.3);
     }
-    
+   
     .cta-btn:hover {
       transform: translateY(-5px) scale(1.05);
       box-shadow: 0 20px 60px rgba(0, 210, 255, 0.5);
     }
-
     .app-modal {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px);
@@ -156,7 +185,7 @@
       padding: 20px; overflow-y: auto;
     }
     .app-modal.active { display: flex; }
-    
+   
     .app-container {
       background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(20px);
       border-radius: 30px; padding: 50px 40px; width: 100%; max-width: 500px;
@@ -164,12 +193,12 @@
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
       position: relative; animation: slideUp 0.5s ease; margin: auto;
     }
-    
+   
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(50px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+   
     .close-btn {
       position: absolute; top: 20px; right: 20px;
       font-size: 30px; cursor: pointer; color: #888;
@@ -177,70 +206,66 @@
       line-height: 1; padding: 0; width: 30px; height: 30px;
     }
     .close-btn:hover { color: #ff6b6b; }
-
     input, select, button, textarea {
       width: 100%; padding: 16px 20px; margin: 12px 0;
       border-radius: 15px; font-size: 16px; font-family: 'Inter', sans-serif;
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(22, 33, 62, 0.5); color: #fff; transition: all 0.3s;
     }
-    
+   
     input:focus, select:focus, textarea:focus {
       outline: none; border-color: #00d2ff;
       box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
     }
-    
+   
     button {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       border: none; font-weight: 600; cursor: pointer;
       box-shadow: 0 5px 20px rgba(0, 210, 255, 0.3);
     }
-    
+   
     button:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0, 210, 255, 0.5);
     }
-    
+   
     button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    
+   
     .btn-secondary { background: rgba(68, 68, 68, 0.5); backdrop-filter: blur(10px); }
     .btn-danger { background: linear-gradient(135deg, #ff6b6b, #ff4444); }
     .btn-warning { background: linear-gradient(135deg, #ffa500, #ff8c00); }
     .btn-report { background: linear-gradient(135deg, #ff4444, #cc0000); font-size: 14px; }
-
     .subtitle { color: #888; font-size: 15px; margin-bottom: 30px; }
     #status { margin-top: 20px; font-size: 15px; min-height: 24px; color: #ffd43b; font-weight: 500; }
     .safety-note { font-size: 13px; color: #666; margin-top: 15px; line-height: 1.6; }
     .warning { color: #ff6b6b; }
-
     .comm-types {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 15px; margin: 25px 0;
     }
-    
+   
     .comm-type {
       padding: 20px 15px; border-radius: 15px;
       border: 2px solid rgba(255,255,255,0.1);
       background: rgba(22, 33, 62, 0.3); cursor: pointer;
       transition: all 0.3s; text-align: center;
     }
-    
+   
     .comm-type:hover { border-color: rgba(0, 210, 255, 0.5); transform: translateY(-3px); }
     .comm-type.active {
       border-color: #00d2ff;
       background: rgba(0, 210, 255, 0.1);
       box-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
     }
-    
+   
     .comm-type-icon { font-size: 32px; margin-bottom: 8px; }
     .comm-type-label { font-size: 14px; font-weight: 600; }
-
     .interests-section { margin: 25px 0; text-align: left; }
     .interests-label { font-size: 14px; color: #888; margin-bottom: 12px; font-weight: 500; }
     .interests-input { display: flex; gap: 10px; margin-bottom: 12px; }
     .interests-input input { flex: 1; margin: 0; }
     .interests-input button { width: auto; padding: 16px 24px; margin: 0; }
-    
+   
     .interest-tags { display: flex; flex-wrap: wrap; gap: 10px; min-height: 40px; }
     .interest-tag {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -249,90 +274,82 @@
       display: inline-flex; align-items: center; gap: 10px;
     }
     .interest-tag .remove { cursor: pointer; font-size: 18px; font-weight: bold; }
-
     #video-container, #chat-container { display: none; margin-top: 20px; }
-    
+   
     #videos {
       display: flex; flex-direction: column; gap: 15px;
       position: relative; border-radius: 20px; overflow: hidden;
     }
-    
+   
     #local-video, #remote-video {
       width: 100%; background: #000; border-radius: 20px; object-fit: cover;
     }
-    
+   
     #remote-video { height: 350px; }
-    
+   
     #local-video {
       height: 140px; border: 3px solid #00d2ff;
       position: absolute; bottom: 15px; right: 15px;
       width: 160px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-
     #chat-messages {
       height: 400px; overflow-y: auto;
       background: rgba(22, 33, 62, 0.3); border-radius: 20px;
       padding: 20px; margin-bottom: 15px; text-align: left;
     }
-    
+   
     .message {
       margin-bottom: 15px; padding: 12px 16px; border-radius: 15px;
       max-width: 80%; word-wrap: break-word; animation: messageIn 0.3s ease;
     }
-    
+   
     @keyframes messageIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+   
     .message.local {
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       color: #fff; margin-left: auto; text-align: right;
     }
-    
+   
     .message.remote { background: rgba(42, 42, 62, 0.8); color: #fff; }
     .message.system { background: transparent; color: #666; font-size: 13px; text-align: center; max-width: 100%; }
-    
+   
     #chat-input-area { display: flex; gap: 12px; }
     #chat-input { flex: 1; margin: 0; }
     #send-btn { width: auto; padding: 16px 30px; margin: 0; }
-
     .video-controls, .chat-controls {
       display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
     }
     .video-controls button, .chat-controls button { flex: 1; min-width: 90px; font-size: 14px; }
-
     .connection-status {
       font-size: 13px; padding: 12px; border-radius: 12px;
       margin-top: 15px; background: rgba(42, 42, 62, 0.5);
       backdrop-filter: blur(10px); font-weight: 500;
     }
-    
+   
     .quality-good { color: #4ade80; }
     .quality-fair { color: #ffd43b; }
     .quality-poor { color: #ff6b6b; }
-
     .screen { display: none; }
     .screen.active { display: block; }
-
     .verify-notice {
       background: rgba(42, 42, 62, 0.5); backdrop-filter: blur(10px);
       padding: 18px; border-radius: 15px; margin: 18px 0;
       font-size: 14px; line-height: 1.6; border: 1px solid rgba(255,255,255,0.1);
     }
-
     .stranger-info {
       background: rgba(42, 42, 62, 0.5); backdrop-filter: blur(10px);
       padding: 15px; border-radius: 15px; margin-bottom: 18px;
       font-size: 14px; border: 1px solid rgba(255,255,255,0.1);
     }
-    
+   
     .stranger-interests { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
     .stranger-interests .tag {
       background: rgba(74, 222, 128, 0.2); color: #4ade80;
       padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;
     }
-
     .blocked-section { margin: 18px 0; text-align: left; }
     .blocked-user {
       background: rgba(42, 42, 62, 0.5); padding: 12px; border-radius: 12px;
@@ -344,26 +361,24 @@
       color: #fff; padding: 6px 18px; border-radius: 8px;
       font-size: 12px; cursor: pointer; font-weight: 600;
     }
-
     .modal {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
       z-index: 2000; align-items: center; justify-content: center; padding: 20px;
     }
     .modal.active { display: flex; }
-    
+   
     .modal-content {
       background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(20px);
       padding: 40px; border-radius: 25px; max-width: 450px; width: 100%;
       border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
     }
-    
+   
     .modal-content h3 { margin-bottom: 25px; color: #00d2ff; font-size: 24px; }
     .modal-content textarea { min-height: 120px; margin: 18px 0; }
     .modal-buttons { display: flex; gap: 12px; margin-top: 25px; }
     .modal-buttons button { flex: 1; margin: 0; }
-
     #live-users-counter {
       position: fixed; top: 80px; right: 20px;
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -373,18 +388,15 @@
       pointer-events: none; display: none;
       animation: fadeIn 0.5s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     footer {
       text-align: center; padding: 40px 5%; background: rgba(10, 14, 39, 0.8);
       border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;
     }
     footer p { color: #666; font-size: 14px; }
-
     @media (max-width: 768px) {
       nav { padding: 15px 5%; }
       .nav-links { display: none; }
@@ -403,20 +415,19 @@
       .cta-btn { font-size: 18px; padding: 16px 40px; }
       #live-users-counter { top: 70px; right: 10px; font-size: 11px; padding: 8px 14px; }
     }
-
     @media (max-width: 480px) {
       .app-container { padding: 25px 20px; }
       .comm-types { grid-template-columns: 1fr; }
+      .comm-type { padding: 15px; }
       input, select, button { font-size: 14px; padding: 14px 16px; }
     }
     </style>
   <script>
           let deferredPrompt;
-
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  
+ 
   // Create banner with smooth entrance animation
   const banner = document.createElement('div');
   banner.id = 'pwa-banner';
@@ -432,7 +443,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
           opacity: 1;
         }
       }
-      
+     
       @keyframes pulse {
         0%, 100% {
           box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4);
@@ -441,7 +452,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
           box-shadow: 0 0 0 8px rgba(0, 210, 255, 0);
         }
       }
-      
+     
       #pwa-banner-content {
         position: fixed;
         bottom: 20px;
@@ -461,7 +472,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
         animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
-      
+     
       .pwa-icon {
         font-size: 32px;
         width: 48px;
@@ -473,25 +484,25 @@ window.addEventListener('beforeinstallprompt', (e) => {
         border-radius: 12px;
         flex-shrink: 0;
       }
-      
+     
       .pwa-info {
         flex: 1;
         min-width: 0;
       }
-      
+     
       .pwa-title {
         font-weight: 600;
         color: #fff;
         font-size: 15px;
         margin: 0 0 2px 0;
       }
-      
+     
       .pwa-subtitle {
         font-size: 12px;
         color: #888;
         margin: 0;
       }
-      
+     
       .pwa-install-btn {
         background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
         color: white;
@@ -505,16 +516,16 @@ window.addEventListener('beforeinstallprompt', (e) => {
         white-space: nowrap;
         animation: pulse 2s infinite;
       }
-      
+     
       .pwa-install-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3);
       }
-      
+     
       .pwa-install-btn:active {
         transform: translateY(0);
       }
-      
+     
       .pwa-close-btn {
         background: transparent;
         color: #888;
@@ -531,36 +542,36 @@ window.addEventListener('beforeinstallprompt', (e) => {
         transition: all 0.2s ease;
         flex-shrink: 0;
       }
-      
+     
       .pwa-close-btn:hover {
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
       }
-      
+     
       @media (max-width: 480px) {
         #pwa-banner-content {
           bottom: 10px;
           padding: 12px 16px;
           gap: 12px;
         }
-        
+       
         .pwa-icon {
           font-size: 24px;
           width: 40px;
           height: 40px;
         }
-        
+       
         .pwa-title {
           font-size: 14px;
         }
-        
+       
         .pwa-install-btn {
           padding: 8px 16px;
           font-size: 13px;
         }
       }
     </style>
-    
+   
     <div id="pwa-banner-content">
       <div class="pwa-icon">📱</div>
       <div class="pwa-info">
@@ -570,39 +581,36 @@ window.addEventListener('beforeinstallprompt', (e) => {
       <button class="pwa-install-btn" onclick="installPWA()">Install</button>
       <button class="pwa-close-btn" onclick="dismissBanner()">×</button>
     </div>
-  `; 
+ 
   document.body.appendChild(banner);
 });
-
 window.installPWA = async () => {
   if (!deferredPrompt) return;
-  
+ 
   const installBtn = document.querySelector('.pwa-install-btn');
   if (installBtn) {
     installBtn.textContent = 'Installing...';
     installBtn.disabled = true;
   }
-  
+ 
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  
+ 
   console.log(`User ${outcome === 'accepted' ? 'accepted' : 'dismissed'} the install prompt`);
-  
+ 
   deferredPrompt = null;
   document.getElementById('pwa-banner')?.remove();
 };
-
 window.dismissBanner = () => {
   const banner = document.getElementById('pwa-banner');
   if (banner) {
     banner.style.animation = 'slideUp 0.3s ease reverse';
     setTimeout(() => banner.remove(), 300);
   }
-  
+ 
   // Remember dismissal for 7 days
   localStorage.setItem('pwa-banner-dismissed', Date.now().toString());
 };
-
 // Check if banner was recently dismissed
 window.addEventListener('beforeinstallprompt', (e) => {
   const dismissed = localStorage.getItem('pwa-banner-dismissed');
@@ -614,45 +622,25 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
   }
 });
-    // === GLOBAL SCOPE FIX ===
-window.openApp = openApp;
-window.closeApp = closeApp;
-window.toggleMenu = toggleMenu;
-window.scrollToFeatures = scrollToFeatures;
-window.scrollToSection = scrollToSection;
-window.removeInterest = removeInterest;
-window.unblockUser = unblockUser;
-window.copyReferralLink = copyReferralLink;
-window.shareReferralLink = shareReferralLink;
-window.closeReferralPopup = closeReferralPopup;
-window.showReferralPopup = showReferralPopup;
-window.resendVerification = resendVerification;
-
-console.log('✅ All functions exposed to global scope');
-console.log('openApp test:', typeof window.openApp); // Should log "function"
 </script>
 </head>
 <body>
   <div class="bg-animated"></div>
   <div id="live-users-counter"></div>
-
   <nav>
     <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">HostelHub</div>
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     <div class="nav-links" id="navLinks">
       <a onclick="scrollToFeatures(event)">Features</a>
       <a onclick="scrollToSection(event, 'cta-section')">About</a>
-     <a class="nav-cta" onclick="openApp(); return false;">Get Started</a>
-
+      <a class="nav-cta" onclick="openApp()">Get Started</a>
     </div>
   </nav>
-
   <section class="hero">
     <h1>Connect with College Students Anonymously</h1>
     <p>Video chat, voice call, or text with students from your college. Safe, anonymous, and fun. Just like Omegle, but for verified college students only.</p>
     <button class="cta-btn" onclick="openApp()">Start Matching Now →</button>
   </section>
-
   <section class="features" id="features">
     <div class="feature-card" onclick="openApp()">
       <div class="feature-icon">📹</div>
@@ -685,50 +673,45 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
       <p>Add interests and find people with similar hobbies and passions</p>
     </div>
   </section>
-
   <section class="cta-section" id="cta-section">
     <h2 style="font-size: clamp(32px, 5vw, 42px); margin-bottom: 20px;">Ready to make new friends?</h2>
     <p style="color: #888; margin-bottom: 40px; font-size: clamp(16px, 2vw, 18px);">Join thousands of students connecting daily</p>
     <button class="cta-btn" onclick="openApp()">Launch HostelHub →</button>
   </section>
-
   <footer>
     <p>&copy; 2024 HostelHub. All rights reserved. Made with ❤️ for college students.</p>
   </footer>
-
   <div id="appModal" class="app-modal">
     <div class="app-container">
       <button class="close-btn" onclick="closeApp()">×</button>
-      
+     
       <div style="text-align: center; margin-bottom: 30px;">
         <h1 style="font-size: 32px; margin-bottom: 10px;">HostelHub</h1>
         <p class="subtitle">Connect with students anonymously</p>
       </div>
-
       <div id="login-screen" class="screen active">
         <input id="email" type="email" placeholder="your.email@gmail.com" />
         <input id="password" type="password" placeholder="Password (6+ characters)" />
-        
+       
         <button id="signupBtn">Sign Up</button>
         <button id="loginBtn" class="btn-secondary">Login</button>
         <button id="forgotPasswordBtn" class="btn-secondary" style="font-size: 13px; padding: 12px;">Forgot Password?</button>
-        
+       
         <div class="verify-notice" style="display: none;" id="verify-notice">
           ✉️ Verification email sent! Check your inbox and click the link, then return here to login.
         </div>
-        
+       
         <div class="verify-notice" style="display: none;" id="reset-notice">
-          🔧 Password reset email sent! Check your inbox.
+          📧 Password reset email sent! Check your inbox.
         </div>
-        
+       
         <div class="safety-note">
           🔒 Works with any email • Anonymous matching • No personal info shared
         </div>
       </div>
-
       <div id="setup-screen" class="screen">
         <p class="subtitle">Logged in as: <span id="user-email"></span></p>
-        
+       
         <div class="interests-label">Choose Communication Type:</div>
         <div class="comm-types">
           <div class="comm-type active" data-type="video">
@@ -744,14 +727,13 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
             <div class="comm-type-label">Chat</div>
           </div>
         </div>
-        
+       
         <select id="gender">
           <option value="">Select your gender</option>
           <option value="men">Men</option>
           <option value="women">Women</option>
           <option value="other">Other</option>
         </select>
-
         <select id="college">
           <option value="">Select your college</option>
           <option value="IIT Delhi">IIT Delhi</option>
@@ -766,7 +748,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
           <option value="Other">Other</option>
           <option value="ANY">🌍 Match with Anyone (Testing)</option>
         </select>
-        
+       
         <div class="interests-section">
           <div class="interests-label">Add interests (optional - max 5):</div>
           <div class="interests-input">
@@ -775,35 +757,31 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
           </div>
           <div class="interest-tags" id="interest-tags"></div>
         </div>
-
         <div class="blocked-section" id="blocked-section" style="display: none;">
           <div class="interests-label">Blocked Users:</div>
           <div id="blocked-list"></div>
         </div>
-
         <button id="findBtn">🔍 Find Match</button>
         <button id="logoutBtn" class="btn-secondary">Logout</button>
-        
+       
         <div class="safety-note">
           You'll be matched anonymously with someone from the same college and gender.
           <span class="warning">Never share personal contact info.</span>
         </div>
       </div>
-
       <div id="status"></div>
-
       <div id="video-container">
         <div class="stranger-info" id="stranger-info"></div>
-        
+       
         <div class="connection-status" id="connection-status">
           Connection: <span id="quality">Connecting...</span>
         </div>
-        
+       
         <div id="videos">
-          <video id="remote-video" autoplay playsinline></video>
+          <video id="remote-video" autoplay playsinline controls></video>
           <video id="local-video" autoplay playsinline muted></video>
         </div>
-        
+       
         <div class="video-controls">
           <button id="muteBtn">🔇 Mute</button>
           <button id="videoBtn">📹 Off</button>
@@ -811,36 +789,35 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
           <button id="reportBtn" class="btn-report">🚨 Report</button>
           <button id="endCall" class="btn-danger">❌ End</button>
         </div>
-        
+       
         <div class="safety-note">
           <span class="warning">⚠️</span> If someone shares contact info or behaves inappropriately, report and skip.
         </div>
       </div>
-      
+     
       <div id="chat-container">
         <div class="stranger-info" id="stranger-info-chat"></div>
-        
+       
         <div id="chat-messages"></div>
-        
+       
         <div id="chat-input-area">
           <input id="chat-input" type="text" placeholder="Type a message..." maxlength="500" />
           <button id="send-btn">Send</button>
         </div>
-        
+       
         <div class="chat-controls">
           <button id="skipBtnChat" class="btn-warning">⭐️ Skip</button>
           <button id="reportBtnChat" class="btn-report">🚨 Report</button>
           <button id="saveChatBtn" style="background: linear-gradient(135deg, #4ade80, #22c55e);">💾 Save</button>
           <button id="endChat" class="btn-danger">❌ End</button>
         </div>
-        
+       
         <div class="safety-note">
           <span class="warning">⚠️</span> Never share phone numbers, email, social media, or personal info.
         </div>
       </div>
     </div>
   </div>
-
   <div id="reportModal" class="modal">
     <div class="modal-content">
       <h3>🚨 Report User</h3>
@@ -861,12 +838,10 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
       </div>
     </div>
   </div>
-
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyB_gNArL-vud6HhtWXnwVf6KMAXTRqfAk4",
@@ -877,11 +852,9 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
       measurementId: "G-KMHEWDN748"
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-
     let currentUser = null;
     let localStream = null;
     let pc = null;
@@ -897,10 +870,9 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
     let userInterests = [];
     let blockedUsers = [];
     let chatHistory = [];
-
     window.showReferralPopup = function(userId) {
   const refLink = `https://hostelhub.co/?ref=${userId}`;
-  
+ 
   // Create overlay
   const overlay = document.createElement('div');
   overlay.id = 'referral-overlay';
@@ -910,7 +882,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         from { opacity: 0; }
         to { opacity: 1; }
       }
-      
+     
       @keyframes slideUp {
         from {
           transform: translate(-50%, -40%) scale(0.9);
@@ -921,12 +893,16 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
           opacity: 1;
         }
       }
-      
-      @keyframes confetti {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+     
+      @keyframes pulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(0, 210, 255, 0);
+        }
       }
-      
+     
       .referral-overlay {
         position: fixed;
         top: 0;
@@ -941,7 +917,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         justify-content: center;
         animation: fadeIn 0.3s ease;
       }
-      
+     
       .referral-popup {
         position: fixed;
         top: 50%;
@@ -957,24 +933,24 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
       }
-      
+     
       .referral-header {
         text-align: center;
         margin-bottom: 24px;
       }
-      
+     
       .referral-emoji {
         font-size: 64px;
         margin-bottom: 16px;
         display: block;
         animation: bounce 2s infinite;
       }
-      
+     
       @keyframes bounce {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
       }
-      
+     
       .referral-title {
         font-size: 24px;
         font-weight: 700;
@@ -985,20 +961,20 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      
+     
       .referral-subtitle {
         font-size: 14px;
         color: #888;
         margin: 0;
       }
-      
+     
       .referral-benefits {
         background: rgba(255, 255, 255, 0.05);
         border-radius: 16px;
         padding: 16px;
         margin: 20px 0;
       }
-      
+     
       .benefit-item {
         display: flex;
         align-items: center;
@@ -1007,7 +983,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         color: #fff;
         font-size: 14px;
       }
-      
+     
       .benefit-icon {
         width: 32px;
         height: 32px;
@@ -1019,7 +995,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         font-size: 16px;
         flex-shrink: 0;
       }
-      
+     
       .referral-link-container {
         background: rgba(0, 0, 0, 0.3);
         border-radius: 12px;
@@ -1030,7 +1006,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         gap: 10px;
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
-      
+     
       .referral-link {
         flex: 1;
         color: #00d2ff;
@@ -1040,7 +1016,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      
+     
       .copy-btn {
         background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
         color: white;
@@ -1053,26 +1029,26 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         transition: all 0.3s ease;
         white-space: nowrap;
       }
-      
+     
       .copy-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
       }
-      
+     
       .copy-btn:active {
         transform: translateY(0);
       }
-      
+     
       .copy-btn.copied {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       }
-      
+     
       .referral-actions {
         display: flex;
         gap: 12px;
         margin-top: 24px;
       }
-      
+     
       .btn-primary {
         flex: 1;
         background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
@@ -1085,12 +1061,12 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         font-size: 15px;
         transition: all 0.3s ease;
       }
-      
+     
       .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3);
       }
-      
+     
       .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
         color: #888;
@@ -1102,27 +1078,27 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
         font-size: 15px;
         transition: all 0.3s ease;
       }
-      
+     
       .btn-secondary:hover {
         background: rgba(255, 255, 255, 0.15);
         color: #fff;
       }
-      
+     
       @media (max-width: 480px) {
         .referral-popup {
           padding: 24px;
         }
-        
+       
         .referral-emoji {
           font-size: 48px;
         }
-        
+       
         .referral-title {
           font-size: 20px;
         }
       }
     </style>
-    
+   
     <div class="referral-overlay" onclick="closeReferralPopup(event)">
       <div class="referral-popup" onclick="event.stopPropagation()">
         <div class="referral-header">
@@ -1130,7 +1106,7 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
           <h2 class="referral-title">Share & Unlock Premium!</h2>
           <p class="referral-subtitle">Invite friends and earn rewards together</p>
         </div>
-        
+       
         <div class="referral-benefits">
           <div class="benefit-item">
             <div class="benefit-icon">⭐</div>
@@ -1145,12 +1121,12 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
             <div>Unlimited sharing, unlimited rewards</div>
           </div>
         </div>
-        
+       
         <div class="referral-link-container">
           <span class="referral-link" id="referral-link">${refLink}</span>
           <button class="copy-btn" onclick="copyReferralLink('${refLink}')">Copy</button>
         </div>
-        
+       
         <div class="referral-actions">
           <button class="btn-primary" onclick="shareReferralLink('${refLink}')">
             Share Now
@@ -1162,24 +1138,22 @@ console.log('openApp test:', typeof window.openApp); // Should log "function"
       </div>
     </div>
   `;
-  
+ 
   document.body.appendChild(overlay);
 }
-
 window.copyReferralLink = function(link) {
   navigator.clipboard.writeText(link).then(() => {
     const btn = document.querySelector('.copy-btn');
     const originalText = btn.textContent;
     btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
-    
+   
     setTimeout(() => {
       btn.textContent = originalText;
       btn.classList.remove('copied');
     }, 2000);
   });
 }
-
 window.shareReferralLink = function(link) {
   if (navigator.share) {
     navigator.share({
@@ -1200,19 +1174,16 @@ window.shareReferralLink = function(link) {
     }, 100);
   }
 }
-
 window.closeReferralPopup = function(event) {
   // Only close if clicking overlay, not the popup itself
   if (event && event.target.className !== 'referral-overlay') return;
-  
+ 
   const overlay = document.getElementById('referral-overlay');
   if (overlay) {
     overlay.style.animation = 'fadeIn 0.3s ease reverse';
     setTimeout(() => overlay.remove(), 300);
   }
 }
-
-
     const appModal = document.getElementById('appModal');
     const loginScreen = document.getElementById('login-screen');
     const setupScreen = document.getElementById('setup-screen');
@@ -1224,39 +1195,32 @@ window.closeReferralPopup = function(event) {
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const reportModal = document.getElementById('reportModal');
-
     function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('active');
     }
-
     function openApp() {
       appModal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-
     function closeApp() {
       appModal.classList.remove('active');
       document.body.style.overflow = '';
     }
-
     function scrollToFeatures(e) {
       if (e) e.preventDefault();
       document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
       document.getElementById('navLinks').classList.remove('active');
     }
-
     function scrollToSection(e, id) {
       if (e) e.preventDefault();
       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
       document.getElementById('navLinks').classList.remove('active');
     }
-
     window.openApp = openApp;
     window.closeApp = closeApp;
     window.scrollToFeatures = scrollToFeatures;
     window.scrollToSection = scrollToSection;
     window.toggleMenu = toggleMenu;
-
     async function loadUserProfile() {
       if (!currentUser) return;
       try {
@@ -1270,7 +1234,6 @@ window.closeReferralPopup = function(event) {
         console.error('Error loading profile:', error);
       }
     }
-
     async function blockUser(userId) {
       if (!blockedUsers.includes(userId)) {
         blockedUsers.push(userId);
@@ -1280,7 +1243,6 @@ window.closeReferralPopup = function(event) {
         updateBlockedList();
       }
     }
-
     async function unblockUser(userId) {
       blockedUsers = blockedUsers.filter(id => id !== userId);
       await db.collection('users').doc(currentUser.uid).set({
@@ -1288,16 +1250,14 @@ window.closeReferralPopup = function(event) {
       }, { merge: true });
       updateBlockedList();
     }
-
     window.unblockUser = unblockUser;
-
     function updateBlockedList() {
       const section = document.getElementById('blocked-section');
       const list = document.getElementById('blocked-list');
-      
+     
       if (blockedUsers.length > 0) {
         section.style.display = 'block';
-        list.innerHTML = blockedUsers.map(id => 
+        list.innerHTML = blockedUsers.map(id =>
           `<div class="blocked-user">
             <span>User ${id.substring(0, 8)}...</span>
             <span class="unblock-btn" onclick="unblockUser('${id}')">Unblock</span>
@@ -1307,27 +1267,22 @@ window.closeReferralPopup = function(event) {
         section.style.display = 'none';
       }
     }
-
     document.getElementById('reportBtn').onclick = () => openReportModal();
     document.getElementById('reportBtnChat').onclick = () => openReportModal();
-    
+   
     function openReportModal() {
       reportModal.classList.add('active');
     }
-
     document.getElementById('cancelReport').onclick = () => {
       reportModal.classList.remove('active');
     };
-
     document.getElementById('submitReport').onclick = async () => {
       const reason = document.getElementById('reportReason').value;
       const details = document.getElementById('reportDetails').value;
-
       if (!reason) {
         alert('Please select a reason');
         return;
       }
-
       try {
         await db.collection('reports').add({
           reportedBy: currentUser.uid,
@@ -1337,7 +1292,6 @@ window.closeReferralPopup = function(event) {
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           callId: callId
         });
-
         await blockUser(remoteUid);
         reportModal.classList.remove('active');
         showStatus('User reported and blocked. Thank you.', 'success');
@@ -1347,17 +1301,14 @@ window.closeReferralPopup = function(event) {
         showStatus('Failed to submit report', 'error');
       }
     };
-
     document.getElementById('saveChatBtn').onclick = () => {
       if (chatHistory.length === 0) {
         showStatus('No messages to save', 'warning');
         return;
       }
-
-      const chatText = chatHistory.map(msg => 
+      const chatText = chatHistory.map(msg =>
         `[${msg.time}] ${msg.from}: ${msg.text}`
       ).join('\n');
-
       const blob = new Blob([chatText], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1365,10 +1316,8 @@ window.closeReferralPopup = function(event) {
       a.download = `chat-${Date.now()}.txt`;
       a.click();
       URL.revokeObjectURL(url);
-
       showStatus('Chat saved!', 'success');
     };
-
     document.querySelectorAll('.comm-type').forEach(el => {
       el.onclick = () => {
         document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
@@ -1376,100 +1325,65 @@ window.closeReferralPopup = function(event) {
         commType = el.dataset.type;
       };
     });
-
     document.getElementById('add-interest-btn').onclick = () => {
       const input = document.getElementById('interest-input');
       const interest = input.value.trim().toLowerCase();
-      
+     
       if (interest && userInterests.length < 5 && !userInterests.includes(interest)) {
         userInterests.push(interest);
         updateInterestTags();
         input.value = '';
       }
     };
-
     document.getElementById('interest-input').onkeypress = (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         document.getElementById('add-interest-btn').click();
       }
     };
-
     function updateInterestTags() {
       const container = document.getElementById('interest-tags');
-      container.innerHTML = userInterests.map(interest => 
+      container.innerHTML = userInterests.map(interest =>
         `<div class="interest-tag">${interest} <span class="remove" onclick="removeInterest('${interest}')">×</span></div>`
       ).join('');
     }
-
     window.removeInterest = (interest) => {
       userInterests = userInterests.filter(i => i !== interest);
       updateInterestTags();
     };
-
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    // 1. Force a reload to get the latest email verification status
-    await user.reload(); 
-    
-    if (user.emailVerified) {
-      currentUser = user;
-      trackOnline();
-      showLiveUsersCounter();
-      await loadUserProfile();
-      showSetupScreen();
-      
-      // Show referral popup only after verified login
-      if (!localStorage.getItem('referralShown')) {
-        setTimeout(() => {
-          showReferralPopup(currentUser.uid);
-          localStorage.setItem('referralShown', 'true');
-        }, 2000);
-      }
-    } else {
-      // 2. Unverified User Handling (If user exists but email is not verified)
-      trackOffline();
-      showStatus('Please verify your email first', 'warning');
-
-      document.getElementById('verify-notice').style.display = 'block';
-      document.getElementById('verify-notice').innerHTML = `
-          ✉️ Verification email sent! Check your inbox and click the link.
-          <button onclick="resendVerification()" class="btn-secondary" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
-              Resend Verification Email
-          </button>`;
-
-      // Log out after a delay to prevent unauthorized access
-      setTimeout(() => auth.signOut(), 5000);
-    }
-  } else {
-    // 3. No User Found (Show Login Screen)
-    trackOffline();
-    showLoginScreen();
-  }
-});
-
+    auth.onAuthStateChanged(async (user) => {
+      if (user && user.emailVerified) {
+        currentUser = user;
+        trackOnline();
+        showLiveUsersCounter();
+        await loadUserProfile();
+        showSetupScreen();
+      } else if (user && !user.emailVerified) {
+        showStatus('Please verify your email first', 'warning');
+        setTimeout(() => auth.signOut(), 3000);
+      } else {
+        showLoginScreen();
+      }
+    });
     document.getElementById('signupBtn').onclick = async () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-
       if (!email || !email.includes('@')) {
         showStatus('Please enter a valid email', 'error');
         return;
       }
-
       if (password.length < 6) {
         showStatus('Password must be at least 6 characters', 'error');
         return;
       }
-
       try {
         showStatus('Creating account...', 'info');
         const result = await auth.createUserWithEmailAndPassword(email, password);
         await result.user.sendEmailVerification();
-        
+       
         document.getElementById('verify-notice').style.display = 'block';
         showStatus('Verification email sent! Check your inbox.', 'success');
-        
+       
         setTimeout(() => auth.signOut(), 3000);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
@@ -1479,26 +1393,13 @@ auth.onAuthStateChanged(async (user) => {
         }
       }
     };
-    
-    // Add resend verification function
-window.resendVerification = async function() {
-  try {
-    await auth.currentUser.sendEmailVerification();
-    showStatus('Verification email sent again!', 'success');
-  } catch (error) {
-    showStatus('Error: ' + error.message, 'error');
-  }
-};
-
     document.getElementById('loginBtn').onclick = async () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-
       if (!email || !password) {
         showStatus('Please enter email and password', 'error');
         return;
       }
-
       try {
         showStatus('Logging in...', 'info');
         await auth.signInWithEmailAndPassword(email, password);
@@ -1512,19 +1413,16 @@ window.resendVerification = async function() {
         }
       }
     };
-
     document.getElementById('forgotPasswordBtn').onclick = async () => {
       const email = document.getElementById('email').value.trim();
-
       if (!email || !email.includes('@')) {
         showStatus('Please enter your email first', 'error');
         return;
       }
-
       try {
         showStatus('Sending reset email...', 'info');
         await auth.sendPasswordResetEmail(email);
-        
+       
         document.getElementById('reset-notice').style.display = 'block';
         showStatus('Password reset email sent!', 'success');
       } catch (error) {
@@ -1535,27 +1433,21 @@ window.resendVerification = async function() {
         }
       }
     };
-
     document.getElementById('logoutBtn').onclick = async () => {
       await cleanup();
       await auth.signOut();
     };
-
     document.getElementById('findBtn').onclick = async () => {
       const gender = document.getElementById('gender').value;
       const college = document.getElementById('college').value;
-
       if (!gender || !college) {
         showStatus('Please select gender and college', 'error');
         return;
       }
-
       try {
         showStatus('Finding match...', 'info');
         document.getElementById('findBtn').disabled = true;
-
         const userId = currentUser.uid;
-
         await db.collection('waiting').doc(userId).set({
           userId,
           email: currentUser.email,
@@ -1565,19 +1457,17 @@ window.resendVerification = async function() {
           interests: userInterests,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-
         await findMatch(userId, college, gender);
       } catch (error) {
         showStatus('Error: ' + error.message, 'error');
         document.getElementById('findBtn').disabled = false;
       }
     };
-
     async function findMatch(userId, college, gender) {
       let matchCheckCount = 0;
       const maxChecks = 60;
       let attemptedMatch = false;
-      
+     
       let query;
       if (college === 'ANY') {
         query = db.collection('waiting').where('commType', '==', commType);
@@ -1586,49 +1476,44 @@ window.resendVerification = async function() {
           .where('college', '==', college)
           .where('commType', '==', commType);
       }
-
       matchListener = query.onSnapshot(async (snapshot) => {
         matchCheckCount++;
-        
+       
         const users = snapshot.docs.filter(doc => {
           const uid = doc.id;
           const data = doc.data();
           return uid !== userId && !blockedUsers.includes(uid) &&
           data.gender === gender;
         });
-        
+       
         showStatus(`Finding match... (${users.length} others waiting)`, 'info');
-        
+       
         if (users.length > 0 && !attemptedMatch) {
           attemptedMatch = true;
           const matchDoc = users[0];
           remoteUid = matchDoc.id;
           const matchData = matchDoc.data();
-          
+         
           callId = [userId, remoteUid].sort().join('_');
-
           try {
             await Promise.all([
               db.collection('waiting').doc(userId).delete(),
               db.collection('waiting').doc(remoteUid).delete()
             ]);
-
             if (matchListener) {
               matchListener();
               matchListener = null;
             }
-
             showStrangerInfo(matchData.interests || []);
             showStatus('Match found! Connecting...', 'success');
-            
+           
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+           
             if (commType === 'chat') {
               await startChat();
             } else {
               await startCall(userId < remoteUid);
             }
-
           } catch (error) {
             console.error('Match failed:', error);
             attemptedMatch = false;
@@ -1643,32 +1528,30 @@ window.resendVerification = async function() {
         }
       });
     }
-
     function showStrangerInfo(interests) {
       const commonInterests = interests.filter(i => userInterests.includes(i));
       let infoHTML = `<div>🎭 Connected with a stranger from ${document.getElementById('college').value}</div>`;
-      
+     
       if (commonInterests.length > 0) {
-        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i => 
+        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i =>
           `<span class="tag">${i}</span>`
         ).join('')}</div>`;
       } else if (interests.length > 0) {
-        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i => 
+        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i =>
           `<span class="tag">${i}</span>`
         ).join('')}</div>`;
       }
-      
+     
       document.getElementById('stranger-info').innerHTML = infoHTML;
       document.getElementById('stranger-info-chat').innerHTML = infoHTML;
     }
-
     async function startChat() {
       chatContainer.style.display = 'block';
       setupScreen.style.display = 'none';
       chatHistory = [];
-      
+     
       addSystemMessage('Connected! Say hello 👋');
-      
+     
       chatListener = db.collection('calls').doc(callId).collection('messages')
         .orderBy('timestamp')
         .onSnapshot(snapshot => {
@@ -1687,7 +1570,6 @@ window.resendVerification = async function() {
           });
         });
     }
-
     document.getElementById('send-btn').onclick = sendMessage;
     chatInput.onkeypress = (e) => {
       if (e.key === 'Enter') {
@@ -1695,16 +1577,15 @@ window.resendVerification = async function() {
         sendMessage();
       }
     };
-
     async function sendMessage() {
       const text = chatInput.value.trim();
       if (!text) return;
-      
+     
       if (containsContactInfo(text)) {
         addSystemMessage('⚠️ Sharing contact info is against the rules');
         return;
       }
-      
+     
       addMessage(text, 'local');
       chatHistory.push({
         from: 'You',
@@ -1712,30 +1593,22 @@ window.resendVerification = async function() {
         time: new Date().toLocaleTimeString()
       });
       chatInput.value = '';
-      
+     
       await db.collection('calls').doc(callId).collection('messages').add({
         text,
         from: currentUser.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
-
     function containsContactInfo(text) {
       const patterns = [
-    /\d{10}/, // 10 digit phone
-    /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/, // Formatted phone
-    /\+\d{1,3}[-.\s]?\d{3,14}/, // International phone
-    /@\w+\.\w+/, // Email
-    /\b[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/, // Better email
-    /instagram|facebook|whatsapp|snapchat|telegram|twitter|discord|tiktok/i,
-    /insta|fb|wa|snap|dm|discord|tg/i,
-    /\b(add|follow|dm|message)\s+(me|on)/i, // "add me on", "follow me", etc
-    /\bskype|kik|line|viber|wechat\b/i,
-    /\b\d{3}[-.\s]?\d{4}\b/ // 7 digit number
-  ];
-  return patterns.some(pattern => pattern.test(text));
-}
-
+        /\d{10}/, /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/,
+        /@\w+\.\w+/,
+        /instagram|facebook|whatsapp|snapchat|telegram|twitter/i,
+        /insta|fb|wa|snap|dm/i
+      ];
+      return patterns.some(pattern => pattern.test(text));
+    }
     function addMessage(text, type) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${type}`;
@@ -1743,7 +1616,6 @@ window.resendVerification = async function() {
       chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
     function addSystemMessage(text) {
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message system';
@@ -1751,16 +1623,15 @@ window.resendVerification = async function() {
       chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
     async function startCall(isInitiator) {
       try {
-        const constraints = commType === 'video' 
+        const constraints = commType === 'video'
           ? { video: { width: 640, height: 480 }, audio: true }
           : { video: false, audio: true };
-        
+       
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
         localVideo.srcObject = localStream;
-        
+       
         if (commType === 'voice') {
           localVideo.style.display = 'none';
           remoteVideo.style.display = 'none';
@@ -1768,7 +1639,6 @@ window.resendVerification = async function() {
           localVideo.style.display = '';
           remoteVideo.style.display = '';
         }
-
         pc = new RTCPeerConnection({
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
@@ -1786,9 +1656,7 @@ window.resendVerification = async function() {
             }
           ]
         });
-
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
         pc.ontrack = (event) => {
           if (event.streams && event.streams[0]) {
             remoteVideo.srcObject = event.streams[0];
@@ -1796,7 +1664,6 @@ window.resendVerification = async function() {
             showStatus('Connected!', 'success');
           }
         };
-
         pc.onicecandidate = (event) => {
           if (event.candidate) {
             db.collection('calls').doc(callId).collection('candidates').add({
@@ -1806,26 +1673,9 @@ window.resendVerification = async function() {
             }).catch(e => console.error('Error adding candidate:', e));
           }
         };
-        
-            // Add connection timeout
-   let connectionTimeout = setTimeout(() => {
-    if (pc && pc.connectionState !== 'connected') {
-     showStatus('Connection timeout. Trying to reconnect...', 'warning');
-     skipMatch();
-    }
-  }, 30000); // 30 second timeout
-
-  pc.onconnectionstatechange = () => {
-     updateConnectionQuality(pc.connectionState);
-    if (pc.connectionState === 'connected') {
-     clearTimeout(connectionTimeout);
-     }
-  };
-
         pc.onconnectionstatechange = () => {
           updateConnectionQuality(pc.connectionState);
         };
-
         candidateListener = db.collection('calls').doc(callId).collection('candidates')
           .onSnapshot(snapshot => {
             snapshot.docChanges().forEach(async change => {
@@ -1841,11 +1691,9 @@ window.resendVerification = async function() {
               }
             });
           });
-
         callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
           const data = snap.data();
           if (!data) return;
-
           if (!isInitiator && data.offer && !pc.currentRemoteDescription) {
             try {
               await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
@@ -1858,7 +1706,6 @@ window.resendVerification = async function() {
               console.error('Error handling offer:', err);
             }
           }
-
           if (isInitiator && data.answer && !pc.currentRemoteDescription) {
             try {
               await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
@@ -1867,7 +1714,6 @@ window.resendVerification = async function() {
             }
           }
         });
-
         if (isInitiator) {
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
@@ -1877,146 +1723,47 @@ window.resendVerification = async function() {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
         }
-
         showVideoScreen();
       } catch (error) {
-    console.error('startCall error:', error);
-    
-    // Better error messages
-    let errorMsg = 'Error accessing camera/mic: ';
-    if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-      errorMsg = '❌ Camera/mic permission denied. Please allow access in your browser settings.';
-    } else if (error.name === 'NotFoundError') {
-      errorMsg = '❌ No camera/microphone found. Please check your device.';
-    } else if (error.name === 'NotReadableError') {
-      errorMsg = '❌ Camera/mic is already in use by another application.';
-    } else {
-      errorMsg += error.message;
-    }
-    
-    showStatus(errorMsg, 'error');
-    await cleanup();
-    
-    // Return to setup screen after error
-    setTimeout(() => {
-      showSetupScreen();
-      document.getElementById('findBtn').disabled = false;
-    }, 3000);
-  }
-
-    document.getElementById('muteBtn').onclick = () => {
-      if (!localStream) return;
-      isAudioMuted = !isAudioMuted;
-      localStream.getAudioTracks().forEach(track => track.enabled = !isAudioMuted);
-      document.getElementById('muteBtn').textContent = isAudioMuted ? '🔊 Unmute' : '🔇 Mute';
-    };
-
-    document.getElementById('videoBtn').onclick = () => {
-      if (!localStream) return;
-      isVideoOff = !isVideoOff;
-      localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
-      document.getElementById('videoBtn').textContent = isVideoOff ? '📹 On' : '📹 Off';
-    };
-
-    document.getElementById('skipBtn').onclick = skipMatch;
-    document.getElementById('skipBtnChat').onclick = skipMatch;
-
-    async function skipMatch() {
-      showStatus('Finding new match...', 'info');
-      await cleanup();
-      document.getElementById('findBtn').click();
-    }
-
-    document.getElementById('endCall').onclick = async () => {
-      await cleanup();
-      showSetupScreen();
-    };
-    
-    document.getElementById('endChat').onclick = async () => {
-      await cleanup();
-      showSetupScreen();
-    };
-
-    async function cleanup() {
-      if (matchListener) { try { matchListener(); } catch(e){} matchListener = null; }
-      if (callListener) { try { callListener(); } catch(e){} callListener = null; }
-      if (candidateListener) { try { candidateListener(); } catch(e){} candidateListener = null; }
-      if (chatListener) { try { chatListener(); } catch(e){} chatListener = null; }
-      
-      if (pc) {
-        try { pc.close(); } catch(e){}
-        pc = null;
+        console.error('startCall error:', error);
+        showStatus('Error accessing camera/mic: ' + error.message, 'error');
+        await cleanup();
       }
-      
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-      }
-      
-      if (currentUser) {
-        try {
-          await db.collection('waiting').doc(currentUser.uid).delete().catch(()=>{});
-          
-          if (callId) {
-            const callRef = db.collection('calls').doc(callId);
-            const candidatesSnap = await callRef.collection('candidates').get();
-            await Promise.all(candidatesSnap.docs.map(d => d.ref.delete()));
-            
-            const messagesSnap = await callRef.collection('messages').get();
-            await Promise.all(messagesSnap.docs.map(d => d.ref.delete()));
-            
-            await callRef.delete().catch(()=>{});
-          }
-        } catch (error) {
-          console.error('Cleanup error:', error);
-        }
-      }
-      
-      callId = null;
-      remoteUid = null;
-      isAudioMuted = false;
-      isVideoOff = false;
-      chatMessages.innerHTML = '';
-      chatHistory = [];
-      document.getElementById('findBtn').disabled = false;
     }
-
     function updateConnectionQuality(state) {
       const qualityEl = document.getElementById('quality');
-  
-  switch(state) {
-    case 'connected':
-      qualityEl.textContent = 'Connected ✓';
-      qualityEl.className = 'quality-good';
-      break;
-    case 'connecting':
-      qualityEl.textContent = 'Connecting...';
-      qualityEl.className = 'quality-fair';
-      break;
-    case 'disconnected':
-      qualityEl.textContent = 'Reconnecting...';
-      qualityEl.className = 'quality-fair';
-      // Don't auto-skip on disconnect - might reconnect
-      setTimeout(() => {
-        if (pc && pc.connectionState === 'disconnected') {
-          showStatus('Connection lost. Please skip or end call.', 'error');
-        }
-      }, 5000);
-      break;
-    case 'failed':
-      qualityEl.textContent = 'Connection failed';
-      qualityEl.className = 'quality-poor';
-      showStatus('Connection failed. Auto-skipping...', 'error');
-      setTimeout(() => skipMatch(), 3000); // Auto-skip after 3 seconds
-      break;
-  }
-}
-
+     
+      switch(state) {
+        case 'connected':
+          qualityEl.textContent = 'Connected ✓';
+          qualityEl.className = 'quality-good';
+          break;
+        case 'connecting':
+          qualityEl.textContent = 'Connecting...';
+          qualityEl.className = 'quality-fair';
+          break;
+        case 'disconnected':
+          qualityEl.textContent = 'Reconnecting...';
+          qualityEl.className = 'quality-fair';
+          // Don't auto-skip on disconnect - might reconnect
+          setTimeout(() => {
+            if (pc && pc.connectionState === 'disconnected') {
+              showStatus('Connection lost. Please skip or end call.', 'error');
+            }
+          }, 5000);
+          break;
+        case 'failed':
+          qualityEl.textContent = 'Connection failed';
+          qualityEl.className = 'quality-poor';
+          showStatus('Connection failed. Auto-skipping...', 'error');
+          setTimeout(() => skipMatch(), 3000); // Auto-skip after 3 seconds
+          break;
+      }
+    }
     function showStatus(message, type) {
       statusEl.textContent = message;
       statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
     }
-
     function showLoginScreen() {
       loginScreen.classList.add('active');
       setupScreen.classList.remove('active');
@@ -2024,7 +1771,6 @@ window.resendVerification = async function() {
       chatContainer.style.display = 'none';
       statusEl.textContent = '';
     }
-
     function showSetupScreen() {
       loginScreen.classList.remove('active');
       setupScreen.classList.add('active');
@@ -2033,18 +1779,14 @@ window.resendVerification = async function() {
       document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
       statusEl.textContent = '';
     }
-
     function showVideoScreen() {
       setupScreen.classList.remove('active');
       videoContainer.style.display = 'block';
       chatContainer.style.display = 'none';
       statusEl.textContent = '';
     }
-
     window.addEventListener('beforeunload', cleanup);
-
     let statusRef = null;
-
     function trackOnline() {
       if (!currentUser) return;
       const uid = currentUser.uid;
@@ -2055,19 +1797,16 @@ window.resendVerification = async function() {
         email: currentUser.email.split('@')[0]
       }, { merge: true });
     }
-
     function trackOffline() {
       if (statusRef) {
-        statusRef.update({ 
+        statusRef.update({
           online: false,
           lastSeen: firebase.firestore.FieldValue.serverTimestamp()
         }).catch(() => {});
       }
     }
-
     window.addEventListener('beforeunload', trackOffline);
     window.addEventListener('unload', trackOffline);
-
     function showLiveUsersCounter() {
       const counter = document.getElementById('live-users-counter');
       db.collection('status')
