@@ -781,7 +781,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
         </div>
         
         <div id="videos">
-          <video id="remote-video" autoplay playsinline></video>
+          <video id="remote-video" autoplay playsinline controls></video>
           <video id="local-video" autoplay playsinline muted></video>
         </div>
         
@@ -1073,28 +1073,45 @@ window.addEventListener('beforeinstallprompt', (e) => {
       updateInterestTags();
     };
 
-    auth.onAuthStateChanged(async (user) => {
-      if (user && user.emailVerified) {
-        currentUser = user;
-        trackOnline();
-        showLiveUsersCounter();
-        await loadUserProfile();
-        showSetupScreen();
-      } else if (user && !user.emailVerified) {
-  trackOffline();
-  showStatus('Please verify your email first', 'warning');
-  
-  // Allow resending verification email
-  document.getElementById('verify-notice').style.display = 'block';
-  document.getElementById('verify-notice').innerHTML = `
-    ✉️ Verification email sent! Check your inbox and click the link.
-    <button onclick="resendVerification()" class="btn-secondary" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
-      Resend Verification Email
-    </button>
-  `;
-  
-  setTimeout(() => auth.signOut(), 5000);
-}
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    // Force a reload to get the latest email verification status
+    await user.reload(); 
+    
+    if (user.emailVerified) {
+      currentUser = user;
+      trackOnline();
+      showLiveUsersCounter();
+      await loadUserProfile();
+      showSetupScreen();
+      
+      // Show referral popup only after verified login
+      if (!localStorage.getItem('referralShown')) {
+        setTimeout(() => {
+          showReferralPopup(currentUser.uid);
+          localStorage.setItem('referralShown', 'true');
+        }, 2000);
+      }
+    } else {
+      // Unverified User Handling
+      trackOffline();
+      showStatus('Please verify your email first', 'warning');
+
+      document.getElementById('verify-notice').style.display = 'block';
+      document.getElementById('verify-notice').innerHTML = `
+          ✉️ Verification email sent! Check your inbox and click the link.
+          <button onclick="resendVerification()" class="btn-secondary" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
+              Resend Verification Email
+          </button>`;
+
+      // Log out after a delay to prevent unauthorized access
+      setTimeout(() => auth.signOut(), 5000);
+    }
+  } else {
+    trackOffline();
+    showLoginScreen();
+  }
+});
       } else {
         trackOffline();
         showLoginScreen();
@@ -1242,14 +1259,14 @@ window.resendVerification = async function() {
 
       matchListener = query.onSnapshot(async (snapshot) => {
         matchCheckCount++;
-        
+      /*  
         const users = snapshot.docs.filter(doc => {
           const uid = doc.id;
           const data = doc.data();
           return uid !== userId && !blockedUsers.includes(uid) &&
           data.gender === gender;
         });
-        
+        */
         showStatus(`Finding match... (${users.length} others waiting)`, 'info');
         
         if (users.length > 0 && !attemptedMatch) {
@@ -1564,7 +1581,7 @@ if (!localStorage.getItem('referralShown')) {
   }, 2000);
 }
 
-function showReferralPopup(userId) {
+window.showReferralPopup = function(userId) {
   const refLink = `https://hostelhub.co/?ref=${userId}`;
   
   // Create overlay
@@ -1832,7 +1849,7 @@ function showReferralPopup(userId) {
   document.body.appendChild(overlay);
 }
 
-function copyReferralLink(link) {
+window.copyReferralLink = function(link) {
   navigator.clipboard.writeText(link).then(() => {
     const btn = document.querySelector('.copy-btn');
     const originalText = btn.textContent;
@@ -1846,7 +1863,7 @@ function copyReferralLink(link) {
   });
 }
 
-function shareReferralLink(link) {
+window.shareReferralLink = function(link) {
   if (navigator.share) {
     navigator.share({
       title: 'Join HostelHub',
@@ -1867,7 +1884,7 @@ function shareReferralLink(link) {
   }
 }
 
-function closeReferralPopup(event) {
+window.closeReferralPopup = function(event) {
   // Only close if clicking overlay, not the popup itself
   if (event && event.target.className !== 'referral-overlay') return;
   
