@@ -1570,13 +1570,6 @@ window.resendVerification = async function() {
       document.getElementById('findBtn').disabled = false;
     }, 3000);
   }
-      // After: showSetupScreen();
-if (!localStorage.getItem('referralShown')) {
-  setTimeout(() => {
-    showReferralPopup(currentUser.uid);
-    localStorage.setItem('referralShown', 'true');
-  }, 2000);
-}
 
 window.showReferralPopup = function(userId) {
   const refLink = `https://hostelhub.co/?ref=${userId}`;
