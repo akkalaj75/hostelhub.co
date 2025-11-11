@@ -16561,14 +16561,9 @@
 
 
     window.addEventListener('beforeunload', trackOffline);
+    window.addEventListener('unload', trackOffline);
+    window.addEventListener('unload', () => leaveRoom());
 
-
-
-
-
-
-
-\ \ \ \ window\.addEventListener\('unload',\ trackOffline\);\r\n\ \ \ \ window\.addEventListener\('unload',\ \(\)\ =>\ leaveRoom\(\)\);
 
 
 
