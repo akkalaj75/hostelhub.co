@@ -1,1509 +1,16691 @@
 <!DOCTYPE html>
+
+
+
+
+
+
+
 <html lang="en">
+
+
+
+
+
+
+
 <head>
+
+
+
+
+
+
+
   <meta charset="UTF-8" />
+
+
+
+
+
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+
+
+
+
   <meta name="description" content="Connect anonymously with college students through video, voice, or chat. Safe, verified, and fun.">
+
+
+
+
+
+
+
   <meta name="keywords" content="college chat, student video call, anonymous chat, omegle for students">
+
+
+
+
+
+
+
   <meta name="author" content="HostelHub">
+
+
+
+
+
+
+
   <meta name="theme-color" content="#0a0e27">
+
+
+
+
+
+
+
   
-  <!-- Favicon -->
+
+
+
+
+
+
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+
+
+
+
+
+
+
   
-  <!-- Open Graph / Social Media -->
+
+
+
+
+
+
+
   <meta property="og:type" content="website">
+
+
+
+
+
+
+
   <meta property="og:title" content="HostelHub - Connect with College Students">
+
+
+
+
+
+
+
   <meta property="og:description" content="Video chat, voice call, or text with verified college students anonymously. Safe and fun!">
-  <meta property="og:url" content="https://hostelhub.co">
+
+
+
+
+
+
+
   
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="HostelHub - Connect Anonymously">
-  <meta name="twitter:description" content="Video chat with college students safely and anonymously">
-  
-  <!-- PWA / Mobile -->
+
+
+
+
+
+
+
   <meta name="mobile-web-app-capable" content="yes">
+
+
+
+
+
+
+
   <meta name="apple-mobile-web-app-capable" content="yes">
+
+
+
+
+
+
+
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
+
+
+
+
+
   <meta name="apple-mobile-web-app-title" content="HostelHub">
 
-  <!-- CLICKABLE FIX: All buttons work, banners don't block -->
-  <style>
-    /* === CLICKABLE FIX — DO NOT DELETE === */
-    button, select, input, [onclick], .btn, .nav-cta, .cta-btn, .feature-card, .comm-type, .close-btn, .modal, .modal *, #live-users-counter, #pwa-banner {
-      position: relative !important;
-      z-index: 1000 !important;
-      pointer-events: auto !important;
-      cursor: pointer !important;
-    }
 
-    #pwa-banner, #live-users-counter, .bg-animated {
-      pointer-events: none;
-      z-index: 100 !important;
-    }
 
-    #pwa-banner button, #live-users-counter button {
-      pointer-events: auto !important;
-      z-index: 1001 !important;
-    }
 
-    .app-container, #login-screen, #setup-screen, #video-container, #chat-container {
-      z-index: 500 !important;
-      position: relative !important;
-    }
 
-    body, .app-modal {
-      overflow: visible !important;
-    }
-  </style>
+
+
+  
+
+
+
+
+
+
 
   <title>HostelHub - Connect with College Students Anonymously</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <style>
+
+
+
+
+
+
+
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+
+
+
+
+
+
     
+
+
+
+
+
+
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+
+
+
+
+
     html { scroll-behavior: smooth; }
+
+
+
+
+
+
+
     
+
+
+
+
+
+
+
     body {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+
+
+
+
+
+
+
       color: #fff; font-family: 'Inter', sans-serif;
+
+
+
+
+
+
+
       min-height: 100vh; overflow-x: hidden;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .bg-animated {
+
+
+
+
+
+
+
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+
+
+
+
+
+
+
       background: radial-gradient(circle at 20% 50%, rgba(0, 210, 255, 0.15) 0%, transparent 50%),
+
+
+
+
+
+
+
                   radial-gradient(circle at 80% 80%, rgba(58, 123, 213, 0.15) 0%, transparent 50%);
+
+
+
+
+
+
+
       z-index: 0; animation: pulse 8s ease-in-out infinite;
+
+
+
+
+
+
+
       pointer-events: none;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     @keyframes pulse {
+
+
+
+
+
+
+
       0%, 100% { opacity: 0.5; }
+
+
+
+
+
+
+
       50% { opacity: 0.8; }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     nav {
+
+
+
+
+
+
+
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+
+
+
+
+
+
+
       padding: 20px 5%; backdrop-filter: blur(20px);
+
+
+
+
+
+
+
       background: rgba(10, 14, 39, 0.8); border-bottom: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
       display: flex; justify-content: space-between; align-items: center;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .logo {
+
+
+
+
+
+
+
       font-size: 24px; font-weight: 800;
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+
+
+
+
+
+
       cursor: pointer;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .nav-links { display: flex; gap: 30px; align-items: center; }
+
+
+
+
+
+
+
     .nav-links a {
+
+
+
+
+
+
+
       color: #aaa; text-decoration: none; font-weight: 500;
+
+
+
+
+
+
+
       transition: color 0.3s; cursor: pointer;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .nav-links a:hover { color: #00d2ff; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .nav-cta {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       padding: 12px 30px; border-radius: 30px; color: #fff !important;
+
+
+
+
+
+
+
       font-weight: 600; transition: transform 0.3s, box-shadow 0.3s;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .nav-cta:hover {
+
+
+
+
+
+
+
       transform: translateY(-2px);
+
+
+
+
+
+
+
       box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4);
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: #fff; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .hero {
+
+
+
+
+
+
+
       position: relative; z-index: 1; padding: 150px 5% 80px;
+
+
+
+
+
+
+
       text-align: center; max-width: 1200px; margin: 0 auto;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .hero h1 {
+
+
+
+
+
+
+
       font-size: clamp(32px, 6vw, 72px); font-weight: 800;
+
+
+
+
+
+
+
       line-height: 1.1; margin-bottom: 20px;
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #ffffff, #00d2ff);
+
+
+
+
+
+
+
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+
+
+
+
+
+
       animation: fadeInUp 1s ease;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .hero p {
+
+
+
+
+
+
+
       font-size: clamp(16px, 2vw, 24px); color: #aaa;
+
+
+
+
+
+
+
       max-width: 700px; margin: 0 auto 40px;
+
+
+
+
+
+
+
       animation: fadeInUp 1s ease 0.2s both; line-height: 1.6;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     @keyframes fadeInUp {
+
+
+
+
+
+
+
       from { opacity: 0; transform: translateY(30px); }
+
+
+
+
+
+
+
       to { opacity: 1; transform: translateY(0); }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .features {
+
+
+
+
+
+
+
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+
+
+
+
+
+
       gap: 30px; padding: 60px 5%; max-width: 1200px; margin: 0 auto;
+
+
+
+
+
+
+
       position: relative; z-index: 1;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .feature-card {
+
+
+
+
+
+
+
       background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(10px);
+
+
+
+
+
+
+
       border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+
+
+
+
+
+
+
       padding: 40px 30px; text-align: center; transition: all 0.4s; cursor: pointer;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .feature-card:hover {
+
+
+
+
+
+
       transform: translateY(-10px);
+
+
+
+
+
+
       border-color: rgba(0, 210, 255, 0.5);
+
+
+
+
+
+
       box-shadow: 0 20px 60px rgba(0, 210, 255, 0.2);
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .aura-chip {
+
+
+
+
+
+
+      display: inline-flex;
+
+
+
+
+
+
+      align-items: center;
+
+
+
+
+
+
+      gap: 10px;
+
+
+
+
+
+
+      padding: 10px 18px;
+
+
+
+
+
+
+      border-radius: 999px;
+
+
+
+
+
+
+      background: rgba(0, 210, 255, 0.15);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      font-size: 14px;
+
+
+
+
+
+
+      margin: 15px 0;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-grid {
+
+
+
+
+
+
+      display: grid;
+
+
+
+
+
+
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+
+
+
+
+
+      gap: 12px;
+
+
+
+
+
+
+      margin: 15px 0 25px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-card {
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      border-radius: 16px;
+
+
+
+
+
+
+      padding: 14px;
+
+
+
+
+
+
+      background: rgba(26,26,46,0.6);
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      transition: all 0.3s;
+
+
+
+
+
+
+      text-align: left;
+
+
+
+
+
+
+      font-size: 14px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-card strong {
+
+
+
+
+
+
+      display: block;
+
+
+
+
+
+
+      font-size: 16px;
+
+
+
+
+
+
+      margin-bottom: 4px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-card.active {
+
+
+
+
+
+
+      border-color: rgba(0,210,255,0.6);
+
+
+
+
+
+
+      box-shadow: 0 10px 25px rgba(0,210,255,0.25);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mood-picker {
+
+
+
+
+
+
+      display: grid;
+
+
+
+
+
+
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+
+
+
+
+
+      gap: 12px;
+
+
+
+
+
+
+      margin: 20px 0;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mood-btn {
+
+
+
+
+
+
+      border-radius: 30px;
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      padding: 12px 18px;
+
+
+
+
+
+
+      background: rgba(255,255,255,0.04);
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      font-weight: 600;
+
+
+
+
+
+
+      text-align: center;
+
+
+
+
+
+
+      transition: all 0.2s;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mood-btn.active {
+
+
+
+
+
+
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+      border-color: transparent;
+
+
+
+
+
+
+      box-shadow: 0 10px 25px rgba(0,210,255,0.3);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .chat-prompt-banner {
+
+
+
+
+
+
+      border: 1px dashed rgba(255,255,255,0.2);
+
+
+
+
+
+
+      border-radius: 16px;
+
+
+
+
+
+
+      padding: 12px 16px;
+
+
+
+
+
+
+      margin-bottom: 15px;
+
+
+
+
+
+
+      color: #b1d5ff;
+
+
+
+
+
+
+      font-size: 14px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mini-games {
+
+
+
+
+
+
+      display: flex;
+
+
+
+
+
+
+      flex-wrap: wrap;
+
+
+
+
+
+
+      gap: 10px;
+
+
+
+
+
+
+      margin: 15px 0;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mini-games button {
+
+
+
+
+
+
+      flex: 1 1 140px;
+
+
+
+
+
+
+      border-radius: 14px;
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      background: rgba(255,255,255,0.04);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      padding: 10px 14px;
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      font-size: 13px;
+
+
+
+
+
+
+      transition: all 0.2s;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .mini-games button:hover {
+
+
+
+
+
+
+      border-color: rgba(0,210,255,0.6);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .voice-btn {
+
+
+
+
+
+
+      border-radius: 50%;
+
+
+
+
+
+
+      width: 50px;
+
+
+
+
+
+
+      height: 50px;
+
+
+
+
+
+
+      border: none;
+
+
+
+
+
+
+      background: linear-gradient(135deg, #ff6b6b, #f43f5e);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      font-size: 20px;
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      display: flex;
+
+
+
+
+
+
+      align-items: center;
+
+
+
+
+
+
+      justify-content: center;
+
+
+
+
+
+
+      transition: transform 0.2s, box-shadow 0.2s;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .voice-btn.recording {
+
+
+
+
+
+
+      animation: pulse 1.2s infinite;
+
+
+
+
+
+
+      box-shadow: 0 0 0 8px rgba(244,63,94,0.25);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .message.voice {
+
+
+
+
+
+
+      padding: 12px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .message.voice audio {
+
+
+
+
+
+
+      width: 100%;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .hostel-wall, .micro-rooms {
+
+
+
+
+
+
+      margin-top: 40px;
+
+
+
+
+
+
+      background: rgba(10,15,40,0.9);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+
+
+
+
+
+      border-radius: 24px;
+
+
+
+
+
+
+      padding: 24px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .hostel-wall h3, .micro-rooms h3 {
+
+
+
+
+
+
+      margin-bottom: 15px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .wall-header {
+
+
+
+
+
+
+      display: flex;
+
+
+
+
+
+
+      flex-wrap: wrap;
+
+
+
+
+
+
+      gap: 12px;
+
+
+
+
+
+
+      justify-content: space-between;
+
+
+
+
+
+
+      align-items: center;
+
+
+
+
+
+
+      margin-bottom: 12px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .wall-input textarea {
+
+
+
+
+
+
+      width: 100%;
+
+
+
+
+
+
+      border-radius: 18px;
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+
+
+
+
+
+      background: rgba(255,255,255,0.03);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      padding: 14px;
+
+
+
+
+
+
+      min-height: 70px;
+
+
+
+
+
+
+      resize: vertical;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .wall-input button {
+
+
+
+
+
+
+      margin-top: 10px;
+
+
+
+
+
+
+      padding: 12px 20px;
+
+
+
+
+
+
+      border-radius: 30px;
+
+
+
+
+
+
+      border: none;
+
+
+
+
+
+
+      background: linear-gradient(135deg, #4ade80, #16a34a);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      font-weight: 600;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .wall-post {
+
+
+
+
+
+
+      background: rgba(255,255,255,0.03);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.05);
+
+
+
+
+
+
+      border-radius: 18px;
+
+
+
+
+
+
+      padding: 14px;
+
+
+
+
+
+
+      margin-top: 12px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .wall-meta {
+
+
+
+
+
+
+      margin-top: 8px;
+
+
+
+
+
+
+      font-size: 12px;
+
+
+
+
+
+
+      color: #94a3b8;
+
+
+
+
+
+
+      display: flex;
+
+
+
+
+
+
+      justify-content: space-between;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-grid {
+
+
+
+
+
+
+      display: grid;
+
+
+
+
+
+
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+
+
+
+
+
+      gap: 16px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-card {
+
+
+
+
+
+
+      border-radius: 18px;
+
+
+
+
+
+
+      padding: 18px;
+
+
+
+
+
+
+      background: rgba(255,255,255,0.04);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.06);
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      transition: transform 0.2s, border-color 0.2s;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-card:hover {
+
+
+
+
+
+
+      transform: translateY(-4px);
+
+
+
+
+
+
+      border-color: rgba(0,210,255,0.4);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-card.active {
+
+
+
+
+
+
+      border-color: rgba(0,210,255,0.7);
+
+
+
+
+
+
+      box-shadow: 0 10px 30px rgba(0,210,255,0.25);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-members {
+
+
+
+
+
+
+      font-size: 12px;
+
+
+
+
+
+
+      color: #94a3b8;
+
+
+
+
+
+
+      margin-top: 6px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-panel {
+
+
+
+
+
+
+      display: none;
+
+
+
+
+
+
+      margin-top: 20px;
+
+
+
+
+
+
+      padding: 18px;
+
+
+
+
+
+
+      border-radius: 20px;
+
+
+
+
+
+
+      background: rgba(255,255,255,0.02);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.05);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-panel.active {
+
+
+
+
+
+
+      display: block;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-feed {
+
+
+
+
+
+
+      max-height: 260px;
+
+
+
+
+
+
+      overflow-y: auto;
+
+
+
+
+
+
+      margin: 15px 0;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-message {
+
+
+
+
+
+
+      padding: 12px;
+
+
+
+
+
+
+      border-radius: 14px;
+
+
+
+
+
+
+      background: rgba(255,255,255,0.04);
+
+
+
+
+
+
+      margin-bottom: 10px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-message.voice {
+
+
+
+
+
+
+      border-left: 3px solid rgba(0,210,255,0.7);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-controls textarea {
+
+
+
+
+
+
+      width: 100%;
+
+
+
+
+
+
+      border-radius: 16px;
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+
+
+
+
+
+      background: rgba(255,255,255,0.03);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      padding: 12px;
+
+
+
+
+
+
+      min-height: 60px;
+
+
+
+
+
+
+      resize: vertical;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .room-controls button {
+
+
+
+
+
+
+      border: none;
+
+
+
+
+
+
+      border-radius: 16px;
+
+
+
+
+
+
+      padding: 12px 20px;
+
+
+
+
+
+
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+      color: #fff;
+
+
+
+
+
+
+      font-weight: 600;
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-feedback {
+
+
+
+
+
+
+      position: fixed;
+
+
+
+
+
+
+      inset: 0;
+
+
+
+
+
+
+      background: rgba(0,0,0,0.65);
+
+
+
+
+
+
+      display: none;
+
+
+
+
+
+
+      align-items: center;
+
+
+
+
+
+
+      justify-content: center;
+
+
+
+
+
+
+      z-index: 120;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-feedback.active {
+
+
+
+
+
+
+      display: flex;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-feedback-card {
+
+
+
+
+
+
+      background: #0f172a;
+
+
+
+
+
+
+      border-radius: 24px;
+
+
+
+
+
+
+      padding: 30px;
+
+
+
+
+
+
+      width: min(420px, 90%);
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      text-align: center;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-token-grid {
+
+
+
+
+
+
+      display: grid;
+
+
+
+
+
+
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+
+
+
+
+
+
+      gap: 12px;
+
+
+
+
+
+
+      margin-top: 20px;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-token {
+
+
+
+
+
+
+      border-radius: 18px;
+
+
+
+
+
+
+      padding: 12px;
+
+
+
+
+
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+      background: rgba(255,255,255,0.04);
+
+
+
+
+
+
+      cursor: pointer;
+
+
+
+
+
+
+      transition: transform 0.2s, border-color 0.2s;
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .vibe-token:hover {
+
+
+
+
+
+
+      transform: translateY(-3px);
+
+
+
+
+
+
+      border-color: rgba(0,210,255,0.6);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .feature-icon {
+
+
+
+
+
+
+
       font-size: 48px; margin-bottom: 20px;
+
+
+
+
+
+
+
       filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.5));
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: #fff; }
+
+
+
+
+
+
+
     .feature-card p { color: #888; font-size: 15px; line-height: 1.6; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .cta-section {
+
+
+
+
+
+
+
       text-align: center; padding: 80px 5%; position: relative; z-index: 1;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .cta-btn {
+
+
+
+
+
+
+
       display: inline-block;
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       padding: 20px 60px; border-radius: 50px; color: #fff;
+
+
+
+
+
+
+
       font-size: 20px; font-weight: 700; text-decoration: none;
+
+
+
+
+
+
+
       transition: all 0.3s; border: none; cursor: pointer;
+
+
+
+
+
+
+
       box-shadow: 0 10px 40px rgba(0, 210, 255, 0.3);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .cta-btn:hover {
+
+
+
+
+
+
+
       transform: translateY(-5px) scale(1.05);
+
+
+
+
+
+
+
       box-shadow: 0 20px 60px rgba(0, 210, 255, 0.5);
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .app-modal {
+
+
+
+
+
+
+
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+
+
+
+
+
+
+
       background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px);
+
+
+
+
+
+
+
       z-index: 1000; align-items: center; justify-content: center;
+
+
+
+
+
+
+
       padding: 20px; overflow-y: auto;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .app-modal.active { display: flex; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .app-container {
+
+
+
+
+
+
+
       background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(20px);
+
+
+
+
+
+
+
       border-radius: 30px; padding: 50px 40px; width: 100%; max-width: 500px;
+
+
+
+
+
+
+
       border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+
+
+
+
+
+
+
       position: relative; animation: slideUp 0.5s ease; margin: auto;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     @keyframes slideUp {
+
+
+
+
+
+
+
       from { opacity: 0; transform: translateY(50px); }
+
+
+
+
+
+
+
       to { opacity: 1; transform: translateY(0); }
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .close-btn {
+
+
+
+
+
+
+
       position: absolute; top: 20px; right: 20px;
+
+
+
+
+
+
+
       font-size: 30px; cursor: pointer; color: #888;
+
+
+
+
+
+
+
       transition: color 0.3s; background: none; border: none;
+
+
+
+
+
+
+
       line-height: 1; padding: 0; width: 30px; height: 30px;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .close-btn:hover { color: #ff6b6b; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     input, select, button, textarea {
+
+
+
+
+
+
+
       width: 100%; padding: 16px 20px; margin: 12px 0;
+
+
+
+
+
+
+
       border-radius: 15px; font-size: 16px; font-family: 'Inter', sans-serif;
+
+
+
+
+
+
+
       border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
       background: rgba(22, 33, 62, 0.5); color: #fff; transition: all 0.3s;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     input:focus, select:focus, textarea:focus {
+
+
+
+
+
+
+
       outline: none; border-color: #00d2ff;
+
+
+
+
+
+
+
       box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     button {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       border: none; font-weight: 600; cursor: pointer;
+
+
+
+
+
+
+
       box-shadow: 0 5px 20px rgba(0, 210, 255, 0.3);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     button:hover:not(:disabled) {
+
+
+
+
+
+
+
       transform: translateY(-2px);
+
+
+
+
+
+
+
       box-shadow: 0 10px 30px rgba(0, 210, 255, 0.5);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .btn-secondary { background: rgba(68, 68, 68, 0.5); backdrop-filter: blur(10px); }
+
+
+
+
+
+
+
     .btn-danger { background: linear-gradient(135deg, #ff6b6b, #ff4444); }
+
+
+
+
+
+
+
     .btn-warning { background: linear-gradient(135deg, #ffa500, #ff8c00); }
+
+
+
+
+
+
+
     .btn-report { background: linear-gradient(135deg, #ff4444, #cc0000); font-size: 14px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .subtitle { color: #888; font-size: 15px; margin-bottom: 30px; }
+
+
+
+
+
+
+
     #status { margin-top: 20px; font-size: 15px; min-height: 24px; color: #ffd43b; font-weight: 500; }
+
+
+
+
+
+
+
     .safety-note { font-size: 13px; color: #666; margin-top: 15px; line-height: 1.6; }
+
+
+
+
+
+
+
     .warning { color: #ff6b6b; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .comm-types {
+
+
+
+
+
+
+
       display: grid; grid-template-columns: repeat(3, 1fr);
+
+
+
+
+
+
+
       gap: 15px; margin: 25px 0;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .comm-type {
+
+
+
+
+
+
+
       padding: 20px 15px; border-radius: 15px;
+
+
+
+
+
+
+
       border: 2px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
       background: rgba(22, 33, 62, 0.3); cursor: pointer;
+
+
+
+
+
+
+
       transition: all 0.3s; text-align: center;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .comm-type:hover { border-color: rgba(0, 210, 255, 0.5); transform: translateY(-3px); }
+
+
+
+
+
+
+
     .comm-type.active {
+
+
+
+
+
+
+
       border-color: #00d2ff;
+
+
+
+
+
+
+
       background: rgba(0, 210, 255, 0.1);
+
+
+
+
+
+
+
       box-shadow: 0 5px 20px rgba(0, 210, 255, 0.2);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .comm-type-icon { font-size: 32px; margin-bottom: 8px; }
+
+
+
+
+
+
+
     .comm-type-label { font-size: 14px; font-weight: 600; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .interests-section { margin: 25px 0; text-align: left; }
+
+
+
+
+
+
+
     .interests-label { font-size: 14px; color: #888; margin-bottom: 12px; font-weight: 500; }
+
+
+
+
+
+
+
     .interests-input { display: flex; gap: 10px; margin-bottom: 12px; }
+
+
+
+
+
+
+
     .interests-input input { flex: 1; margin: 0; }
+
+
+
+
+
+
+
     .interests-input button { width: auto; padding: 16px 24px; margin: 0; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .interest-tags { display: flex; flex-wrap: wrap; gap: 10px; min-height: 40px; }
+
+
+
+
+
+
+
     .interest-tag {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       color: #fff; padding: 8px 16px; border-radius: 25px;
+
+
+
+
+
+
+
       font-size: 13px; font-weight: 600;
+
+
+
+
+
+
+
       display: inline-flex; align-items: center; gap: 10px;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .interest-tag .remove { cursor: pointer; font-size: 18px; font-weight: bold; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #video-container, #chat-container { display: none; margin-top: 20px; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     #videos {
+
+
+
+
+
+
+
       display: flex; flex-direction: column; gap: 15px;
+
+
+
+
+
+
+
       position: relative; border-radius: 20px; overflow: hidden;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     #local-video, #remote-video {
+
+
+
+
+
+
+
       width: 100%; background: #000; border-radius: 20px; object-fit: cover;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     #remote-video { height: 350px; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     #local-video {
+
+
+
+
+
+
+
       height: 140px; border: 3px solid #00d2ff;
+
+
+
+
+
+
+
       position: absolute; bottom: 15px; right: 15px;
+
+
+
+
+
+
+
       width: 160px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #chat-messages {
+
+
+
+
+
+
+
       height: 400px; overflow-y: auto;
+
+
+
+
+
+
+
       background: rgba(22, 33, 62, 0.3); border-radius: 20px;
+
+
+
+
+
+
+
       padding: 20px; margin-bottom: 15px; text-align: left;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .message {
+
+
+
+
+
+
+
       margin-bottom: 15px; padding: 12px 16px; border-radius: 15px;
+
+
+
+
+
+
+
       max-width: 80%; word-wrap: break-word; animation: messageIn 0.3s ease;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     @keyframes messageIn {
+
+
+
+
+
+
+
       from { opacity: 0; transform: translateY(10px); }
+
+
+
+
+
+
+
       to { opacity: 1; transform: translateY(0); }
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .message.local {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       color: #fff; margin-left: auto; text-align: right;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .message.remote { background: rgba(42, 42, 62, 0.8); color: #fff; }
+
+
+
+
+
+
+
     .message.system { background: transparent; color: #666; font-size: 13px; text-align: center; max-width: 100%; }
-   
-    #chat-input-area { display: flex; gap: 12px; }
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    #chat-input-area { display: flex; gap: 12px; align-items: center; }
+
+
+
+
+
+
     #chat-input { flex: 1; margin: 0; }
+
+
+
+
+
+
+
     #send-btn { width: auto; padding: 16px 30px; margin: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .video-controls, .chat-controls {
+
+
+
+
+
+
+
       display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .video-controls button, .chat-controls button { flex: 1; min-width: 90px; font-size: 14px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .connection-status {
+
+
+
+
+
+
+
       font-size: 13px; padding: 12px; border-radius: 12px;
+
+
+
+
+
+
+
       margin-top: 15px; background: rgba(42, 42, 62, 0.5);
+
+
+
+
+
+
+
       backdrop-filter: blur(10px); font-weight: 500;
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .quality-good { color: #4ade80; }
+
+
+
+
+
+
+
     .quality-fair { color: #ffd43b; }
+
+
+
+
+
+
+
     .quality-poor { color: #ff6b6b; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .screen { display: none; }
+
+
+
+
+
+
+
     .screen.active { display: block; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .verify-notice {
+
+
+
+
+
+
+
       background: rgba(42, 42, 62, 0.5); backdrop-filter: blur(10px);
+
+
+
+
+
+
+
       padding: 18px; border-radius: 15px; margin: 18px 0;
+
+
+
+
+
+
+
       font-size: 14px; line-height: 1.6; border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .stranger-info {
+
+
+
+
+
+
+
       background: rgba(42, 42, 62, 0.5); backdrop-filter: blur(10px);
+
+
+
+
+
+
+
       padding: 15px; border-radius: 15px; margin-bottom: 18px;
+
+
+
+
+
+
+
       font-size: 14px; border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .stranger-interests { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+
+
+
+
+
+
+
     .stranger-interests .tag {
+
+
+
+
+
+
+
       background: rgba(74, 222, 128, 0.2); color: #4ade80;
+
+
+
+
+
+
+
       padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .blocked-section { margin: 18px 0; text-align: left; }
+
+
+
+
+
+
+
     .blocked-user {
+
+
+
+
+
+
+
       background: rgba(42, 42, 62, 0.5); padding: 12px; border-radius: 12px;
+
+
+
+
+
+
+
       margin: 8px 0; display: flex; justify-content: space-between; align-items: center;
+
+
+
+
+
+
+
       border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .unblock-btn {
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #4ade80, #22c55e);
+
+
+
+
+
+
+
       color: #fff; padding: 6px 18px; border-radius: 8px;
+
+
+
+
+
+
+
       font-size: 12px; cursor: pointer; font-weight: 600;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     .modal {
+
+
+
+
+
+
+
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+
+
+
+
+
+
+
       background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+
+
+
+
+
+
+
       z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     .modal.active { display: flex; }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .modal-content {
+
+
+
+
+
+
+
       background: rgba(26, 26, 46, 0.98); backdrop-filter: blur(20px);
+
+
+
+
+
+
+
       padding: 40px; border-radius: 25px; max-width: 450px; width: 100%;
+
+
+
+
+
+
+
       border: 1px solid rgba(255,255,255,0.1);
+
+
+
+
+
+
+
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+
+
+
+
+
+
+
     }
-   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     .modal-content h3 { margin-bottom: 25px; color: #00d2ff; font-size: 24px; }
+
+
+
+
+
+
+
     .modal-content textarea { min-height: 120px; margin: 18px 0; }
+
+
+
+
+
+
+
     .modal-buttons { display: flex; gap: 12px; margin-top: 25px; }
+
+
+
+
+
+
+
     .modal-buttons button { flex: 1; margin: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #live-users-counter {
+
+
+
+
+
+
+
       position: fixed; top: 80px; right: 20px;
+
+
+
+
+
+
+
       background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+
+
+
+
+
+
+
       color: white; padding: 10px 18px; border-radius: 25px;
+
+
+
+
+
+
+
       font-size: 13px; font-weight: 600; z-index: 100;
+
+
+
+
+
+
+
       box-shadow: 0 4px 15px rgba(0,210,255,0.3);
+
+
+
+
+
+
+
       pointer-events: none; display: none;
+
+
+
+
+
+
+
       animation: fadeIn 0.5s ease;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @keyframes fadeIn {
+
+
+
+
+
+
+
       from { opacity: 0; transform: translateY(-20px); }
+
+
+
+
+
+
+
       to { opacity: 1; transform: translateY(0); }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     footer {
+
+
+
+
+
+
+
       text-align: center; padding: 40px 5%; background: rgba(10, 14, 39, 0.8);
+
+
+
+
+
+
+
       border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
     footer p { color: #666; font-size: 14px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @media (max-width: 768px) {
+
+
+
+
+
+
+
       nav { padding: 15px 5%; }
+
+
+
+
+
+
+
       .nav-links { display: none; }
+
+
+
+
+
+
+
       .menu-toggle { display: block; }
+
+
+
+
+
+
+
       .nav-links.active {
+
+
+
+
+
+
+
         display: flex; flex-direction: column; position: absolute;
+
+
+
+
+
+
+
         top: 70px; left: 0; right: 0; background: rgba(10, 14, 39, 0.98);
+
+
+
+
+
+
+
         padding: 20px; gap: 20px;
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
       .hero { padding: 120px 5% 60px; }
+
+
+
+
+
+
+
       .hero h1 { font-size: 32px; }
+
+
+
+
+
+
+
       .features { grid-template-columns: 1fr; }
+
+
+
+
+
+
+
       .app-container { padding: 30px 25px; }
+
+
+
+
+
+
+
       #remote-video { height: 250px; }
+
+
+
+
+
+
+
       #local-video { width: 120px; height: 100px; }
+
+
+
+
+
+
+
       .cta-btn { font-size: 18px; padding: 16px 40px; }
+
+
+
+
+
+
+
       #live-users-counter { top: 70px; right: 10px; font-size: 11px; padding: 8px 14px; }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @media (max-width: 480px) {
+
+
+
+
+
+
+
       .app-container { padding: 25px 20px; }
+
+
+
+
+
+
+
       .comm-types { grid-template-columns: 1fr; }
-      .comm-type { padding: 15px; }
+
+
+
+
+
+
+
       input, select, button { font-size: 14px; padding: 14px 16px; }
+
+
+
+
+
+
+
     }
-    </style>
-  <script>
-          let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
- 
-  // Create banner with smooth entrance animation
-  const banner = document.createElement('div');
-  banner.id = 'pwa-banner';
-  banner.innerHTML = `
-    <style>
-      @keyframes slideUp {
-        from {
-          transform: translateX(-50%) translateY(100px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(-50%) translateY(0);
-          opacity: 1;
-        }
-      }
-     
-      @keyframes pulse {
-        0%, 100% {
-          box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4);
-        }
-        50% {
-          box-shadow: 0 0 0 8px rgba(0, 210, 255, 0);
-        }
-      }
-     
-      #pwa-banner-content {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(26, 26, 46, 0.95);
-        backdrop-filter: blur(20px);
-        padding: 16px 20px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        gap: 15px;
-        align-items: center;
-        z-index: 9999;
-        max-width: 90%;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
-        animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-     
-      .pwa-icon {
-        font-size: 32px;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
-        flex-shrink: 0;
-      }
-     
-      .pwa-info {
-        flex: 1;
-        min-width: 0;
-      }
-     
-      .pwa-title {
-        font-weight: 600;
-        color: #fff;
-        font-size: 15px;
-        margin: 0 0 2px 0;
-      }
-     
-      .pwa-subtitle {
-        font-size: 12px;
-        color: #888;
-        margin: 0;
-      }
-     
-      .pwa-install-btn {
-        background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
-        color: white;
-        border: none;
-        padding: 10px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        animation: pulse 2s infinite;
-      }
-     
-      .pwa-install-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0, 210, 255, 0.3);
-      }
-     
-      .pwa-install-btn:active {
-        transform: translateY(0);
-      }
-     
-      .pwa-close-btn {
-        background: transparent;
-        color: #888;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        padding: 0;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-      }
-     
-      .pwa-close-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-      }
-     
-      @media (max-width: 480px) {
-        #pwa-banner-content {
-          bottom: 10px;
-          padding: 12px 16px;
-          gap: 12px;
-        }
-       
-        .pwa-icon {
-          font-size: 24px;
-          width: 40px;
-          height: 40px;
-        }
-       
-        .pwa-title {
-          font-size: 14px;
-        }
-       
-        .pwa-install-btn {
-          padding: 8px 16px;
-          font-size: 13px;
-        }
-      }
-    </style>
-   
-    <div id="pwa-banner-content">
-      <div class="pwa-icon">📱</div>
-      <div class="pwa-info">
-        <p class="pwa-title">Install HostelHub</p>
-        <p class="pwa-subtitle">Add to home screen for quick access</p>
-      </div>
-      <button class="pwa-install-btn" onclick="installPWA()">Install</button>
-      <button class="pwa-close-btn" onclick="dismissBanner()">×</button>
-    </div>
- 
-  document.body.appendChild(banner);
-});
-window.installPWA = async () => {
-  if (!deferredPrompt) return;
- 
-  const installBtn = document.querySelector('.pwa-install-btn');
-  if (installBtn) {
-    installBtn.textContent = 'Installing...';
-    installBtn.disabled = true;
-  }
- 
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
- 
-  console.log(`User ${outcome === 'accepted' ? 'accepted' : 'dismissed'} the install prompt`);
- 
-  deferredPrompt = null;
-  document.getElementById('pwa-banner')?.remove();
-};
-window.dismissBanner = () => {
-  const banner = document.getElementById('pwa-banner');
-  if (banner) {
-    banner.style.animation = 'slideUp 0.3s ease reverse';
-    setTimeout(() => banner.remove(), 300);
-  }
- 
-  // Remember dismissal for 7 days
-  localStorage.setItem('pwa-banner-dismissed', Date.now().toString());
-};
-// Check if banner was recently dismissed
-window.addEventListener('beforeinstallprompt', (e) => {
-  const dismissed = localStorage.getItem('pwa-banner-dismissed');
-  if (dismissed) {
-    const daysSince = (Date.now() - parseInt(dismissed)) / (1000 * 60 * 60 * 24);
-    if (daysSince < 7) {
-      e.preventDefault();
-      return;
-    }
-  }
-});
-</script>
+
+
+
+
+
+
+
+  </style>
+
+
+
+
+
+
+
 </head>
+
+
+
+
+
+
+
 <body>
+
+
+
+
+
+
+
   <div class="bg-animated"></div>
+
+
+
+
+
+
+
   <div id="live-users-counter"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <nav>
+
+
+
+
+
+
+
     <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">HostelHub</div>
+
+
+
+
+
+
+
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+
+
+
+
+
+
     <div class="nav-links" id="navLinks">
+
+
+
+
+
+
+
       <a onclick="scrollToFeatures(event)">Features</a>
+
+
+
+
+
+
+
       <a onclick="scrollToSection(event, 'cta-section')">About</a>
-      <a class="nav-cta" onclick="openApp()">Get Started</a>
+
+
+
+
+
+
+
+      <a class="nav-cta" onclick="event.preventDefault(); openApp();">Get Started</a>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
   </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <section class="hero">
+
+
+
+
+
+
+
     <h1>Connect with College Students Anonymously</h1>
+
+
+
+
+
+
+
     <p>Video chat, voice call, or text with students from your college. Safe, anonymous, and fun. Just like Omegle, but for verified college students only.</p>
+
+
+
+
+
+
+
     <button class="cta-btn" onclick="openApp()">Start Matching Now →</button>
+
+
+
+
+
+
+
   </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <section class="features" id="features">
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">📹</div>
+
+
+
+
+
+
+
       <h3>Video & Voice</h3>
+
+
+
+
+
+
+
       <p>High-quality video calls or voice-only chats with crystal clear audio</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">🎭</div>
+
+
+
+
+
+
+
       <h3>Anonymous Matching</h3>
+
+
+
+
+
+
+
       <p>Connect randomly with verified students from your college while staying anonymous</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">💬</div>
+
+
+
+
+
+
+
       <h3>Text Chat</h3>
+
+
+
+
+
+
+
       <p>Prefer typing? Use our instant text chat with auto-save feature</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">🛡️</div>
+
+
+
+
+
+
+
       <h3>Safe & Secure</h3>
+
+
+
+
+
+
+
       <p>Report/block features, no personal info shared, email verification required</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">⭐️</div>
+
+
+
+
+
+
+
       <h3>Skip Anytime</h3>
+
+
+
+
+
+
+
       <p>Not feeling the vibe? Skip to the next person instantly, Omegle-style</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
     <div class="feature-card" onclick="openApp()">
+
+
+
+
+
+
+
       <div class="feature-icon">🎯</div>
+
+
+
+
+
+
+
       <h3>Interest Matching</h3>
+
+
+
+
+
+
+
       <p>Add interests and find people with similar hobbies and passions</p>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
   </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <section class="cta-section" id="cta-section">
+
+
+
+
+
+
+
     <h2 style="font-size: clamp(32px, 5vw, 42px); margin-bottom: 20px;">Ready to make new friends?</h2>
+
+
+
+
+
+
+
     <p style="color: #888; margin-bottom: 40px; font-size: clamp(16px, 2vw, 18px);">Join thousands of students connecting daily</p>
+
+
+
+
+
+
+
     <button class="cta-btn" onclick="openApp()">Launch HostelHub →</button>
+
+
+
+
+
+
+
   </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <footer>
+
+
+
+
+
+
+
     <p>&copy; 2024 HostelHub. All rights reserved. Made with ❤️ for college students.</p>
+
+
+
+
+
+
+
   </footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div id="appModal" class="app-modal">
+
+
+
+
+
+
+
     <div class="app-container">
+
+
+
+
+
+
+
       <button class="close-btn" onclick="closeApp()">×</button>
-     
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
       <div style="text-align: center; margin-bottom: 30px;">
+
+
+
+
+
+
+
         <h1 style="font-size: 32px; margin-bottom: 10px;">HostelHub</h1>
+
+
+
+
+
+
+
         <p class="subtitle">Connect with students anonymously</p>
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div id="login-screen" class="screen active">
+
+
+
+
+
+
+
         <input id="email" type="email" placeholder="your.email@gmail.com" />
+
+
+
+
+
+
+
         <input id="password" type="password" placeholder="Password (6+ characters)" />
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <button id="signupBtn">Sign Up</button>
+
+
+
+
+
+
+
         <button id="loginBtn" class="btn-secondary">Login</button>
+
+
+
+
+
+
+
         <button id="forgotPasswordBtn" class="btn-secondary" style="font-size: 13px; padding: 12px;">Forgot Password?</button>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="verify-notice" style="display: none;" id="verify-notice">
+
+
+
+
+
+
+
           ✉️ Verification email sent! Check your inbox and click the link, then return here to login.
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="verify-notice" style="display: none;" id="reset-notice">
-          📧 Password reset email sent! Check your inbox.
+
+
+
+
+
+
+
+          🔧 Password reset email sent! Check your inbox.
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="safety-note">
+
+
+
+
+
+
+
           🔒 Works with any email • Anonymous matching • No personal info shared
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div id="setup-screen" class="screen">
+
+
+
+
+
+
+
         <p class="subtitle">Logged in as: <span id="user-email"></span></p>
-       
+
+
+
+
+
+
+
+        <div class="aura-chip" id="aura-chip">
+
+
+
+
+
+
+
+          Aura loading...
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="interests-label">Choose Communication Type:</div>
+
+
+
+
+
+
+
         <div class="comm-types">
+
+
+
+
+
+
+
           <div class="comm-type active" data-type="video">
-            <div class="comm-type-icon">📹</div>
+
+
+
+
+
+
+
+            <div class="comm-type-icon">dY"1</div>
+
+
+
+
+
+
+
             <div class="comm-type-label">Video</div>
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
           <div class="comm-type" data-type="voice">
-            <div class="comm-type-icon">🎤</div>
+
+
+
+
+
+
+
+            <div class="comm-type-icon">dYZ</div>
+
+
+
+
+
+
+
             <div class="comm-type-label">Voice</div>
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
           <div class="comm-type" data-type="chat">
-            <div class="comm-type-icon">💬</div>
+
+
+
+
+
+
+
+            <div class="comm-type-icon">dY'�</div>
+
+
+
+
+
+
+
             <div class="comm-type-label">Chat</div>
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <select id="gender">
+
+
+
+
+
+
+
           <option value="">Select your gender</option>
+
+
+
+
+
+
+
           <option value="men">Men</option>
+
+
+
+
+
+
+
           <option value="women">Women</option>
+
+
+
+
+
+
+
           <option value="other">Other</option>
+
+
+
+
+
+
+
         </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <select id="college">
+
+
+
+
+
+
+
           <option value="">Select your college</option>
+
+
+
+
+
+
+
           <option value="IIT Delhi">IIT Delhi</option>
+
+
+
+
+
+
+
           <option value="IIT Bombay">IIT Bombay</option>
+
+
+
+
+
+
+
           <option value="JNTUK">JNTUK</option>
+
+
+
+
+
+
+
           <option value="KL University">KL University</option>
+
+
+
+
+
+
+
           <option value="VIT AP">VIT AP</option>
+
+
+
+
+
+
+
           <option value="Delhi University">Delhi University</option>
+
+
+
+
+
+
+
           <option value="Harvard">Harvard University</option>
+
+
+
+
+
+
+
           <option value="MIT">MIT</option>
+
+
+
+
+
+
+
           <option value="Stanford">Stanford University</option>
+
+
+
+
+
+
+
           <option value="Other">Other</option>
-          <option value="ANY">🌍 Match with Anyone (Testing)</option>
+
+
+
+
+
+
+
+          <option value="ANY">dYO? Match with Anyone (Testing)</option>
+
+
+
+
+
+
+
         </select>
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="interests-label">Pick up to 3 vibe cards so strangers catch your mood instantly:</div>
+
+
+
+
+
+
+
+        <div class="vibe-grid" id="vibe-grid"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="interests-label">Mood match (instant pairing):</div>
+
+
+
+
+
+
+
+        <div class="mood-picker" id="mood-picker"></div>
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="interests-section">
+
+
+
+
+
+
+
           <div class="interests-label">Add interests (optional - max 5):</div>
+
+
+
+
+
+
+
           <div class="interests-input">
+
+
+
+
+
+
+
             <input id="interest-input" type="text" placeholder="e.g., cricket, coding, music" maxlength="20" />
+
+
+
+
+
+
+
             <button id="add-interest-btn">Add</button>
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
           <div class="interest-tags" id="interest-tags"></div>
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="blocked-section" id="blocked-section" style="display: none;">
+
+
+
+
+
+
+
           <div class="interests-label">Blocked Users:</div>
+
+
+
+
+
+
+
           <div id="blocked-list"></div>
+
+
+
+
+
+
+
         </div>
-        <button id="findBtn">🔍 Find Match</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <button id="findBtn">dY"? Find Match</button>
+
+
+
+
+
+
+
         <button id="logoutBtn" class="btn-secondary">Logout</button>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="safety-note">
+
+
+
+
+
+
+
           You'll be matched anonymously with someone from the same college and gender.
+
+
+
+
+
+
+
           <span class="warning">Never share personal contact info.</span>
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div id="status"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div id="video-container">
+
+
+
+
+
+
+
         <div class="stranger-info" id="stranger-info"></div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="connection-status" id="connection-status">
+
+
+
+
+
+
+
           Connection: <span id="quality">Connecting...</span>
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div id="videos">
-          <video id="remote-video" autoplay playsinline controls></video>
+
+
+
+
+
+
+
+          <video id="remote-video" autoplay playsinline></video>
+
+
+
+
+
+
+
           <video id="local-video" autoplay playsinline muted></video>
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="video-controls">
+
+
+
+
+
+
+
           <button id="muteBtn">🔇 Mute</button>
+
+
+
+
+
+
+
           <button id="videoBtn">📹 Off</button>
+
+
+
+
+
+
+
           <button id="skipBtn" class="btn-warning">⭐️ Skip</button>
+
+
+
+
+
+
+
           <button id="reportBtn" class="btn-report">🚨 Report</button>
+
+
+
+
+
+
+
           <button id="endCall" class="btn-danger">❌ End</button>
+
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
         <div class="safety-note">
+
+
+
+
+
+
+
           <span class="warning">⚠️</span> If someone shares contact info or behaves inappropriately, report and skip.
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
       </div>
-     
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
       <div id="chat-container">
+
+
+
+
+
+
         <div class="stranger-info" id="stranger-info-chat"></div>
-       
+
+
+
+
+
+
+        <div id="shared-prompt" class="chat-prompt-banner" style="display: none;"></div>
+
+
+
+
+
+
+        
+
+
+
+
+
+
+        <div class="mini-games">
+
+
+
+
+
+
+          <button class="game-btn" data-game="thisThat">This or That</button>
+
+
+
+
+
+
+          <button class="game-btn" data-game="truth">Truth or Dare</button>
+
+
+
+
+
+
+          <button class="game-btn" data-game="rapid">Rapid Fire</button>
+
+
+
+
+
+
+          <button class="game-btn" data-game="vent">Hostel Hot Take</button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div id="chat-messages"></div>
-       
+
+
+
+
+
+
+        
+
+
+
+
+
+
         <div id="chat-input-area">
+
+
+
+
+
+
+          <button id="voice-btn" class="voice-btn" title="Send voice note">🎤</button>
           <input id="chat-input" type="text" placeholder="Type a message..." maxlength="500" />
+
+
+
+
+
+
           <button id="send-btn">Send</button>
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+        
+
+
+
+
+
+
         <div class="chat-controls">
-          <button id="skipBtnChat" class="btn-warning">⭐️ Skip</button>
-          <button id="reportBtnChat" class="btn-report">🚨 Report</button>
-          <button id="saveChatBtn" style="background: linear-gradient(135deg, #4ade80, #22c55e);">💾 Save</button>
-          <button id="endChat" class="btn-danger">❌ End</button>
+
+
+
+
+
+
+          <button id="skipBtnChat" class="btn-warning">?-??,? Skip</button>
+
+
+
+
+
+
+          <button id="reportBtnChat" class="btn-report">dYs" Report</button>
+
+
+
+
+
+
+          <button id="saveChatBtn" style="background: linear-gradient(135deg, #4ade80, #22c55e);">dY'_ Save</button>
+
+
+
+
+
+
+          <button id="endChat" class="btn-danger">??O End</button>
+
+
+
+
+
+
         </div>
-       
+
+
+
+
+
+
+        
+
+
+
+
+
+
         <div class="safety-note">
-          <span class="warning">⚠️</span> Never share phone numbers, email, social media, or personal info.
+
+
+
+
+
+
+          <span class="warning">?s??,?</span> Never share phone numbers, email, social media, or personal info.
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="hostel-wall" id="hostel-wall">
+
+
+
+
+
+
+        <div class="wall-header">
+
+
+
+
+
+
+          <div>
+
+
+
+
+
+
+            <h3>Hostel Wall</h3>
+
+
+
+
+
+
+            <p class="subtitle" style="margin-bottom: 0;">Local anonymous updates only.</p>
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+          <select id="wall-campus">
+
+
+
+
+
+
+            <option value="">Use my college</option>
+
+
+
+
+
+
+            <option value="IIT Delhi">IIT Delhi</option>
+
+
+
+
+
+
+            <option value="IIT Bombay">IIT Bombay</option>
+
+
+
+
+
+
+            <option value="JNTUK">JNTUK</option>
+
+
+
+
+
+
+            <option value="KL University">KL University</option>
+
+
+
+
+
+
+            <option value="VIT AP">VIT AP</option>
+
+
+
+
+
+
+            <option value="Delhi University">Delhi University</option>
+
+
+
+
+
+
+            <option value="Harvard">Harvard University</option>
+
+
+
+
+
+
+            <option value="MIT">MIT</option>
+
+
+
+
+
+
+            <option value="Stanford">Stanford University</option>
+
+
+
+
+
+
+            <option value="Other">Other</option>
+
+
+
+
+
+
+          </select>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+        <div class="wall-input">
+
+
+
+
+
+
+          <textarea id="wall-text" placeholder="Drop a hostel update: e.g., B block wifi dead again ??" maxlength="220"></textarea>
+
+
+
+
+
+
+          <button id="wall-post-btn">Post to Wall</button>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+        <div id="wall-posts"></div>
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="micro-rooms">
+
+
+
+
+
+
+        <h3>Micro Voice Rooms (max 5 people)</h3>
+
+
+
+
+
+
+        <p class="subtitle" style="text-align: left;">Pick a vibe room, drop rapid voice notes, bounce.</p>
+
+
+
+
+
+
+        <div class="room-grid" id="room-grid"></div>
+
+
+
+
+
+
+        <div class="room-panel" id="room-panel">
+
+
+
+
+
+
+          <div class="wall-header" style="margin-bottom: 10px;">
+
+
+
+
+
+
+            <strong id="room-title">Room</strong>
+
+
+
+
+
+
+            <button id="leave-room" class="btn-secondary" style="max-width: 150px;">Leave</button>
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+          <div class="room-feed" id="room-feed"></div>
+
+
+
+
+
+
+          <div class="room-controls">
+
+
+
+
+
+
+            <textarea id="room-text" placeholder="Drop a tiny rant or a plan..." maxlength="200"></textarea>
+
+
+
+
+
+
+            <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+
+
+
+
+
+
+              <button id="room-send-btn" style="flex:1;">Share text</button>
+
+
+
+
+
+
+              <button id="room-voice-btn" class="voice-btn" title="Send room voice note">🎤</button>
+            </div>
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="vibe-feedback" class="vibe-feedback">
+
+
+
+
+
+    <div class="vibe-feedback-card">
+
+
+
+
+
+      <h3>Send them a vibe token?</h3>
+
+
+
+
+
+      <p style="color:#94a3b8;">Quick appreciation with zero ego. No usernames shared.</p>
+
+
+
+
+
+      <div class="vibe-token-grid" id="vibe-token-grid"></div>
+
+
+
+
+
+      <button id="close-vibe-feedback" class="btn-secondary" style="margin-top: 20px; width: 100%;">Skip</button>
+
+
+
+
+
+    </div>
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
   <div id="reportModal" class="modal">
+
+
+
+
+
+
+
     <div class="modal-content">
+
+
+
+
+
+
+
       <h3>🚨 Report User</h3>
+
+
+
+
+
+
+
       <p style="color: #888; font-size: 14px;">Why are you reporting this user?</p>
+
+
+
+
+
+
+
       <select id="reportReason">
+
+
+
+
+
+
+
         <option value="">Select a reason</option>
+
+
+
+
+
+
+
         <option value="inappropriate">Inappropriate behavior</option>
+
+
+
+
+
+
+
         <option value="harassment">Harassment or bullying</option>
+
+
+
+
+
+
+
         <option value="spam">Spam or advertising</option>
+
+
+
+
+
+
+
         <option value="contact-sharing">Sharing contact information</option>
+
+
+
+
+
+
+
         <option value="underage">Appears to be underage</option>
+
+
+
+
+
+
+
         <option value="other">Other</option>
+
+
+
+
+
+
+
       </select>
+
+
+
+
+
+
+
       <textarea id="reportDetails" placeholder="Additional details (optional)"></textarea>
+
+
+
+
+
+
+
       <div class="modal-buttons">
+
+
+
+
+
+
+
         <button id="cancelReport" class="btn-secondary">Cancel</button>
+
+
+
+
+
+
+
         <button id="submitReport" class="btn-danger">Submit Report</button>
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+
+
+
+
+
+
+
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+
+
+
+
+
+
+
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+
+
+
+
+
+
+
    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <script>
+
+
+
+
+
+
+
     const firebaseConfig = {
+
+
+
+
+
+
+
       apiKey: "AIzaSyB_gNArL-vud6HhtWXnwVf6KMAXTRqfAk4",
+
+
+
+
+
+
+
       authDomain: "hostelhub-b11fd.firebaseapp.com",
+
+
+
+
+
+
+
       projectId: "hostelhub-b11fd",
+
+
+
+
+
+
+
       storageBucket: "hostelhub-b11fd.appspot.com",
+
+
+
+
+
+
+
       messagingSenderId: "935653838481",
+
+
+
+
+
+
+
       appId: "1:935653838481:web:e65ad37e0f6e91ff3ef930",
+
+
+
+
+
+
+
       measurementId: "G-KMHEWDN748"
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     firebase.initializeApp(firebaseConfig);
+
+
+
+
+
+
+
     const auth = firebase.auth();
+
+
+
     const db = firebase.firestore();
+
+
+
+    const storage = firebase.storage();
+
+
+
+
+
+
+
+
+
+
+
     let currentUser = null;
+
+
+
+
+
+
+
     let localStream = null;
+
+
+
+
+
+
+
     let pc = null;
+
+
+
+
+
+
+
     let callId = null;
+
+
+
+
+
+
+
     let remoteUid = null;
+
+
+
+
+
+
+
     let matchListener = null;
+
+
+
+
+
+
+
     let callListener = null;
+
+
+
+
+
+
+
     let candidateListener = null;
+
+
+
+
+
+
+
     let chatListener = null;
+
+
+
+
+
+
+
     let isAudioMuted = false;
+
+
+
+
+
+
+
     let isVideoOff = false;
+
+
+
+
+
+
+
     let commType = 'video';
+
+
+
     let userInterests = [];
+
+
+
     let blockedUsers = [];
+
+
+
     let chatHistory = [];
 
+
+
+    let selectedVibes = [];
+
+
+
+    let selectedMood = null;
+
+
+
+    let selectedCollege = '';
+
+
+
+    let currentPrompt = '';
+
+
+
+    let wallListener = null;
+
+
+
+    let wallCampus = '';
+
+
+
+    let roomListener = null;
+
+
+
+    let activeRoomId = null;
+
+
+
+    let pendingTokenUid = null;
+
+
+
+    let currentAura = 'neutral';
+
+
+
+    let voiceRecorder = null;
+
+
+
+    let voiceStream = null;
+
+
+
+    let voiceChunks = [];
+
+
+
+    let voiceTimer = null;
+
+
+
+    let voiceStartTime = null;
+
+
+
+    let currentVoiceTarget = null;
+
+
+
+
+
+
+
+
+
+
+
     const appModal = document.getElementById('appModal');
+
+
+
+
+
+
+
     const loginScreen = document.getElementById('login-screen');
+
+
+
+
+
+
+
     const setupScreen = document.getElementById('setup-screen');
+
+
+
+
+
+
+
     const videoContainer = document.getElementById('video-container');
+
+
+
+
+
+
+
     const chatContainer = document.getElementById('chat-container');
+
+
+
+
+
+
+
     const statusEl = document.getElementById('status');
+
+
+
+
+
+
+
     const localVideo = document.getElementById('local-video');
+
+
+
+
+
+
+
     const remoteVideo = document.getElementById('remote-video');
+
+
+
+
+
+
+
     const chatMessages = document.getElementById('chat-messages');
+
+
+
     const chatInput = document.getElementById('chat-input');
+
+
+
     const reportModal = document.getElementById('reportModal');
+
+
+
+    const vibeGrid = document.getElementById('vibe-grid');
+
+
+
+    const moodPicker = document.getElementById('mood-picker');
+
+
+
+    const auraChip = document.getElementById('aura-chip');
+
+
+
+    const sharedPromptBanner = document.getElementById('shared-prompt');
+
+
+
+    const voiceBtn = document.getElementById('voice-btn');
+
+
+
+    const wallCampusSelect = document.getElementById('wall-campus');
+
+
+
+    const wallText = document.getElementById('wall-text');
+
+
+
+    const wallPosts = document.getElementById('wall-posts');
+
+
+
+    const wallPostBtn = document.getElementById('wall-post-btn');
+
+
+
+    const roomGrid = document.getElementById('room-grid');
+
+
+
+    const roomPanel = document.getElementById('room-panel');
+
+
+
+    const roomTitle = document.getElementById('room-title');
+
+
+
+    const roomFeed = document.getElementById('room-feed');
+
+
+
+    const roomText = document.getElementById('room-text');
+
+
+
+    const roomSendBtn = document.getElementById('room-send-btn');
+
+
+
+    const roomVoiceBtn = document.getElementById('room-voice-btn');
+
+
+
+    const leaveRoomBtn = document.getElementById('leave-room');
+
+
+
+    const vibeFeedbackModal = document.getElementById('vibe-feedback');
+
+
+
+    const vibeTokenGrid = document.getElementById('vibe-token-grid');
+
+
+
+    const closeVibeFeedbackBtn = document.getElementById('close-vibe-feedback');
+
+
+
+    const MAX_VIBE_CARDS = 3;
+
+
+
+    const MAX_VOICE_DURATION = 10;
+
+
+
+    const vibeCardOptions = [
+
+
+
+      { id: 'night-owl', title: 'Night Owl', emoji: '🌙', detail: 'Sunrise = bedtime' },
+
+
+
+      { id: 'always-hungry', title: 'Always Hungry', emoji: '😭', detail: 'Snacks over sleep' },
+
+
+
+      { id: 'gym-no-gains', title: 'Gym but no gains', emoji: '💪🫠', detail: 'Protein + pain' },
+
+
+
+      { id: 'anime-maggie', title: 'Anime + Maggie', emoji: '🍜', detail: 'Otaku chef energy' },
+
+
+
+      { id: 'mess-survivor', title: 'Mess Food Survivor', emoji: '😶‍🌫️', detail: 'Lived to tell the tale' },
+
+
+
+      { id: 'gossip-radar', title: 'Gossip Radar', emoji: '👀', detail: 'Knows hostel tea' },
+
+
+
+      { id: 'study-buddy', title: 'Quiet Study Buddy', emoji: '📚', detail: 'Lo-fi + notes' },
+
+
+
+      { id: 'chaos-bringer', title: 'Chaos Bringer', emoji: '🔥', detail: 'Unfiltered energy' }
+
+
+
+    ];
+
+
+
+
+
+
+
+    const moodOptions = [
+
+
+
+      { id: 'bored', label: '😴 Bored' },
+
+
+
+      { id: 'fun', label: '😂 Need Fun' },
+
+
+
+      { id: 'vent', label: '💀 Need to Vent' },
+
+
+
+      { id: 'sad', label: '😭 Life is hard' },
+
+
+
+      { id: 'chill', label: '🌿 Chill Study' }
+
+
+
+    ];
+
+
+
+
+
+
+
+    const sharedPrompts = [
+
+
+
+      '🧩 Choose: Maggie @ 2AM or Mess Dal forever?',
+
+
+
+      '🤝 Defend your pick: C Block Food vs B Block WiFi.',
+
+
+
+      '🔥 Rapid fire: Android or iPhone? Sleeper hit movie? Secret snack stash?',
+
+
+
+      '💬 Hostel gossip you\'ll never forget?',
+
+
+
+      '🎧 Background vibe check: Lofi beats or rain sounds?',
+
+
+
+      '🍜 Would you trade midnight Maggie for unlimited hot water?'
+
+
+
+    ];
+
+
+
+
+
+
+
+    const miniGameStacks = {
+
+
+
+      thisThat: [
+
+
+
+        'This or That: 5am sunrise vs 2am silence?',
+
+
+
+        'Pick one: unlimited chai or unlimited WiFi?',
+
+
+
+        'Choose: Group study chaos or solo grind?'
+
+
+
+      ],
+
+
+
+      truth: [
+
+
+
+        'Truth: What rumor about your hostel was actually true?',
+
+
+
+        'Dare: Roast your timetable in one line.',
+
+
+
+        'Truth: Ever pretended to sleep to avoid drama?'
+
+
+
+      ],
+
+
+
+      rapid: [
+
+
+
+        'Rapid: Favorite canteen order? Worst assignment? Dream fest headliner?',
+
+
+
+        'Rapid: Android or iPhone? Long showers or quick power nap? One word to describe today?',
+
+
+
+        'Rapid: Rate your day /10, pick a color for your mood, last meme you saved?'
+
+
+
+      ],
+
+
+
+      vent: [
+
+
+
+        'Vent topic: Something hostel admin will never understand.',
+
+
+
+        'Hot take time: Cafeteria menu edits you\'d make?',
+
+
+
+        'Spill: Which block secretly has the best vibes?'
+
+
+
+      ]
+
+
+
+    };
+
+
+
+
+
+
+
+    const roomDefinitions = [
+
+
+
+      { id: 'lofi', title: '🎧 Lo-fi night study', tagline: 'Silent co-study energy', limit: 5 },
+
+
+
+      { id: 'vent', title: '💀 Vent room', tagline: 'Drop the weight + leave', limit: 5 },
+
+
+
+      { id: 'meme', title: '😂 Meme & Roast', tagline: 'Chaos but kind', limit: 5 },
+
+
+
+      { id: 'heart', title: '💗 Relationship opinions', tagline: 'Blunt honesty only', limit: 5 },
+
+
+
+      { id: 'grind', title: '🔥 Exam crunch', tagline: 'Accountability circle', limit: 5 }
+
+
+
+    ];
+
+
+
+
+
+
+
+    const roomMemberWatchers = {};
+
+
+
+
+
+
+
+    const vibeTokenOptions = [
+
+
+
+      { id: 'chill', label: 'Chill 🌿', aura: 'blue' },
+
+
+
+      { id: 'funny', label: 'Funny 😂', aura: 'yellow' },
+
+
+
+      { id: 'deep', label: 'Deep Thinker 🧠', aura: 'gold' },
+
+
+
+      { id: 'romantic', label: 'Romantic 💗', aura: 'pink' },
+
+
+
+      { id: 'chaos', label: 'Chaos 🔥', aura: 'red' }
+
+
+
+    ];
+
+
+
+    const auraStyles = {
+
+
+
+      neutral: { text: 'Aura: mystery mode', bg: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.12)' },
+
+
+
+      blue: { text: 'Aura: Chill 🌿', bg: 'rgba(56,189,248,0.2)', border: 'rgba(56,189,248,0.5)' },
+
+
+
+      yellow: { text: 'Aura: Funny 😂', bg: 'rgba(250,204,21,0.2)', border: 'rgba(250,204,21,0.5)' },
+
+
+
+      gold: { text: 'Aura: Deep Thinker 🧠', bg: 'rgba(251,191,36,0.25)', border: 'rgba(250,204,21,0.7)' },
+
+
+
+      pink: { text: 'Aura: Romantic 💗', bg: 'rgba(244,114,182,0.25)', border: 'rgba(244,114,182,0.6)' },
+
+
+
+      red: { text: 'Aura: Chaos 🔥', bg: 'rgba(248,113,113,0.2)', border: 'rgba(248,113,113,0.6)' }
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
     function toggleMenu() {
+
+
+
+
+
+
+
       document.getElementById('navLinks').classList.toggle('active');
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function openApp() {
+
+
+
+
+
+
+
       appModal.classList.add('active');
+
+
+
+
+
+
+
       document.body.style.overflow = 'hidden';
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function closeApp() {
+
+
+
+
+
+
+
       appModal.classList.remove('active');
+
+
+
+
+
+
+
       document.body.style.overflow = '';
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function scrollToFeatures(e) {
+
+
+
+
+
+
+
       if (e) e.preventDefault();
+
+
+
+
+
+
+
       document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+
+
+
+
+
+
+
       document.getElementById('navLinks').classList.remove('active');
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function scrollToSection(e, id) {
+
+
+
+
+
+
+
       if (e) e.preventDefault();
+
+
+
+
+
+
+
       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+
+
+
+
+
+
+
       document.getElementById('navLinks').classList.remove('active');
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     window.openApp = openApp;
+
+
+
     window.closeApp = closeApp;
+
+
+
     window.scrollToFeatures = scrollToFeatures;
+
+
+
     window.scrollToSection = scrollToSection;
+
+
+
     window.toggleMenu = toggleMenu;
-    async function loadUserProfile() {
-      if (!currentUser) return;
-      try {
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        if (userDoc.exists) {
-          const data = userDoc.data();
-          blockedUsers = data.blockedUsers || [];
-          updateBlockedList();
-        }
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      }
+
+
+
+
+
+
+
+    function renderVibeGrid() {
+
+
+
+      if (!vibeGrid) return;
+
+
+
+      vibeGrid.innerHTML = '';
+
+
+
+      vibeCardOptions.forEach(card => {
+
+
+
+        const btn = document.createElement('button');
+
+
+
+        btn.className = 'vibe-card';
+
+
+
+        if (selectedVibes.includes(card.id)) btn.classList.add('active');
+
+
+
+        btn.innerHTML = `<strong>${card.emoji} ${card.title}</strong><span>${card.detail}</span>`;
+
+
+
+        btn.onclick = () => toggleVibeCard(card.id);
+
+
+
+        vibeGrid.appendChild(btn);
+
+
+
+      });
+
+
+
     }
-    async function blockUser(userId) {
-      if (!blockedUsers.includes(userId)) {
-        blockedUsers.push(userId);
-        await db.collection('users').doc(currentUser.uid).set({
-          blockedUsers: blockedUsers
-        }, { merge: true });
-        updateBlockedList();
-      }
-    }
-    async function unblockUser(userId) {
-      blockedUsers = blockedUsers.filter(id => id !== userId);
-      await db.collection('users').doc(currentUser.uid).set({
-        blockedUsers: blockedUsers
-      }, { merge: true });
-      updateBlockedList();
-    }
-    window.unblockUser = unblockUser;
-    function updateBlockedList() {
-      const section = document.getElementById('blocked-section');
-      const list = document.getElementById('blocked-list');
-     
-      if (blockedUsers.length > 0) {
-        section.style.display = 'block';
-        list.innerHTML = blockedUsers.map(id =>
-          `<div class="blocked-user">
-            <span>User ${id.substring(0, 8)}...</span>
-            <span class="unblock-btn" onclick="unblockUser('${id}')">Unblock</span>
-          </div>`
-        ).join('');
+
+
+
+
+
+
+
+    function toggleVibeCard(cardId) {
+
+
+
+      if (selectedVibes.includes(cardId)) {
+
+
+
+        selectedVibes = selectedVibes.filter(id => id !== cardId);
+
+
+
       } else {
-        section.style.display = 'none';
-      }
-    }
-    document.getElementById('reportBtn').onclick = () => openReportModal();
-    document.getElementById('reportBtnChat').onclick = () => openReportModal();
-   
-    function openReportModal() {
-      reportModal.classList.add('active');
-    }
-    document.getElementById('cancelReport').onclick = () => {
-      reportModal.classList.remove('active');
-    };
-    document.getElementById('submitReport').onclick = async () => {
-      const reason = document.getElementById('reportReason').value;
-      const details = document.getElementById('reportDetails').value;
-      if (!reason) {
-        alert('Please select a reason');
-        return;
-      }
-      try {
-        await db.collection('reports').add({
-          reportedBy: currentUser.uid,
-          reportedUser: remoteUid,
-          reason: reason,
-          details: details,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          callId: callId
-        });
-        await blockUser(remoteUid);
-        reportModal.classList.remove('active');
-        showStatus('User reported and blocked. Thank you.', 'success');
-        setTimeout(() => skipMatch(), 2000);
-      } catch (error) {
-        console.error('Report error:', error);
-        showStatus('Failed to submit report', 'error');
-      }
-    };
-    document.getElementById('saveChatBtn').onclick = () => {
-      if (chatHistory.length === 0) {
-        showStatus('No messages to save', 'warning');
-        return;
-      }
-      const chatText = chatHistory.map(msg =>
-        `[${msg.time}] ${msg.from}: ${msg.text}`
-      ).join('\n');
-      const blob = new Blob([chatText], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `chat-${Date.now()}.txt`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showStatus('Chat saved!', 'success');
-    };
-    document.querySelectorAll('.comm-type').forEach(el => {
-      el.onclick = () => {
-        document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
-        el.classList.add('active');
-        commType = el.dataset.type;
-      };
-    });
-    document.getElementById('add-interest-btn').onclick = () => {
-      const input = document.getElementById('interest-input');
-      const interest = input.value.trim().toLowerCase();
-     
-      if (interest && userInterests.length < 5 && !userInterests.includes(interest)) {
-        userInterests.push(interest);
-        updateInterestTags();
-        input.value = '';
-      }
-    };
-    document.getElementById('interest-input').onkeypress = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('add-interest-btn').click();
-      }
-    };
-    function updateInterestTags() {
-      const container = document.getElementById('interest-tags');
-      container.innerHTML = userInterests.map(interest =>
-        `<div class="interest-tag">${interest} <span class="remove" onclick="removeInterest('${interest}')">×</span></div>`
-      ).join('');
-    }
-    window.removeInterest = (interest) => {
-      userInterests = userInterests.filter(i => i !== interest);
-      updateInterestTags();
-    };
-    auth.onAuthStateChanged(async (user) => {
-      if (user && user.emailVerified) {
-        currentUser = user;
-        trackOnline();
-        showLiveUsersCounter();
-        await loadUserProfile();
-        showSetupScreen();
-      } else if (user && !user.emailVerified) {
-        showStatus('Please verify your email first', 'warning');
-        setTimeout(() => auth.signOut(), 3000);
-      } else {
-        showLoginScreen();
-      }
-    });
-    document.getElementById('signupBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      if (!email || !email.includes('@')) {
-        showStatus('Please enter a valid email', 'error');
-        return;
-      }
-      if (password.length < 6) {
-        showStatus('Password must be at least 6 characters', 'error');
-        return;
-      }
-      try {
-        showStatus('Creating account...', 'info');
-        const result = await auth.createUserWithEmailAndPassword(email, password);
-        await result.user.sendEmailVerification();
-       
-        document.getElementById('verify-notice').style.display = 'block';
-        showStatus('Verification email sent! Check your inbox.', 'success');
-       
-        setTimeout(() => auth.signOut(), 3000);
-      } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-          showStatus('Email already registered. Try logging in.', 'error');
-        } else {
-          showStatus('Error: ' + error.message, 'error');
+
+
+
+        if (selectedVibes.length >= MAX_VIBE_CARDS) {
+
+
+
+          selectedVibes.shift();
+
+
+
         }
+
+
+
+        selectedVibes.push(cardId);
+
+
+
       }
-    };
-    document.getElementById('loginBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      if (!email || !password) {
-        showStatus('Please enter email and password', 'error');
-        return;
+
+
+
+      renderVibeGrid();
+
+
+
+    }
+
+
+
+    function getVibeLabel(cardId) {
+
+      const card = vibeCardOptions.find(c => c.id === cardId);
+
+      return card ? `${card.emoji} ${card.title}` : cardId;
+
+    }
+
+
+
+
+
+
+
+    function renderMoodPicker() {
+
+
+
+      if (!moodPicker) return;
+
+
+
+      moodPicker.innerHTML = '';
+
+
+
+      moodOptions.forEach(option => {
+
+
+
+        const btn = document.createElement('div');
+
+
+
+        btn.className = 'mood-btn' + (selectedMood === option.id ? ' active' : '');
+
+
+
+        btn.textContent = option.label;
+
+
+
+        btn.onclick = () => selectMood(option.id);
+
+
+
+        moodPicker.appendChild(btn);
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    function selectMood(moodId) {
+
+
+
+      selectedMood = moodId;
+
+
+
+      renderMoodPicker();
+
+
+
+    }
+
+
+
+
+
+
+
+    function setAuraChip(auraKey = 'neutral') {
+
+
+
+      const style = auraStyles[auraKey] || auraStyles.neutral;
+
+
+
+      if (auraChip) {
+
+
+
+        auraChip.textContent = style.text;
+
+
+
+        auraChip.style.background = style.bg;
+
+
+
+        auraChip.style.borderColor = style.border;
+
+
+
       }
-      try {
-        showStatus('Logging in...', 'info');
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-          showStatus('No account found. Please sign up first.', 'error');
-        } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-login-credentials') {
-          showStatus('Incorrect password. Try "Forgot Password".', 'error');
-        } else {
-          showStatus('Error: ' + error.message, 'error');
-        }
+
+
+
+      currentAura = auraKey;
+
+
+
+    }
+
+
+
+
+
+
+
+    function renderVibeTokens() {
+
+
+
+      if (!vibeTokenGrid) return;
+
+
+
+      vibeTokenGrid.innerHTML = '';
+
+
+
+      vibeTokenOptions.forEach(token => {
+
+
+
+        const btn = document.createElement('div');
+
+
+
+        btn.className = 'vibe-token';
+
+
+
+        btn.textContent = token.label;
+
+
+
+        btn.onclick = () => sendVibeToken(token.id, token.aura);
+
+
+
+        vibeTokenGrid.appendChild(btn);
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    function initMiniGameButtons() {
+
+
+
+      document.querySelectorAll('.game-btn').forEach(btn => {
+
+
+
+        btn.onclick = () => triggerMiniGame(btn.dataset.game);
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    function initRoomGrid() {
+
+
+
+      if (!roomGrid) return;
+
+
+
+      roomGrid.innerHTML = '';
+
+
+
+      roomDefinitions.forEach(room => {
+
+
+
+        const card = document.createElement('div');
+
+
+
+        card.className = 'room-card';
+
+
+
+        card.dataset.roomId = room.id;
+
+
+
+        card.innerHTML = `
+
+
+
+          <h4>${room.title}</h4>
+
+
+
+          <p class="subtitle" style="margin-bottom:6px;">${room.tagline}</p>
+
+
+
+          <div class="room-members" id="members-${room.id}">0/${room.limit} online</div>
+
+
+
+          <button class="btn-secondary" style="margin-top:12px;">Join</button>
+
+
+
+        `;
+
+
+
+        card.querySelector('button').onclick = (e) => {
+
+
+
+          e.stopPropagation();
+
+
+
+          joinRoom(room.id);
+
+
+
+        };
+
+
+
+        card.onclick = () => joinRoom(room.id);
+
+
+
+        roomGrid.appendChild(card);
+
+
+
+        watchRoomMembers(room.id, room.limit);
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    function watchRoomMembers(roomId, limit) {
+
+
+
+      if (roomMemberWatchers[roomId]) {
+
+
+
+        roomMemberWatchers[roomId]();
+
+
+
       }
-    };
-    document.getElementById('forgotPasswordBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      if (!email || !email.includes('@')) {
-        showStatus('Please enter your email first', 'error');
-        return;
-      }
-      try {
-        showStatus('Sending reset email...', 'info');
-        await auth.sendPasswordResetEmail(email);
-       
-        document.getElementById('reset-notice').style.display = 'block';
-        showStatus('Password reset email sent!', 'success');
-      } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-          showStatus('No account found with this email.', 'error');
-        } else {
-          showStatus('Error: ' + error.message, 'error');
-        }
-      }
-    };
-    document.getElementById('logoutBtn').onclick = async () => {
-      await cleanup();
-      await auth.signOut();
-    };
-    document.getElementById('findBtn').onclick = async () => {
-      const gender = document.getElementById('gender').value;
-      const college = document.getElementById('college').value;
-      if (!gender || !college) {
-        showStatus('Please select gender and college', 'error');
-        return;
-      }
-      try {
-        showStatus('Finding match...', 'info');
-        document.getElementById('findBtn').disabled = true;
-        const userId = currentUser.uid;
-        await db.collection('waiting').doc(userId).set({
-          userId,
-          email: currentUser.email,
-          college,
-          gender,
-          commType,
-          interests: userInterests,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await findMatch(userId, college, gender);
-      } catch (error) {
-        showStatus('Error: ' + error.message, 'error');
-        document.getElementById('findBtn').disabled = false;
-      }
-    };
-    async function findMatch(userId, college, gender) {
-      let matchCheckCount = 0;
-      const maxChecks = 60;
-      let attemptedMatch = false;
-     
-      let query;
-      if (college === 'ANY') {
-        query = db.collection('waiting').where('commType', '==', commType);
-      } else {
-        query = db.collection('waiting')
-          .where('college', '==', college)
-          .where('commType', '==', commType);
-      }
-      matchListener = query.onSnapshot(async (snapshot) => {
-        matchCheckCount++;
-       
-        const users = snapshot.docs.filter(doc => {
-          const uid = doc.id;
-          const data = doc.data();
-          return uid !== userId && !blockedUsers.includes(uid) &&
-          data.gender === gender;
-        });
-       
-        showStatus(`Finding match... (${users.length} others waiting)`, 'info');
-       
-        if (users.length > 0 && !attemptedMatch) {
-          attemptedMatch = true;
-          const matchDoc = users[0];
-          remoteUid = matchDoc.id;
-          const matchData = matchDoc.data();
-         
-          callId = [userId, remoteUid].sort().join('_');
-          try {
-            await Promise.all([
-              db.collection('waiting').doc(userId).delete(),
-              db.collection('waiting').doc(remoteUid).delete()
-            ]);
-            if (matchListener) {
-              matchListener();
-              matchListener = null;
-            }
-            showStrangerInfo(matchData.interests || []);
-            showStatus('Match found! Connecting...', 'success');
-           
-            await new Promise(resolve => setTimeout(resolve, 500));
-           
-            if (commType === 'chat') {
-              await startChat();
+
+
+
+      roomMemberWatchers[roomId] = db.collection('microRooms').doc(roomId)
+
+
+
+        .onSnapshot(doc => {
+
+
+
+          const membersCount = doc.exists && doc.data().members ? doc.data().members.length : 0;
+
+
+
+          const label = document.getElementById(`members-${roomId}`);
+
+
+
+          if (label) {
+
+
+
+            label.textContent = `${membersCount}/${limit} online`;
+
+
+
+          }
+
+
+
+          document.querySelectorAll(`.room-card[data-room-id=\"${roomId}\"]`).forEach(card => {
+
+
+
+            if (activeRoomId === roomId) {
+
+
+
+              card.classList.add('active');
+
+
+
             } else {
-              await startCall(userId < remoteUid);
+
+
+
+              card.classList.remove('active');
+
+
+
             }
-          } catch (error) {
-            console.error('Match failed:', error);
-            attemptedMatch = false;
-            showStatus('Match failed, retrying...', 'warning');
-            return;
-          }
-        } else if (matchCheckCount >= maxChecks) {
-          if (matchListener) matchListener();
-          await db.collection('waiting').doc(userId).delete().catch(()=>{});
-          showStatus('No match found. Please try again.', 'error');
-          document.getElementById('findBtn').disabled = false;
-        }
-      });
-    }
-    function showStrangerInfo(interests) {
-      const commonInterests = interests.filter(i => userInterests.includes(i));
-      let infoHTML = `<div>🎭 Connected with a stranger from ${document.getElementById('college').value}</div>`;
-     
-      if (commonInterests.length > 0) {
-        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i =>
-          `<span class="tag">${i}</span>`
-        ).join('')}</div>`;
-      } else if (interests.length > 0) {
-        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i =>
-          `<span class="tag">${i}</span>`
-        ).join('')}</div>`;
-      }
-     
-      document.getElementById('stranger-info').innerHTML = infoHTML;
-      document.getElementById('stranger-info-chat').innerHTML = infoHTML;
-    }
-    async function startChat() {
-      chatContainer.style.display = 'block';
-      setupScreen.style.display = 'none';
-      chatHistory = [];
-     
-      addSystemMessage('Connected! Say hello 👋');
-     
-      chatListener = db.collection('calls').doc(callId).collection('messages')
-        .orderBy('timestamp')
-        .onSnapshot(snapshot => {
-          snapshot.docChanges().forEach(change => {
-            if (change.type === 'added') {
-              const msg = change.doc.data();
-              if (msg.from !== currentUser.uid) {
-                addMessage(msg.text, 'remote');
-                chatHistory.push({
-                  from: 'Stranger',
-                  text: msg.text,
-                  time: new Date().toLocaleTimeString()
-                });
-              }
-            }
+
+
+
           });
+
+
+
         });
+
+
+
     }
-    document.getElementById('send-btn').onclick = sendMessage;
-    chatInput.onkeypress = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendMessage();
+
+
+
+
+
+
+
+    function updatePromptBanner(text) {
+
+
+
+      if (!sharedPromptBanner) return;
+
+
+
+      if (text) {
+
+
+
+        sharedPromptBanner.style.display = 'block';
+
+
+
+        sharedPromptBanner.textContent = text;
+
+
+
+      } else {
+
+
+
+        sharedPromptBanner.style.display = 'none';
+
+
+
+        sharedPromptBanner.textContent = '';
+
+
+
       }
-    };
-    async function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text) return;
-     
-      if (containsContactInfo(text)) {
-        addSystemMessage('⚠️ Sharing contact info is against the rules');
+
+
+
+    }
+
+
+
+
+
+
+
+    function getRandomPrompt() {
+
+
+
+      return sharedPrompts[Math.floor(Math.random() * sharedPrompts.length)];
+
+
+
+    }
+
+
+
+
+
+
+
+    async function triggerMiniGame(gameId) {
+
+
+
+      if (!callId) {
+
+
+
+        showStatus('Connect with someone first to start a game', 'warning');
+
+
+
         return;
+
+
+
       }
-     
-      addMessage(text, 'local');
-      chatHistory.push({
-        from: 'You',
-        text: text,
-        time: new Date().toLocaleTimeString()
-      });
-      chatInput.value = '';
-     
+
+
+
+      const stack = miniGameStacks[gameId] || [];
+
+
+
+      if (!stack.length) return;
+
+
+
+      const prompt = stack[Math.floor(Math.random() * stack.length)];
+
+
+
+      await pushSystemMessage(`🎲 ${prompt}`, 'mini-game');
+
+
+
+      updatePromptBanner(prompt);
+
+
+
+    }
+
+
+
+
+
+
+
+    async function pushSystemMessage(text, subtype = 'prompt') {
+
+
+
+      if (!callId) return;
+
+
+
       await db.collection('calls').doc(callId).collection('messages').add({
+
+
+
         text,
-        from: currentUser.uid,
+
+
+
+        type: 'system',
+
+
+
+        subtype,
+
+
+
+        from: 'system',
+
+
+
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
       });
+
+
+
     }
-    function containsContactInfo(text) {
-      const patterns = [
-        /\d{10}/, /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/,
-        /@\w+\.\w+/,
-        /instagram|facebook|whatsapp|snapchat|telegram|twitter/i,
-        /insta|fb|wa|snap|dm/i
-      ];
-      return patterns.some(pattern => pattern.test(text));
+
+
+
+
+
+
+
+    renderVibeGrid();
+    renderMoodPicker();
+    renderVibeTokens();
+    initMiniGameButtons();
+    initRoomGrid();
+    setAuraChip();
+    subscribeWall('GLOBAL');
+
+
+
+
+    function subscribeWall(campus) {
+
+
+
+      if (!wallPosts) return;
+
+
+
+      const resolvedCampus = campus || selectedCollege || 'GLOBAL';
+
+
+
+      wallCampus = resolvedCampus;
+
+
+
+      if (wallListener) {
+
+
+
+        wallListener();
+
+
+
+        wallListener = null;
+
+
+
+      }
+
+
+
+      wallPosts.innerHTML = '<div class="wall-post">Loading Hostel Wall...</div>';
+
+
+
+      wallListener = db.collection('wallPosts')
+
+
+
+        .where('campus', '==', resolvedCampus)
+
+
+
+        .orderBy('timestamp', 'desc')
+
+
+
+        .limit(30)
+
+
+
+        .onSnapshot(snapshot => {
+
+
+
+          if (snapshot.empty) {
+
+
+
+            wallPosts.innerHTML = '<div class="wall-post">No posts yet. Be the first!</div>';
+
+
+
+            return;
+
+
+
+          }
+
+
+
+          wallPosts.innerHTML = '';
+
+
+
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const postDiv = document.createElement('div');
+            postDiv.className = 'wall-post';
+            const time = data.timestamp?.toDate
+              ? data.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : '';
+            const body = document.createElement('div');
+            body.textContent = data.text;
+            const meta = document.createElement('div');
+            meta.className = 'wall-meta';
+            meta.innerHTML = `<span>${data.moodLabel || 'Anon mood'}</span><span>${time}</span>`;
+            postDiv.appendChild(body);
+            postDiv.appendChild(meta);
+            wallPosts.appendChild(postDiv);
+          });
+        });
     }
-    function addMessage(text, type) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${type}`;
-      msgDiv.textContent = text;
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    function addSystemMessage(text) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'message system';
-      msgDiv.textContent = text;
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    async function startCall(isInitiator) {
+
+
+
+
+
+
+
+    async function postWallUpdate() {
+
+
+
+      if (!currentUser) {
+
+
+
+        showStatus('Login first', 'warning');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      const text = wallText.value.trim();
+
+
+
+      if (!text) {
+
+
+
+        showStatus('Say something before posting', 'warning');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      const campus = wallCampusSelect.value || selectedCollege;
+
+
+
+      if (!campus || campus === 'ANY') {
+
+
+
+        showStatus('Pick a real campus for the wall', 'error');
+
+
+
+        return;
+
+
+
+      }
+
+
+
       try {
-        const constraints = commType === 'video'
-          ? { video: { width: 640, height: 480 }, audio: true }
-          : { video: false, audio: true };
-       
-        localStream = await navigator.mediaDevices.getUserMedia(constraints);
-        localVideo.srcObject = localStream;
-       
-        if (commType === 'voice') {
-          localVideo.style.display = 'none';
-          remoteVideo.style.display = 'none';
-        } else {
-          localVideo.style.display = '';
-          remoteVideo.style.display = '';
-        }
-        pc = new RTCPeerConnection({
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            {
-              urls: 'turn:openrelay.metered.ca:80',
-              username: 'openrelayproject',
-              credential: 'openrelayproject'
-            },
-            {
-              urls: 'turn:openrelay.metered.ca:443',
-              username: 'openrelayproject',
-              credential: 'openrelayproject'
-            }
-          ]
+
+
+
+        await db.collection('wallPosts').add({
+
+
+
+          text: text.slice(0, 220),
+
+
+
+          campus,
+
+
+
+          userId: currentUser.uid,
+
+
+
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+
+
+
+          mood: selectedMood,
+
+
+
+          moodLabel: moodOptions.find(m => m.id === selectedMood)?.label || 'Anon mood',
+
+
+
+          vibes: selectedVibes.slice(0, 2)
+
+
+
         });
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-        pc.ontrack = (event) => {
-          if (event.streams && event.streams[0]) {
-            remoteVideo.srcObject = event.streams[0];
-            remoteVideo.play().catch(e => console.error('Video play error:', e));
-            showStatus('Connected!', 'success');
-          }
-        };
-        pc.onicecandidate = (event) => {
-          if (event.candidate) {
-            db.collection('calls').doc(callId).collection('candidates').add({
-              candidate: event.candidate.toJSON(),
-              from: currentUser.uid,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(e => console.error('Error adding candidate:', e));
-          }
-        };
-        pc.onconnectionstatechange = () => {
-          updateConnectionQuality(pc.connectionState);
-        };
-        candidateListener = db.collection('calls').doc(callId).collection('candidates')
-          .onSnapshot(snapshot => {
-            snapshot.docChanges().forEach(async change => {
-              if (change.type === 'added') {
-                const data = change.doc.data();
-                if (data.from !== currentUser.uid) {
-                  try {
-                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-                  } catch (error) {
-                    console.error('Error adding ICE candidate:', error);
-                  }
-                }
-              }
-            });
-          });
-        callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
-          const data = snap.data();
-          if (!data) return;
-          if (!isInitiator && data.offer && !pc.currentRemoteDescription) {
-            try {
-              await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-              const answer = await pc.createAnswer();
-              await pc.setLocalDescription(answer);
-              await db.collection('calls').doc(callId).update({
-                answer: { type: answer.type, sdp: answer.sdp }
-              });
-            } catch (err) {
-              console.error('Error handling offer:', err);
-            }
-          }
-          if (isInitiator && data.answer && !pc.currentRemoteDescription) {
-            try {
-              await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-            } catch (err) {
-              console.error('Error setting answer:', err);
-            }
-          }
-        });
-        if (isInitiator) {
-          const offer = await pc.createOffer();
-          await pc.setLocalDescription(offer);
-          await db.collection('calls').doc(callId).set({
-            offer: { type: offer.type, sdp: offer.sdp },
-            initiator: currentUser.uid,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }
-        showVideoScreen();
+
+
+
+        wallText.value = '';
+
+
+
+        showStatus('Posted to Hostel Wall ✅', 'success');
+
+
+
       } catch (error) {
-        console.error('startCall error:', error);
-        showStatus('Error accessing camera/mic: ' + error.message, 'error');
-        await cleanup();
+
+
+
+        console.error('Wall post error', error);
+
+
+
+        showStatus('Could not post right now', 'error');
+
+
+
       }
+
+
+
     }
-    function updateConnectionQuality(state) {
-      const qualityEl = document.getElementById('quality');
-     
-      switch(state) {
-        case 'connected':
-          qualityEl.textContent = 'Connected ✓';
-          qualityEl.className = 'quality-good';
-          break;
-        case 'connecting':
-          qualityEl.textContent = 'Connecting...';
-          qualityEl.className = 'quality-fair';
-          break;
-        case 'disconnected':
-          qualityEl.textContent = 'Reconnecting...';
-          qualityEl.className = 'quality-fair';
-          // Don't auto-skip on disconnect - might reconnect
-          setTimeout(() => {
-            if (pc && pc.connectionState === 'disconnected') {
-              showStatus('Connection lost. Please skip or end call.', 'error');
-            }
-          }, 5000);
-          break;
-        case 'failed':
-          qualityEl.textContent = 'Connection failed';
-          qualityEl.className = 'quality-poor';
-          showStatus('Connection failed. Auto-skipping...', 'error');
-          setTimeout(() => skipMatch(), 3000); // Auto-skip after 3 seconds
-          break;
+
+
+
+
+
+
+
+    async function joinRoom(roomId) {
+
+
+
+      if (!currentUser) {
+
+
+
+        showStatus('Login to join rooms', 'warning');
+
+
+
+        return;
+
+
+
       }
-    }
-    function showStatus(message, type) {
-      statusEl.textContent = message;
-      statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
-    }
-    function showLoginScreen() {
-      loginScreen.classList.add('active');
-      setupScreen.classList.remove('active');
-      videoContainer.style.display = 'none';
-      chatContainer.style.display = 'none';
-      statusEl.textContent = '';
-    }
-    function showSetupScreen() {
-      loginScreen.classList.remove('active');
-      setupScreen.classList.add('active');
-      videoContainer.style.display = 'none';
-      chatContainer.style.display = 'none';
-      document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
-      statusEl.textContent = '';
-    }
-    function showVideoScreen() {
-      setupScreen.classList.remove('active');
-      videoContainer.style.display = 'block';
-      chatContainer.style.display = 'none';
-      statusEl.textContent = '';
-    }
-    window.addEventListener('beforeunload', cleanup);
-    let statusRef = null;
-    function trackOnline() {
-      if (!currentUser) return;
-      const uid = currentUser.uid;
-      statusRef = db.collection('status').doc(uid);
-      statusRef.set({
-        online: true,
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-        email: currentUser.email.split('@')[0]
-      }, { merge: true });
-    }
-    function trackOffline() {
-      if (statusRef) {
-        statusRef.update({
-          online: false,
-          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-        }).catch(() => {});
+
+
+
+      const config = roomDefinitions.find(r => r.id === roomId);
+
+
+
+      if (!config) return;
+
+
+
+      const roomRef = db.collection('microRooms').doc(roomId);
+
+
+
+      try {
+
+
+
+        const snap = await roomRef.get();
+
+
+
+        const members = snap.exists && snap.data().members ? snap.data().members : [];
+
+
+
+        if (!members.includes(currentUser.uid) && members.length >= (snap.data()?.limit || config.limit)) {
+
+
+
+          showStatus('Room is full right now', 'error');
+
+
+
+          return;
+
+
+
+        }
+
+
+
+        await roomRef.set({
+
+
+
+          title: config.title,
+
+
+
+          limit: config.limit,
+
+
+
+          members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+
+
+
+        }, { merge: true });
+
+
+
+        activeRoomId = roomId;
+
+
+
+        roomTitle.textContent = config.title;
+
+
+
+        roomPanel.classList.add('active');
+
+
+
+        subscribeRoomFeed(roomId);
+
+
+
+      } catch (error) {
+
+
+
+        console.error('Join room error', error);
+
+
+
+        showStatus('Could not join room', 'error');
+
+
+
       }
+
+
+
     }
-    window.addEventListener('beforeunload', trackOffline);
-    window.addEventListener('unload', trackOffline);
-    function showLiveUsersCounter() {
-      const counter = document.getElementById('live-users-counter');
-      db.collection('status')
-        .where('online', '==', true)
-        .onSnapshot(snap => {
-          const count = snap.size;
-          counter.innerHTML = `🟢 ${count} online`;
-          counter.style.display = 'block';
+
+
+
+
+
+
+
+    async function leaveRoom() {
+
+
+
+      if (!activeRoomId || !currentUser) return;
+
+
+
+      try {
+
+
+
+        await db.collection('microRooms').doc(activeRoomId).set({
+
+
+
+          members: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+
+
+
+        }, { merge: true });
+
+
+
+      } catch (error) {
+
+
+
+        console.warn('Leave room error', error);
+
+
+
+      }
+
+
+
+      if (roomListener) {
+
+
+
+        roomListener();
+
+
+
+        roomListener = null;
+
+
+
+      }
+
+
+
+      activeRoomId = null;
+
+
+
+      roomPanel.classList.remove('active');
+
+
+
+      roomFeed.innerHTML = '';
+
+
+
+    }
+
+
+
+
+
+
+
+    function subscribeRoomFeed(roomId) {
+
+
+
+      if (roomListener) {
+
+
+
+        roomListener();
+
+
+
+        roomListener = null;
+
+
+
+      }
+
+
+
+      roomFeed.innerHTML = '<div class="room-message">Loading room...</div>';
+
+
+
+      roomListener = db.collection('microRooms').doc(roomId)
+
+
+
+        .collection('drops')
+
+
+
+        .orderBy('timestamp', 'desc')
+
+
+
+        .limit(30)
+
+
+
+        .onSnapshot(snapshot => {
+
+
+
+          const docs = snapshot.docs.slice().reverse();
+
+
+
+          roomFeed.innerHTML = '';
+
+
+
+          docs.forEach(doc => renderRoomMessage(roomId, doc.id, doc.data()));
+
+
+
         });
+
+
+
     }
+
+
+
+
+
+
+
+    function renderRoomMessage(roomId, docId, data) {
+
+
+
+      const msg = document.createElement('div');
+
+
+
+      msg.className = 'room-message' + (data.type === 'voice' ? ' voice' : '');
+
+
+
+      const author = data.from === currentUser?.uid ? 'You' : `Anon ${data.from?.slice(0, 4) || ''}`;
+
+
+
+      const time = data.timestamp?.toDate
+
+
+
+        ? data.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+
+
+        : '';
+
+
+
+      if (data.type === 'voice') {
+        msg.innerHTML = `<div>${author} dropped a voice note</div>`;
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = data.url;
+        audio.onended = () => markRoomVoiceMessagePlayed(roomId, docId, data.storagePath, data.limit || 5);
+        msg.appendChild(audio);
+      } else {
+        const textEl = document.createElement('div');
+        textEl.textContent = `${author}: ${data.text}`;
+        msg.appendChild(textEl);
+      }
+      const meta = document.createElement('div');
+
+
+
+      meta.className = 'wall-meta';
+
+
+
+      meta.textContent = time;
+
+
+
+      msg.appendChild(meta);
+
+
+
+      roomFeed.appendChild(msg);
+
+
+
+      roomFeed.scrollTop = roomFeed.scrollHeight;
+
+
+
+    }
+
+
+
+
+
+
+
+    async function sendRoomTextMessage() {
+
+
+
+      if (!activeRoomId || !currentUser) {
+
+
+
+        showStatus('Join a room first', 'warning');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      const text = roomText.value.trim();
+
+
+
+      if (!text) return;
+
+
+
+      roomText.value = '';
+
+
+
+      await db.collection('microRooms').doc(activeRoomId).collection('drops').add({
+
+
+
+        type: 'text',
+
+
+
+        text: text.slice(0, 200),
+
+
+
+        from: currentUser.uid,
+
+
+
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    async function sendRoomVoiceMessage(url, storagePath, duration) {
+
+
+
+      if (!activeRoomId || !currentUser) return;
+
+
+
+      await db.collection('microRooms').doc(activeRoomId).collection('drops').add({
+
+
+
+        type: 'voice',
+
+
+
+        url,
+
+
+
+        storagePath,
+
+
+
+        duration,
+
+
+
+        from: currentUser.uid,
+
+
+
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+
+
+
+        limit: 5
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    async function toggleVoiceRecording(target) {
+
+
+
+      if (voiceRecorder && voiceRecorder.state === 'recording') {
+
+
+
+        stopVoiceRecording();
+
+
+
+      } else {
+
+
+
+        await startVoiceRecording(target);
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    async function startVoiceRecording(target) {
+
+
+
+      if (!navigator.mediaDevices) {
+
+
+
+        showStatus('Voice notes are not supported on this browser', 'error');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      currentVoiceTarget = target;
+
+
+
+      if (!voiceStream) {
+
+
+
+        voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+
+
+      }
+
+
+
+      voiceRecorder = new MediaRecorder(voiceStream, { mimeType: 'audio/webm' });
+
+
+
+      voiceChunks = [];
+
+
+
+      voiceStartTime = Date.now();
+
+
+
+      voiceRecorder.ondataavailable = (event) => {
+
+
+
+        if (event.data.size > 0) {
+
+
+
+          voiceChunks.push(event.data);
+
+
+
+        }
+
+
+
+      };
+
+
+
+      voiceRecorder.onstop = () => processVoiceRecording(target);
+
+
+
+      voiceRecorder.start();
+
+
+
+      voiceTimer = setTimeout(() => stopVoiceRecording(true), MAX_VOICE_DURATION * 1000);
+
+
+
+      target.button?.classList.add('recording');
+
+
+
+      showStatus('Recording voice note...', 'info');
+
+
+
+    }
+
+
+
+
+
+
+
+    function stopVoiceRecording(autoStop = false) {
+
+
+
+      if (!voiceRecorder || voiceRecorder.state !== 'recording') return;
+
+
+
+      voiceRecorder.stop();
+
+
+
+      clearTimeout(voiceTimer);
+
+
+
+      voiceTimer = null;
+
+
+
+      if (!autoStop) {
+
+
+
+        showStatus('Sending voice note...', 'info');
+
+
+
+      }
+
+
+
+      currentVoiceTarget?.button?.classList.remove('recording');
+
+
+
+    }
+
+
+
+
+
+
+
+    async function processVoiceRecording(target) {
+
+
+
+      if (!voiceChunks.length) return;
+
+
+
+      const duration = (Date.now() - (voiceStartTime || Date.now())) / 1000;
+
+
+
+      voiceStartTime = null;
+
+
+
+      const blob = new Blob(voiceChunks, { type: 'audio/webm' });
+
+
+
+      voiceChunks = [];
+
+
+
+      const folder = target.type === 'room' ? 'roomNotes' : 'voiceNotes';
+
+
+
+      const identifier = target.id || callId || 'solo';
+
+
+
+      const filePath = `${folder}/${identifier}/${Date.now()}-${currentUser?.uid || 'anon'}.webm`;
+
+
+
+      try {
+
+
+
+        const storageRef = storage.ref().child(filePath);
+
+
+
+        await storageRef.put(blob);
+
+
+
+        const url = await storageRef.getDownloadURL();
+
+
+
+        if (target.type === 'room') {
+
+
+
+          await sendRoomVoiceMessage(url, filePath, duration);
+
+
+
+        } else {
+
+
+
+          await sendChatVoiceMessage(url, filePath, duration);
+
+
+
+        }
+
+
+
+        showStatus('Voice note dropped!', 'success');
+
+
+
+      } catch (error) {
+
+
+
+        console.error('Voice upload error', error);
+
+
+
+        showStatus('Could not send voice note', 'error');
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    async function sendChatVoiceMessage(url, storagePath, duration) {
+
+
+
+      if (!callId || !currentUser) return;
+
+
+
+      await db.collection('calls').doc(callId).collection('messages').add({
+
+
+
+        type: 'voice',
+
+
+
+        url,
+
+
+
+        storagePath,
+
+
+
+        duration,
+
+
+
+        from: currentUser.uid,
+
+
+
+        participants: 2,
+
+
+
+        heardBy: [],
+
+
+
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
+      });
+
+
+
+    }
+
+
+
+
+
+
+
+    async function markVoiceMessagePlayed(docId, storagePath, participants = 2) {
+
+
+
+      if (!callId) return;
+
+
+
+      const messageRef = db.collection('calls').doc(callId).collection('messages').doc(docId);
+
+
+
+      try {
+
+
+
+        await messageRef.update({
+
+
+
+          heardBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+
+
+
+        });
+
+
+
+        const updated = await messageRef.get();
+
+
+
+        const heardBy = updated.data()?.heardBy || [];
+
+
+
+        if (heardBy.length >= participants) {
+
+
+
+          await messageRef.delete();
+
+
+
+          if (storagePath) {
+
+
+
+            await storage.ref().child(storagePath).delete().catch(() => {});
+
+
+
+          }
+
+
+
+        }
+
+
+
+      } catch (error) {
+
+
+
+        console.warn('Voice cleanup error', error);
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    async function markRoomVoiceMessagePlayed(roomId, docId, storagePath, limit = 5) {
+
+
+
+      if (!roomId) return;
+
+
+
+      const messageRef = db.collection('microRooms').doc(roomId).collection('drops').doc(docId);
+
+
+
+      try {
+
+
+
+        await messageRef.update({
+
+
+
+          heardBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+
+
+
+        });
+
+
+
+        const updated = await messageRef.get();
+
+
+
+        const heardBy = updated.data()?.heardBy || [];
+
+
+
+        if (heardBy.length >= limit) {
+
+
+
+          await messageRef.delete();
+
+
+
+          if (storagePath) {
+
+
+
+            await storage.ref().child(storagePath).delete().catch(() => {});
+
+
+
+          }
+
+
+
+        }
+
+
+
+      } catch (error) {
+
+
+
+        console.warn('Room voice cleanup error', error);
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    function cleanupVoiceResources() {
+
+
+
+      if (voiceRecorder && voiceRecorder.state === 'recording') {
+
+
+
+        voiceRecorder.stop();
+
+
+
+      }
+
+
+
+      if (voiceStream) {
+
+
+
+        voiceStream.getTracks().forEach(track => track.stop());
+
+
+
+      }
+
+
+
+      voiceRecorder = null;
+
+
+
+      voiceStream = null;
+
+
+
+      voiceChunks = [];
+
+
+
+      clearTimeout(voiceTimer);
+
+
+
+      voiceTimer = null;
+
+
+
+      currentVoiceTarget = null;
+
+
+
+      voiceStartTime = null;
+
+
+
+    }
+
+
+
+
+
+
+
+    function openVibeFeedback(partnerId) {
+
+
+
+      if (!partnerId) return;
+
+
+
+      pendingTokenUid = partnerId;
+
+
+
+      vibeFeedbackModal.classList.add('active');
+
+
+
+    }
+
+
+
+
+
+
+
+    async function sendVibeToken(tokenId, auraKey) {
+
+
+
+      if (!pendingTokenUid) {
+
+
+
+        showStatus('Finish a conversation to send vibes', 'warning');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      try {
+
+
+
+        await db.collection('tokens').doc(pendingTokenUid).set({
+
+
+
+          [tokenId]: firebase.firestore.FieldValue.increment(1)
+
+
+
+        }, { merge: true });
+
+
+
+        showStatus('Vibe sent!', 'success');
+
+
+
+      } catch (error) {
+
+
+
+        console.error('Token error', error);
+
+
+
+        showStatus('Could not send vibe token', 'error');
+
+
+
+      } finally {
+
+
+
+        vibeFeedbackModal.classList.remove('active');
+
+
+
+        pendingTokenUid = null;
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    async function loadAura() {
+
+
+
+      if (!currentUser) return;
+
+
+
+      try {
+
+
+
+        const snap = await db.collection('tokens').doc(currentUser.uid).get();
+
+
+
+        const tokens = snap.exists ? snap.data() : {};
+
+
+
+        const auraKey = deriveAura(tokens);
+
+
+
+        setAuraChip(auraKey);
+
+
+
+      } catch (error) {
+
+
+
+        console.warn('Aura load error', error);
+
+
+
+        setAuraChip('neutral');
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    function deriveAura(tokens = {}) {
+
+
+
+      const entries = Object.entries(tokens);
+
+
+
+      if (!entries.length) return 'neutral';
+
+
+
+      entries.sort((a, b) => (b[1] || 0) - (a[1] || 0));
+
+
+
+      const [topToken] = entries[0];
+
+
+
+      const auraMap = {
+
+
+
+        chill: 'blue',
+
+
+
+        funny: 'yellow',
+
+
+
+        deep: 'gold',
+
+
+
+        romantic: 'pink',
+
+
+
+        chaos: 'red'
+
+
+
+      };
+
+
+
+      return auraMap[topToken] || 'neutral';
+
+
+
+    }
+
+
+
+
+
+
+
+    async function prepareSessionMeta(matchData = {}) {
+
+
+
+      if (!callId || !currentUser) return;
+
+
+
+      const callRef = db.collection('calls').doc(callId);
+
+
+
+      try {
+
+
+
+        const snap = await callRef.get();
+
+
+
+        if (!snap.exists || !snap.data()?.prompt) {
+
+
+
+          currentPrompt = getRandomPrompt();
+
+
+
+          await callRef.set({
+
+
+
+            prompt: currentPrompt,
+
+
+
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+
+
+
+            meta: {
+
+
+
+              vibes: {
+
+
+
+                [currentUser.uid]: selectedVibes,
+
+
+
+                [remoteUid]: matchData.vibes || []
+
+
+
+              },
+
+
+
+              moods: {
+
+
+
+                [currentUser.uid]: selectedMood,
+
+
+
+                [remoteUid]: matchData.mood || ''
+
+
+
+              },
+
+
+
+              aura: {
+
+
+
+                [currentUser.uid]: currentAura,
+
+
+
+                [remoteUid]: matchData.aura || 'neutral'
+
+
+
+              }
+
+
+
+            }
+
+
+
+          }, { merge: true });
+
+
+
+          await pushSystemMessage(`🧩 ${currentPrompt}`, 'prompt');
+
+
+
+        } else {
+
+
+
+          currentPrompt = snap.data().prompt || getRandomPrompt();
+
+
+
+          await callRef.set({
+
+
+
+            meta: {
+
+
+
+              vibes: { [currentUser.uid]: selectedVibes },
+
+
+
+              moods: { [currentUser.uid]: selectedMood },
+
+
+
+              aura: { [currentUser.uid]: currentAura }
+
+
+
+            }
+
+
+
+          }, { merge: true });
+
+
+
+        }
+
+
+
+      } catch (error) {
+
+
+
+        console.error('Session meta prep error', error);
+
+
+
+        currentPrompt = currentPrompt || getRandomPrompt();
+
+
+
+      }
+
+
+
+      updatePromptBanner(currentPrompt);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    async function loadUserProfile() {
+
+
+
+
+
+
+
+      if (!currentUser) return;
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+
+
+
+
+
+
+
+        if (userDoc.exists) {
+
+
+
+
+
+
+
+          const data = userDoc.data();
+
+
+
+
+
+
+
+          blockedUsers = data.blockedUsers || [];
+
+
+
+
+
+
+
+          updateBlockedList();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        console.error('Error loading profile:', error);
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function blockUser(userId) {
+
+
+
+
+
+
+
+      if (!blockedUsers.includes(userId)) {
+
+
+
+
+
+
+
+        blockedUsers.push(userId);
+
+
+
+
+
+
+
+        await db.collection('users').doc(currentUser.uid).set({
+
+
+
+
+
+
+
+          blockedUsers: blockedUsers
+
+
+
+
+
+
+
+        }, { merge: true });
+
+
+
+
+
+
+
+        updateBlockedList();
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function unblockUser(userId) {
+
+
+
+
+
+
+
+      blockedUsers = blockedUsers.filter(id => id !== userId);
+
+
+
+
+
+
+
+      await db.collection('users').doc(currentUser.uid).set({
+
+
+
+
+
+
+
+        blockedUsers: blockedUsers
+
+
+
+
+
+
+
+      }, { merge: true });
+
+
+
+
+
+
+
+      updateBlockedList();
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    window.unblockUser = unblockUser;
+
+
+
+
+
+
+
+    function updateBlockedList() {
+
+
+
+      const section = document.getElementById('blocked-section');
+
+
+
+
+
+
+
+      const list = document.getElementById('blocked-list');
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (blockedUsers.length > 0) {
+
+
+
+
+
+
+
+        section.style.display = 'block';
+
+
+
+
+
+
+
+        list.innerHTML = blockedUsers.map(id => 
+
+
+
+
+
+
+
+          `<div class="blocked-user">
+
+
+
+
+
+
+
+            <span>User ${id.substring(0, 8)}...</span>
+
+
+
+
+
+
+
+            <span class="unblock-btn" onclick="unblockUser('${id}')">Unblock</span>
+
+
+
+
+
+
+
+          </div>`
+
+
+
+
+
+
+
+        ).join('');
+
+
+
+
+
+
+
+      } else {
+
+
+
+
+
+
+
+        section.style.display = 'none';
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('reportBtn').onclick = () => openReportModal();
+
+
+
+    document.getElementById('reportBtnChat').onclick = () => openReportModal();
+
+
+
+    if (voiceBtn) {
+
+
+
+      voiceBtn.onclick = () => {
+
+
+
+        if (!callId) {
+
+
+
+          showStatus('Start a chat first to send a voice note', 'warning');
+
+
+
+          return;
+
+
+
+        }
+
+
+
+        toggleVoiceRecording({ type: 'chat', id: callId, button: voiceBtn });
+
+
+
+      };
+
+
+
+    }
+
+
+
+    if (wallPostBtn) {
+
+
+
+      wallPostBtn.onclick = () => postWallUpdate();
+
+
+
+    }
+
+
+
+    if (wallCampusSelect) {
+
+
+
+      wallCampusSelect.onchange = (e) => {
+
+
+
+        const campus = e.target.value || selectedCollege || 'GLOBAL';
+
+
+
+        subscribeWall(campus);
+
+
+
+      };
+
+
+
+    }
+
+
+
+    if (roomSendBtn) {
+
+
+
+      roomSendBtn.onclick = () => sendRoomTextMessage();
+
+
+
+    }
+
+
+
+    if (roomVoiceBtn) {
+
+
+
+      roomVoiceBtn.onclick = () => {
+
+
+
+        if (!activeRoomId) {
+
+
+
+          showStatus('Join a micro room first', 'warning');
+
+
+
+          return;
+
+
+
+        }
+
+
+
+        toggleVoiceRecording({ type: 'room', id: activeRoomId, button: roomVoiceBtn });
+
+
+
+      };
+
+
+
+    }
+
+
+
+    if (leaveRoomBtn) {
+
+
+
+      leaveRoomBtn.onclick = () => leaveRoom();
+
+
+
+    }
+
+
+
+    if (closeVibeFeedbackBtn) {
+
+
+
+      closeVibeFeedbackBtn.onclick = () => {
+
+
+
+        pendingTokenUid = null;
+
+
+
+        vibeFeedbackModal.classList.remove('active');
+
+
+
+      };
+
+
+
+    }
+
+
+
+    
+
+
+
+
+
+
+
+    function openReportModal() {
+
+
+
+
+
+
+
+      reportModal.classList.add('active');
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('cancelReport').onclick = () => {
+
+
+
+
+
+
+
+      reportModal.classList.remove('active');
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('submitReport').onclick = async () => {
+
+
+
+
+
+
+
+      const reason = document.getElementById('reportReason').value;
+
+
+
+
+
+
+
+      const details = document.getElementById('reportDetails').value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      if (!reason) {
+
+
+
+
+
+
+
+        alert('Please select a reason');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        await db.collection('reports').add({
+
+
+
+
+
+
+
+          reportedBy: currentUser.uid,
+
+
+
+
+
+
+
+          reportedUser: remoteUid,
+
+
+
+
+
+
+
+          reason: reason,
+
+
+
+
+
+
+
+          details: details,
+
+
+
+
+
+
+
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+
+
+
+
+
+
+
+          callId: callId
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        await blockUser(remoteUid);
+
+
+
+
+
+
+
+        reportModal.classList.remove('active');
+
+
+
+
+
+
+
+        showStatus('User reported and blocked. Thank you.', 'success');
+
+
+
+
+
+
+
+        setTimeout(() => skipMatch(), 2000);
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        console.error('Report error:', error);
+
+
+
+
+
+
+
+        showStatus('Failed to submit report', 'error');
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('saveChatBtn').onclick = () => {
+
+
+
+      if (chatHistory.length === 0) {
+
+
+
+
+
+
+
+        showStatus('No messages to save', 'warning');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const chatText = chatHistory.map(msg => 
+
+
+
+
+
+
+
+        `[${msg.time}] ${msg.from}: ${msg.text}`
+
+
+
+
+
+
+
+      ).join('\n');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const blob = new Blob([chatText], { type: 'text/plain' });
+
+
+
+
+
+
+
+      const url = URL.createObjectURL(blob);
+
+
+
+
+
+
+
+      const a = document.createElement('a');
+
+
+
+
+
+
+
+      a.href = url;
+
+
+
+
+
+
+
+      a.download = `chat-${Date.now()}.txt`;
+
+
+
+
+
+
+
+      a.click();
+
+
+
+
+
+
+
+      URL.revokeObjectURL(url);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      showStatus('Chat saved!', 'success');
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.querySelectorAll('.comm-type').forEach(el => {
+
+
+
+
+
+
+
+      el.onclick = () => {
+
+
+
+
+
+
+
+        document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
+
+
+
+
+
+
+
+        el.classList.add('active');
+
+
+
+
+
+
+
+        commType = el.dataset.type;
+
+
+
+
+
+
+
+      };
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('college').onchange = (e) => {
+
+
+
+      selectedCollege = e.target.value;
+
+
+
+      const targetCampus = wallCampusSelect.value || (selectedCollege !== 'ANY' ? selectedCollege : 'GLOBAL');
+
+
+
+      subscribeWall(targetCampus);
+
+
+
+    };
+
+
+
+
+
+
+
+    document.getElementById('add-interest-btn').onclick = () => {
+
+
+
+      const input = document.getElementById('interest-input');
+
+
+
+
+
+
+
+      const interest = input.value.trim().toLowerCase();
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (interest && userInterests.length < 5 && !userInterests.includes(interest)) {
+
+
+
+
+
+
+
+        userInterests.push(interest);
+
+
+
+
+
+
+
+        updateInterestTags();
+
+
+
+
+
+
+
+        input.value = '';
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('interest-input').onkeypress = (e) => {
+
+
+
+
+
+
+
+      if (e.key === 'Enter') {
+
+
+
+
+
+
+
+        e.preventDefault();
+
+
+
+
+
+
+
+        document.getElementById('add-interest-btn').click();
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function updateInterestTags() {
+
+
+
+
+
+
+
+      const container = document.getElementById('interest-tags');
+
+
+
+
+
+
+
+      container.innerHTML = userInterests.map(interest => 
+
+
+
+
+
+
+
+        `<div class="interest-tag">${interest} <span class="remove" onclick="removeInterest('${interest}')">×</span></div>`
+
+
+
+
+
+
+
+      ).join('');
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    window.removeInterest = (interest) => {
+
+
+
+
+
+
+
+      userInterests = userInterests.filter(i => i !== interest);
+
+
+
+
+
+
+
+      updateInterestTags();
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    auth.onAuthStateChanged(async (user) => {
+
+
+
+      if (user && user.emailVerified) {
+
+
+
+        currentUser = user;
+
+
+
+        trackOnline();
+
+
+
+        showLiveUsersCounter();
+
+
+
+        await loadUserProfile();
+
+
+
+         await loadAura();
+
+
+
+         subscribeWall(selectedCollege || 'GLOBAL');
+
+
+
+        showSetupScreen();
+
+
+
+      } else if (user && !user.emailVerified) {
+
+
+
+        trackOffline();
+
+
+
+
+
+
+
+        showStatus('Please verify your email first', 'warning');
+
+
+
+
+
+
+
+        setTimeout(() => auth.signOut(), 3000);
+
+
+
+
+
+
+
+      } else {
+
+
+
+
+
+
+
+        trackOffline();
+
+
+
+
+
+
+
+        showLoginScreen();
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('signupBtn').onclick = async () => {
+
+
+
+
+
+
+
+      const email = document.getElementById('email').value.trim();
+
+
+
+
+
+
+
+      const password = document.getElementById('password').value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      if (!email || !email.includes('@')) {
+
+
+
+
+
+
+
+        showStatus('Please enter a valid email', 'error');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      if (password.length < 6) {
+
+
+
+
+
+
+
+        showStatus('Password must be at least 6 characters', 'error');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        showStatus('Creating account...', 'info');
+
+
+
+
+
+
+
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+
+
+
+
+
+
+
+        await result.user.sendEmailVerification();
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        document.getElementById('verify-notice').style.display = 'block';
+
+
+
+
+
+
+
+        showStatus('Verification email sent! Check your inbox.', 'success');
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        setTimeout(() => auth.signOut(), 3000);
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        if (error.code === 'auth/email-already-in-use') {
+
+
+
+
+
+
+
+          showStatus('Email already registered. Try logging in.', 'error');
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+          showStatus('Error: ' + error.message, 'error');
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('loginBtn').onclick = async () => {
+
+
+
+
+
+
+
+      const email = document.getElementById('email').value.trim();
+
+
+
+
+
+
+
+      const password = document.getElementById('password').value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      if (!email || !password) {
+
+
+
+
+
+
+
+        showStatus('Please enter email and password', 'error');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        showStatus('Logging in...', 'info');
+
+
+
+
+
+
+
+        await auth.signInWithEmailAndPassword(email, password);
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        if (error.code === 'auth/user-not-found') {
+
+
+
+
+
+
+
+          showStatus('No account found. Please sign up first.', 'error');
+
+
+
+
+
+
+
+        } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-login-credentials') {
+
+
+
+
+
+
+
+          showStatus('Incorrect password. Try "Forgot Password".', 'error');
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+          showStatus('Error: ' + error.message, 'error');
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('forgotPasswordBtn').onclick = async () => {
+
+
+
+
+
+
+
+      const email = document.getElementById('email').value.trim();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      if (!email || !email.includes('@')) {
+
+
+
+
+
+
+
+        showStatus('Please enter your email first', 'error');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        showStatus('Sending reset email...', 'info');
+
+
+
+
+
+
+
+        await auth.sendPasswordResetEmail(email);
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        document.getElementById('reset-notice').style.display = 'block';
+
+
+
+
+
+
+
+        showStatus('Password reset email sent!', 'success');
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        if (error.code === 'auth/user-not-found') {
+
+
+
+
+
+
+
+          showStatus('No account found with this email.', 'error');
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+          showStatus('Error: ' + error.message, 'error');
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('logoutBtn').onclick = async () => {
+
+
+
+
+
+
+
+      await cleanup();
+
+
+
+
+
+
+
+      await auth.signOut();
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('findBtn').onclick = async () => {
+
+
+
+      const gender = document.getElementById('gender').value;
+
+
+
+      const college = document.getElementById('college').value;
+
+
+
+
+
+
+
+      if (!gender || !college) {
+
+
+
+        showStatus('Please select gender and college', 'error');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+
+
+      if (!selectedMood) {
+
+
+
+        showStatus('Tap a mood to mood-match faster ✨', 'error');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+
+
+      try {
+
+
+
+        showStatus('Finding match...', 'info');
+
+
+
+        document.getElementById('findBtn').disabled = true;
+
+
+
+
+
+
+
+        const userId = currentUser.uid;
+        selectedCollege = college;
+        subscribeWall(college !== 'ANY' ? college : 'GLOBAL');
+
+
+
+
+        await db.collection('waiting').doc(userId).set({
+
+
+
+          userId,
+
+
+
+          email: currentUser.email,
+
+
+
+          college,
+
+
+
+          gender,
+
+
+
+          commType,
+
+
+
+          interests: userInterests,
+
+
+
+          vibes: selectedVibes,
+
+
+
+          mood: selectedMood,
+
+
+
+          aura: currentAura,
+
+
+
+          moodLabel: moodOptions.find(m => m.id === selectedMood)?.label || '',
+
+
+
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
+        });
+
+
+
+
+
+
+
+        await findMatch(userId, college, gender);
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        showStatus('Error: ' + error.message, 'error');
+
+
+
+
+
+
+
+        document.getElementById('findBtn').disabled = false;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function findMatch(userId, college, gender) {
+
+
+
+
+
+
+
+      let matchCheckCount = 0;
+
+
+
+
+
+
+
+      const maxChecks = 60;
+
+
+
+
+
+
+
+      let attemptedMatch = false;
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      let query;
+
+
+
+
+
+
+
+      if (college === 'ANY') {
+
+
+
+
+
+
+
+        query = db.collection('waiting').where('commType', '==', commType);
+
+
+
+
+
+
+
+      } else {
+
+
+
+
+
+
+
+        query = db.collection('waiting')
+
+
+
+
+
+
+
+          .where('college', '==', college)
+
+
+
+
+
+
+
+          .where('gender', '==', gender)
+
+
+
+
+
+
+
+          .where('commType', '==', commType);
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      matchListener = query.onSnapshot(async (snapshot) => {
+
+
+
+
+
+
+
+        matchCheckCount++;
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        const users = snapshot.docs.filter(doc => {
+
+
+
+
+
+
+
+          const uid = doc.id;
+
+
+
+
+
+
+
+          return uid !== userId && !blockedUsers.includes(uid);
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        showStatus(`Finding match... (${users.length} others waiting)`, 'info');
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        if (users.length > 0 && !attemptedMatch) {
+
+
+
+          attemptedMatch = true;
+
+
+
+          const moodMatches = selectedMood
+
+
+
+            ? users.filter(doc => (doc.data().mood || '') === selectedMood)
+
+
+
+            : [];
+
+
+
+          const matchDoc = moodMatches[0] || users[0];
+
+
+
+          remoteUid = matchDoc.id;
+
+
+
+          const matchData = matchDoc.data();
+
+
+
+          
+
+
+
+          callId = [userId, remoteUid].sort().join('_');
+
+
+
+
+
+
+
+
+
+
+
+          try {
+
+
+
+
+
+
+
+            await Promise.all([
+
+
+
+
+
+
+
+              db.collection('waiting').doc(userId).delete(),
+
+
+
+
+
+
+
+              db.collection('waiting').doc(remoteUid).delete()
+
+
+
+
+
+
+
+            ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (matchListener) {
+
+
+
+
+
+
+
+              matchListener();
+
+
+
+
+
+
+
+              matchListener = null;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            showStrangerInfo(matchData || {});
+
+
+
+            showStatus('Match found! Connecting...', 'success');
+
+
+
+            
+
+
+
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+
+
+            
+
+
+
+            await prepareSessionMeta(matchData);
+
+
+
+
+
+
+
+            if (commType === 'chat') {
+
+
+
+              await startChat();
+
+
+
+            } else {
+
+
+
+              await startCall(userId < remoteUid);
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          } catch (error) {
+
+
+
+
+
+
+
+            console.error('Match failed:', error);
+
+
+
+
+
+
+
+            attemptedMatch = false;
+
+
+
+
+
+
+
+            showStatus('Match failed, retrying...', 'warning');
+
+
+
+
+
+
+
+            return;
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+        } else if (matchCheckCount >= maxChecks) {
+
+
+
+
+
+
+
+          if (matchListener) matchListener();
+
+
+
+
+
+
+
+          await db.collection('waiting').doc(userId).delete().catch(()=>{});
+
+
+
+
+
+
+
+          showStatus('No match found. Please try again.', 'error');
+
+
+
+
+
+
+
+          document.getElementById('findBtn').disabled = false;
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showStrangerInfo(matchData = {}) {
+
+
+
+
+      const interests = matchData.interests || [];
+
+
+
+
+      const vibes = matchData.vibes || [];
+
+
+
+
+      const moodLabel = matchData.moodLabel || (matchData.mood ? `Mood: ${matchData.mood}` : '');
+
+
+
+
+      const commonInterests = interests.filter(i => userInterests.includes(i));
+
+
+
+
+      let infoHTML = `<div>dYZ- Connected with a stranger from ${document.getElementById('college').value}</div>`;
+
+
+
+
+      
+
+
+
+
+      if (commonInterests.length > 0) {
+
+
+
+
+        infoHTML += `<div class="stranger-interests">Common interests: ${commonInterests.map(i => 
+
+
+
+
+          `<span class="tag">${i}</span>`
+
+
+
+
+        ).join('')}</div>`;
+
+
+
+
+      } else if (interests.length > 0) {
+
+
+
+
+        infoHTML += `<div class="stranger-interests">Their interests: ${interests.map(i => 
+
+
+
+
+          `<span class="tag">${i}</span>`
+
+
+
+
+        ).join('')}</div>`;
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+      if (vibes.length > 0) {
+
+
+
+
+        infoHTML += `<div class="stranger-interests">Their vibe cards: ${vibes.map(v => 
+
+
+
+
+          `<span class="tag">${v}</span>`
+
+
+
+
+        ).join('')}</div>`;
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+      if (moodLabel) {
+
+
+
+
+        infoHTML += `<div class="stranger-interests">Mood match: <span class="tag">${moodLabel}</span></div>`;
+
+
+
+
+      }
+
+
+
+
+      
+
+
+
+
+      document.getElementById('stranger-info').innerHTML = infoHTML;
+
+
+
+
+      document.getElementById('stranger-info-chat').innerHTML = infoHTML;
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function startChat() {
+
+
+
+      chatContainer.style.display = 'block';
+
+
+
+      setupScreen.style.display = 'none';
+
+
+
+      chatHistory = [];
+
+
+
+      
+
+
+
+      addSystemMessage('Connected! Say hello dY`<');
+
+
+
+      updatePromptBanner(currentPrompt);
+
+
+
+      
+
+
+
+      chatListener = db.collection('calls').doc(callId).collection('messages')
+
+
+
+        .orderBy('timestamp')
+
+
+
+        .onSnapshot(snapshot => {
+
+
+
+          snapshot.docChanges().forEach(change => {
+
+
+
+            if (change.type === 'added') {
+
+
+
+              const msg = change.doc.data();
+
+
+
+              const msgId = change.doc.id;
+
+
+
+              if (msg.type === 'system') {
+
+
+
+                addSystemMessage(msg.text);
+
+
+
+                if (msg.subtype === 'prompt') {
+
+
+
+                  updatePromptBanner(msg.text);
+
+
+
+                }
+
+
+
+                return;
+
+
+
+              }
+
+
+
+              if (msg.type === 'voice') {
+
+
+
+                renderVoiceMessage(msg, msg.from === currentUser.uid, msgId);
+
+
+
+                return;
+
+
+
+              }
+
+
+
+              if (msg.from !== currentUser.uid) {
+
+
+
+                addMessage(msg.text, 'remote');
+
+
+
+                chatHistory.push({
+
+
+
+                  from: 'Stranger',
+
+
+
+                  text: msg.text,
+
+
+
+                  time: new Date().toLocaleTimeString()
+
+
+
+                });
+
+
+
+              }
+
+
+
+            }
+
+
+
+          });
+
+
+
+        });
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('send-btn').onclick = sendMessage;
+
+
+
+
+
+
+
+    chatInput.onkeypress = (e) => {
+
+
+
+
+
+
+
+      if (e.key === 'Enter') {
+
+
+
+
+
+
+
+        e.preventDefault();
+
+
+
+
+
+
+
+        sendMessage();
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function sendMessage() {
+
+
+
+
+
+
+
+      const text = chatInput.value.trim();
+
+
+
+
+
+
+
+      if (!text) return;
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (containsContactInfo(text)) {
+
+
+
+
+
+
+
+        addSystemMessage('⚠️ Sharing contact info is against the rules');
+
+
+
+
+
+
+
+        return;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      addMessage(text, 'local');
+
+
+
+
+
+
+
+      chatHistory.push({
+
+
+
+
+
+
+
+        from: 'You',
+
+
+
+
+
+
+
+        text: text,
+
+
+
+
+
+
+
+        time: new Date().toLocaleTimeString()
+
+
+
+
+
+
+
+      });
+
+
+
+
+
+
+
+      chatInput.value = '';
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      await db.collection('calls').doc(callId).collection('messages').add({
+
+        text,
+
+        type: 'text',
+
+        from: currentUser.uid,
+
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+      });
+
+    }
+
+
+
+
+
+
+
+
+
+    function containsContactInfo(text) {
+
+
+
+
+
+
+
+      const patterns = [
+
+
+
+
+
+
+
+        /\d{10}/, /\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/,
+
+
+
+
+
+
+
+        /@\w+\.\w+/,
+
+
+
+
+
+
+
+        /instagram|facebook|whatsapp|snapchat|telegram|twitter/i,
+
+
+
+
+
+
+
+        /insta|fb|wa|snap|dm/i
+
+
+
+
+
+
+
+      ];
+
+
+
+
+
+
+
+      return patterns.some(pattern => pattern.test(text));
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function addMessage(text, type) {
+
+      const msgDiv = document.createElement('div');
+
+      msgDiv.className = `message ${type}`;
+
+      msgDiv.textContent = text;
+
+      chatMessages.appendChild(msgDiv);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    }
+
+
+
+    function addSystemMessage(text) {
+
+      const msgDiv = document.createElement('div');
+
+      msgDiv.className = 'message system';
+
+      msgDiv.textContent = text;
+
+      chatMessages.appendChild(msgDiv);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    }
+
+
+
+    function renderVoiceMessage(msg, isLocal, docId) {
+
+      const wrapper = document.createElement('div');
+
+      wrapper.className = `message voice ${isLocal ? 'local' : 'remote'}`;
+
+      const label = document.createElement('div');
+
+      label.style.marginBottom = '6px';
+
+      label.textContent = isLocal ? 'You dropped a voice note' : 'Voice note';
+
+      const audio = document.createElement('audio');
+
+      audio.controls = true;
+
+      audio.src = msg.url;
+
+      audio.onended = () => markVoiceMessagePlayed(docId, msg.storagePath, msg.participants || 2);
+
+      wrapper.appendChild(label);
+
+      wrapper.appendChild(audio);
+
+      chatMessages.appendChild(wrapper);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    }
+
+
+
+
+
+
+
+
+
+    async function startCall(isInitiator) {
+
+
+
+
+
+
+
+      try {
+
+
+
+
+
+
+
+        const constraints = commType === 'video' 
+
+
+
+
+
+
+
+          ? { video: { width: 640, height: 480 }, audio: true }
+
+
+
+
+
+
+
+          : { video: false, audio: true };
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+
+
+
+
+
+
+        localVideo.srcObject = localStream;
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        if (commType === 'voice') {
+
+
+
+
+
+
+
+          localVideo.style.display = 'none';
+
+
+
+
+
+
+
+          remoteVideo.style.display = 'none';
+
+
+
+
+
+
+
+        } else {
+
+
+
+
+
+
+
+          localVideo.style.display = '';
+
+
+
+
+
+
+
+          remoteVideo.style.display = '';
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        pc = new RTCPeerConnection({
+
+
+
+
+
+
+
+          iceServers: [
+
+
+
+
+
+
+
+            { urls: 'stun:stun.l.google.com:19302' },
+
+
+
+
+
+
+
+            { urls: 'stun:stun1.l.google.com:19302' },
+
+
+
+
+
+
+
+            { urls: 'stun:stun2.l.google.com:19302' },
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+              urls: 'turn:openrelay.metered.ca:80',
+
+
+
+
+
+
+
+              username: 'openrelayproject',
+
+
+
+
+
+
+
+              credential: 'openrelayproject'
+
+
+
+
+
+
+
+            },
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+              urls: 'turn:openrelay.metered.ca:443',
+
+
+
+
+
+
+
+              username: 'openrelayproject',
+
+
+
+
+
+
+
+              credential: 'openrelayproject'
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+          ]
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        pc.ontrack = (event) => {
+
+
+
+
+
+
+
+          if (event.streams && event.streams[0]) {
+
+
+
+
+
+
+
+            remoteVideo.srcObject = event.streams[0];
+
+
+
+
+
+
+
+            remoteVideo.play().catch(e => console.error('Video play error:', e));
+
+
+
+
+
+
+
+            showStatus('Connected!', 'success');
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        pc.onicecandidate = (event) => {
+
+
+
+
+
+
+
+          if (event.candidate) {
+
+
+
+
+
+
+
+            db.collection('calls').doc(callId).collection('candidates').add({
+
+
+
+
+
+
+
+              candidate: event.candidate.toJSON(),
+
+
+
+
+
+
+
+              from: currentUser.uid,
+
+
+
+
+
+
+
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
+
+
+
+
+            }).catch(e => console.error('Error adding candidate:', e));
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        pc.onconnectionstatechange = () => {
+
+
+
+
+
+
+
+          updateConnectionQuality(pc.connectionState);
+
+
+
+
+
+
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        candidateListener = db.collection('calls').doc(callId).collection('candidates')
+
+
+
+
+
+
+
+          .onSnapshot(snapshot => {
+
+
+
+
+
+
+
+            snapshot.docChanges().forEach(async change => {
+
+
+
+
+
+
+
+              if (change.type === 'added') {
+
+
+
+
+
+
+
+                const data = change.doc.data();
+
+
+
+
+
+
+
+                if (data.from !== currentUser.uid) {
+
+
+
+
+
+
+
+                  try {
+
+
+
+
+
+
+
+                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+
+
+
+
+
+
+
+                  } catch (error) {
+
+
+
+
+
+
+
+                    console.error('Error adding ICE candidate:', error);
+
+
+
+
+
+
+
+                  }
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+              }
+
+
+
+
+
+
+
+            });
+
+
+
+
+
+
+
+          });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        callListener = db.collection('calls').doc(callId).onSnapshot(async (snap) => {
+
+
+
+
+
+
+
+          const data = snap.data();
+
+
+
+
+
+
+
+          if (!data) return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          if (!isInitiator && data.offer && !pc.currentRemoteDescription) {
+
+
+
+
+
+
+
+            try {
+
+
+
+
+
+
+
+              await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+
+
+
+
+
+
+              const answer = await pc.createAnswer();
+
+
+
+
+
+
+
+              await pc.setLocalDescription(answer);
+
+
+
+
+
+
+
+              await db.collection('calls').doc(callId).update({
+
+
+
+
+
+
+
+                answer: { type: answer.type, sdp: answer.sdp }
+
+
+
+
+
+
+
+              });
+
+
+
+
+
+
+
+            } catch (err) {
+
+
+
+
+
+
+
+              console.error('Error handling offer:', err);
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          if (isInitiator && data.answer && !pc.currentRemoteDescription) {
+
+
+
+
+
+
+
+            try {
+
+
+
+
+
+
+
+              await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+
+
+
+
+
+
+
+            } catch (err) {
+
+
+
+
+
+
+
+              console.error('Error setting answer:', err);
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        if (isInitiator) {
+
+          const offer = await pc.createOffer();
+
+          await pc.setLocalDescription(offer);
+
+          await db.collection('calls').doc(callId).set({
+
+            offer: { type: offer.type, sdp: offer.sdp },
+
+            initiator: currentUser.uid,
+
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+          }, { merge: true });
+
+        }
+
+
+
+
+
+
+
+
+
+        showVideoScreen();
+
+
+
+
+
+
+
+      } catch (error) {
+
+
+
+
+
+
+
+        console.error('startCall error:', error);
+
+
+
+
+
+
+
+        showStatus('Error accessing camera/mic: ' + error.message, 'error');
+
+
+
+
+
+
+
+        await cleanup();
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('muteBtn').onclick = () => {
+
+
+
+
+
+
+
+      if (!localStream) return;
+
+
+
+
+
+
+
+      isAudioMuted = !isAudioMuted;
+
+
+
+
+
+
+
+      localStream.getAudioTracks().forEach(track => track.enabled = !isAudioMuted);
+
+
+
+
+
+
+
+      document.getElementById('muteBtn').textContent = isAudioMuted ? '🔊 Unmute' : '🔇 Mute';
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('videoBtn').onclick = () => {
+
+
+
+
+
+
+
+      if (!localStream) return;
+
+
+
+
+
+
+
+      isVideoOff = !isVideoOff;
+
+
+
+
+
+
+
+      localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
+
+
+
+
+
+
+
+      document.getElementById('videoBtn').textContent = isVideoOff ? '📹 On' : '📹 Off';
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('skipBtn').onclick = skipMatch;
+
+
+
+
+
+
+
+    document.getElementById('skipBtnChat').onclick = skipMatch;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function skipMatch() {
+
+      showStatus('Finding new match...', 'info');
+
+      await cleanup();
+
+      document.getElementById('findBtn').click();
+
+    }
+
+
+
+    async function endConversation(showFeedback = true) {
+
+      const partnerId = remoteUid;
+
+      await cleanup();
+
+      showSetupScreen();
+
+      if (showFeedback && partnerId) {
+
+        openVibeFeedback(partnerId);
+
+      }
+
+    }
+
+
+
+
+
+
+
+
+
+    document.getElementById('endCall').onclick = () => endConversation();
+
+    document.getElementById('endChat').onclick = () => endConversation();
+
+
+
+
+
+
+
+
+
+    async function cleanup() {
+
+      updatePromptBanner('');
+
+      cleanupVoiceResources();
+
+      if (matchListener) { try { matchListener(); } catch(e){} matchListener = null; }
+
+      if (callListener) { try { callListener(); } catch(e){} callListener = null; }
+
+      if (candidateListener) { try { candidateListener(); } catch(e){} candidateListener = null; }
+
+      if (chatListener) { try { chatListener(); } catch(e){} chatListener = null; }
+
+      
+
+
+
+
+
+
+
+      if (pc) {
+
+
+
+
+
+
+
+        try { pc.close(); } catch(e){}
+
+
+
+
+
+
+
+        pc = null;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (localStream) {
+
+
+
+
+
+
+
+        localStream.getTracks().forEach(track => track.stop());
+
+
+
+
+
+
+
+        localStream = null;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (currentUser) {
+
+
+
+
+
+
+
+        try {
+
+
+
+
+
+
+
+          await db.collection('waiting').doc(currentUser.uid).delete().catch(()=>{});
+
+
+
+
+
+
+
+          
+
+
+
+
+
+
+
+          if (callId) {
+
+
+
+
+
+
+
+            const callRef = db.collection('calls').doc(callId);
+
+
+
+
+
+
+
+            const candidatesSnap = await callRef.collection('candidates').get();
+
+
+
+
+
+
+
+            await Promise.all(candidatesSnap.docs.map(d => d.ref.delete()));
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            const messagesSnap = await callRef.collection('messages').get();
+
+
+
+
+
+
+
+            await Promise.all(messagesSnap.docs.map(d => d.ref.delete()));
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            await callRef.delete().catch(()=>{});
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+        } catch (error) {
+
+
+
+
+
+
+
+          console.error('Cleanup error:', error);
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      callId = null;
+
+      remoteUid = null;
+
+      isAudioMuted = false;
+
+      isVideoOff = false;
+
+      chatMessages.innerHTML = '';
+
+      chatHistory = [];
+
+      currentPrompt = '';
+
+      document.getElementById('findBtn').disabled = false;
+
+    }
+
+
+
+
+
+
+
+
+
+    function updateConnectionQuality(state) {
+
+
+
+
+
+
+
+      const qualityEl = document.getElementById('quality');
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      switch(state) {
+
+
+
+
+
+
+
+        case 'connected':
+
+
+
+
+
+
+
+          qualityEl.textContent = 'Connected ✓';
+
+
+
+
+
+
+
+          qualityEl.className = 'quality-good';
+
+
+
+
+
+
+
+          break;
+
+
+
+
+
+
+
+        case 'connecting':
+
+
+
+
+
+
+
+          qualityEl.textContent = 'Connecting...';
+
+
+
+
+
+
+
+          qualityEl.className = 'quality-fair';
+
+
+
+
+
+
+
+          break;
+
+
+
+
+
+
+
+        case 'disconnected':
+
+
+
+
+
+
+
+        case 'failed':
+
+
+
+
+
+
+
+          qualityEl.textContent = 'Connection lost';
+
+
+
+
+
+
+
+          qualityEl.className = 'quality-poor';
+
+
+
+
+
+
+
+          showStatus('Connection lost. Please skip or end call.', 'error');
+
+
+
+
+
+
+
+          break;
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showStatus(message, type) {
+
+
+
+
+
+
+
+      statusEl.textContent = message;
+
+
+
+
+
+
+
+      statusEl.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4ade80' : '#ffd43b';
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showLoginScreen() {
+
+
+
+
+
+
+
+      loginScreen.classList.add('active');
+
+
+
+
+
+
+
+      setupScreen.classList.remove('active');
+
+
+
+
+
+
+
+      videoContainer.style.display = 'none';
+
+
+
+
+
+
+
+      chatContainer.style.display = 'none';
+
+
+
+
+
+
+
+      statusEl.textContent = '';
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showSetupScreen() {
+
+
+
+
+
+
+
+      loginScreen.classList.remove('active');
+
+
+
+
+
+
+
+      setupScreen.classList.add('active');
+
+
+
+
+
+
+
+      videoContainer.style.display = 'none';
+
+
+
+
+
+
+
+      chatContainer.style.display = 'none';
+
+
+
+
+
+
+
+      document.getElementById('user-email').textContent = currentUser.email.split('@')[0];
+
+
+
+
+
+
+
+      statusEl.textContent = '';
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showVideoScreen() {
+
+
+
+
+
+
+
+      setupScreen.classList.remove('active');
+
+
+
+
+
+
+
+      videoContainer.style.display = 'block';
+
+
+
+
+
+
+
+      chatContainer.style.display = 'none';
+
+
+
+
+
+
+
+      statusEl.textContent = '';
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    window.addEventListener('beforeunload', cleanup);
+
+
+    window.addEventListener('beforeunload', () => leaveRoom());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    let statusRef = null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function trackOnline() {
+
+
+
+
+
+
+
+      if (!currentUser) return;
+
+
+
+
+
+
+
+      const uid = currentUser.uid;
+
+
+
+
+
+
+
+      statusRef = db.collection('status').doc(uid);
+
+
+
+
+
+
+
+      statusRef.set({
+
+
+
+
+
+
+
+        online: true,
+
+
+
+
+
+
+
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+
+
+
+
+
+
+
+        email: currentUser.email.split('@')[0]
+
+
+
+
+
+
+
+      }, { merge: true });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function trackOffline() {
+
+
+
+
+
+
+
+      if (statusRef) {
+
+
+
+
+
+
+
+        statusRef.update({ 
+
+
+
+
+
+
+
+          online: false,
+
+
+
+
+
+
+
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+
+
+
+
+
+
+
+        }).catch(() => {});
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    window.addEventListener('beforeunload', trackOffline);
+
+
+
+
+
+
+
+\ \ \ \ window\.addEventListener\('unload',\ trackOffline\);\r\n\ \ \ \ window\.addEventListener\('unload',\ \(\)\ =>\ leaveRoom\(\)\);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function showLiveUsersCounter() {
+
+
+
+
+
+
+
+      const counter = document.getElementById('live-users-counter');
+
+
+
+
+
+
+
+      db.collection('status')
+
+
+
+
+
+
+
+        .where('online', '==', true)
+
+
+
+
+
+
+
+        .onSnapshot(snap => {
+
+
+
+
+
+
+
+          const count = snap.size;
+
+
+
+
+
+
+
+          counter.innerHTML = `🟢 ${count} online`;
+
+
+
+
+
+
+
+          counter.style.display = 'block';
+
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
   </script>
+
+
+
+
+
+
+
 </body>
+
+
+
+
+
+
+
 </html>
+
+
+
+
+
+
+
+
