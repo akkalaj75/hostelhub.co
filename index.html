@@ -1391,44 +1391,45 @@ window.closeReferralPopup = function(event) {
     };
 
 auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    // Force a reload to get the latest email verification status
-    await user.reload(); 
-    
-    if (user.emailVerified) {
-      currentUser = user;
-      trackOnline();
-      showLiveUsersCounter();
-      await loadUserProfile();
-      showSetupScreen();
-      
-      // Show referral popup only after verified login
-      if (!localStorage.getItem('referralShown')) {
-        setTimeout(() => {
-          showReferralPopup(currentUser.uid);
-          localStorage.setItem('referralShown', 'true');
-        }, 2000);
-      }
-    } else {
-      // Unverified User Handling
-      trackOffline();
-      showStatus('Please verify your email first', 'warning');
+  if (user) {
+    // 1. Force a reload to get the latest email verification status
+    await user.reload(); 
+    
+    if (user.emailVerified) {
+      currentUser = user;
+      trackOnline();
+      showLiveUsersCounter();
+      await loadUserProfile();
+      showSetupScreen();
+      
+      // Show referral popup only after verified login
+      if (!localStorage.getItem('referralShown')) {
+        setTimeout(() => {
+          showReferralPopup(currentUser.uid);
+          localStorage.setItem('referralShown', 'true');
+        }, 2000);
+      }
+    } else {
+      // 2. Unverified User Handling (If user exists but email is not verified)
+      trackOffline();
+      showStatus('Please verify your email first', 'warning');
 
-      document.getElementById('verify-notice').style.display = 'block';
-      document.getElementById('verify-notice').innerHTML = `
-          ✉️ Verification email sent! Check your inbox and click the link.
-          <button onclick="resendVerification()" class="btn-secondary" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
-              Resend Verification Email
-          </button>`;
+      document.getElementById('verify-notice').style.display = 'block';
+      document.getElementById('verify-notice').innerHTML = `
+          ✉️ Verification email sent! Check your inbox and click the link.
+          <button onclick="resendVerification()" class="btn-secondary" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
+              Resend Verification Email
+          </button>`;
 
-      // Log out after a delay to prevent unauthorized access
-      setTimeout(() => auth.signOut(), 5000);
-    }
-      } else {
-        trackOffline();
-        showLoginScreen();
-      }
-    });
+      // Log out after a delay to prevent unauthorized access
+      setTimeout(() => auth.signOut(), 5000);
+    }
+  } else {
+    // 3. No User Found (Show Login Screen)
+    trackOffline();
+    showLoginScreen();
+  }
+});
 
     document.getElementById('signupBtn').onclick = async () => {
       const email = document.getElementById('email').value.trim();
