@@ -1000,75 +1000,71 @@
       }
     };
 
-    async function findMatch(userId, college, gender) {
-      let matchCheckCount = 0;
-      const maxChecks = 60;
-      let attemptedMatch = false;
-      
-      let query;
-      if (college === 'ANY') {
-        query = db.collection('waiting').where('commType', '==', commType);
-      } else {
-        query = db.collection('waiting')
-          .where('college', '==', college)
-          .where('gender', '==', gender)
-          .where('commType', '==', commType);
-      }
+   // 🔥 Simplified Global Matching — connects across all colleges instantly
+async function findMatch(userId, college, gender) {
+  let matchCheckCount = 0;
+  const maxChecks = 60;
+  let attemptedMatch = false;
 
-      matchListener = query.onSnapshot(async (snapshot) => {
-        matchCheckCount++;
-        
-        const users = snapshot.docs.filter(doc => {
-          const uid = doc.id;
-          return uid !== userId && !blockedUsers.includes(uid);
-        });
-        
-        showStatus(`Finding match... (${users.length} others waiting)`, 'info');
-        
-        if (users.length > 0 && !attemptedMatch) {
-          attemptedMatch = true;
-          const matchDoc = users[0];
-          remoteUid = matchDoc.id;
-          const matchData = matchDoc.data();
-          
-          callId = [userId, remoteUid].sort().join('_');
+  // ✅ Use only commType filter for global matchmaking
+  const query = db.collection('waiting').where('commType', '==', commType);
 
-          try {
-            await Promise.all([
-              db.collection('waiting').doc(userId).delete(),
-              db.collection('waiting').doc(remoteUid).delete()
-            ]);
+  matchListener = query.onSnapshot(async (snapshot) => {
+    matchCheckCount++;
 
-            if (matchListener) {
-              matchListener();
-              matchListener = null;
-            }
+    const users = snapshot.docs.filter(doc => {
+      const uid = doc.id;
+      return uid !== userId && !blockedUsers.includes(uid);
+    });
 
-            showStrangerInfo(matchData.interests || []);
-            showStatus('Match found! Connecting...', 'success');
-            
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            if (commType === 'chat') {
-              await startChat();
-            } else {
-              await startCall(userId < remoteUid);
-            }
+    showStatus(`Finding match... (${users.length} others waiting)`, 'info');
 
-          } catch (error) {
-            console.error('Match failed:', error);
-            attemptedMatch = false;
-            showStatus('Match failed, retrying...', 'warning');
-            return;
-          }
-        } else if (matchCheckCount >= maxChecks) {
-          if (matchListener) matchListener();
-          await db.collection('waiting').doc(userId).delete().catch(()=>{});
-          showStatus('No match found. Please try again.', 'error');
-          document.getElementById('findBtn').disabled = false;
+    if (users.length > 0 && !attemptedMatch) {
+      attemptedMatch = true;
+      const matchDoc = users[0];
+      remoteUid = matchDoc.id;
+      const matchData = matchDoc.data();
+
+      callId = [userId, remoteUid].sort().join('_');
+
+      try {
+        // 🧹 Remove both from waiting queue
+        await Promise.all([
+          db.collection('waiting').doc(userId).delete(),
+          db.collection('waiting').doc(remoteUid).delete()
+        ]);
+
+        if (matchListener) {
+          matchListener();
+          matchListener = null;
         }
-      });
+
+        showStrangerInfo(matchData.interests || []);
+        showStatus('Match found! Connecting...', 'success');
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        if (commType === 'chat') {
+          await startChat();
+        } else {
+          await startCall(userId < remoteUid);
+        }
+
+      } catch (error) {
+        console.error('Match failed:', error);
+        attemptedMatch = false;
+        showStatus('Match failed, retrying...', 'warning');
+        return;
+      }
+    } else if (matchCheckCount >= maxChecks) {
+      if (matchListener) matchListener();
+      await db.collection('waiting').doc(userId).delete().catch(()=>{});
+      showStatus('No match found. Please try again.', 'error');
+      document.getElementById('findBtn').disabled = false;
     }
+  });
+}
+
 
     function showStrangerInfo(interests) {
       const commonInterests = interests.filter(i => userInterests.includes(i));
